@@ -40,7 +40,8 @@ export function Collections() {
               <Link
                 href={`/categories/${c.slug}`}
                 key={c.slug}
-                className={`col-card reveal${idx >= COL_VISIBLE ? " is-extra" : ""}`}
+                className={`col-card${idx >= COL_VISIBLE ? " is-extra" : ""}`}
+                style={{ animationDelay: `${idx * 0.04}s` }}
               >
                 <div className="col-bg" style={{ background: grad }}>
                   {c.img && <img className="col-img" src={c.img} alt={c.name} loading="lazy" />}

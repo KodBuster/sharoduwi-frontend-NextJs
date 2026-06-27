@@ -1,27 +1,53 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+function revealElement(el: Element) {
+  el.classList.add("in");
+}
 
 export function useScrollReveal() {
+  const pathname = usePathname();
+
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
-    if ("IntersectionObserver" in window) {
-      const io = new IntersectionObserver(
+    let io: IntersectionObserver | undefined;
+
+    const setup = () => {
+      io?.disconnect();
+      const els = document.querySelectorAll(".reveal:not(.in)");
+      if (!els.length) return;
+
+      if (!("IntersectionObserver" in window)) {
+        els.forEach(revealElement);
+        return;
+      }
+
+      io = new IntersectionObserver(
         (entries) => {
-          entries.forEach((en) => {
-            if (en.isIntersecting) {
-              en.target.classList.add("in");
-              io.unobserve(en.target);
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              revealElement(entry.target);
+              io?.unobserve(entry.target);
             }
           });
         },
-        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        { threshold: 0.08, rootMargin: "0px 0px -20px 0px" }
       );
-      els.forEach((el) => io.observe(el));
-      return () => io.disconnect();
-    }
-    els.forEach((el) => el.classList.add("in"));
-  }, []);
+
+      els.forEach((el) => io!.observe(el));
+    };
+
+    setup();
+    const raf = requestAnimationFrame(setup);
+    const timer = window.setTimeout(setup, 200);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+      io?.disconnect();
+    };
+  }, [pathname]);
 }
 
 export function useHeaderScroll() {
