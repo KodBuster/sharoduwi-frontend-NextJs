@@ -2,7 +2,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+ENV NPM_CONFIG_CACHE=/tmp/.npm
+ENV HOME=/tmp
+
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci --include=dev
 
 COPY . .

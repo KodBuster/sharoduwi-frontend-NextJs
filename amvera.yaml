@@ -1,16 +1,14 @@
-# Amvera — https://docs.amvera.ru/applications/environments/nodejs-server.html
-# Рекомендуемый тариф: Стандартный (2.5 ГБ RAM), регион: Москва
-# Переменные окружения задайте в панели Amvera (см. .env.example)
+# Amvera — Docker + Next.js standalone (не npm run dev!)
+# В UI Amvera: Конфигурация → команда запуска должна быть пустой или из этого файла.
+# Переменные окружения — в панели (см. .env.example)
 
 meta:
-  environment: node
+  environment: docker
   toolchain:
-    name: npm
-    version: "20"
+    name: docker
 
 build:
-  additionalCommands: npm ci --include=dev && npm run build
+  dockerfile: Dockerfile
 
 run:
-  command: node scripts/start-server.mjs
   containerPort: 80
