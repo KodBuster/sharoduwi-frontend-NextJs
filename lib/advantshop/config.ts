@@ -1,4 +1,5 @@
 import type { CollectionSlug } from "@/lib/products";
+import { COLLECTIONS } from "@/lib/data";
 
 function readEnv(name: string): string | undefined {
   const raw = process.env[name]?.trim();
@@ -82,11 +83,18 @@ function parseCategoryUrlMap(raw: string): Partial<Record<CollectionSlug, string
   return map;
 }
 
+function getDefaultCategoryUrlMap(): Partial<Record<CollectionSlug, string>> {
+  return Object.fromEntries(
+    COLLECTIONS.map((collection) => [collection.slug, collection.categoryPath])
+  ) as Partial<Record<CollectionSlug, string>>;
+}
+
 /** Map collection slugs to AdvantShop category URL paths */
 export function getCategoryUrlMap(): Partial<Record<CollectionSlug, string>> {
   const raw = readEnv("ADVANTSHOP_CATEGORY_MAP");
-  if (!raw) return {};
-  return parseCategoryUrlMap(raw);
+  if (!raw) return getDefaultCategoryUrlMap();
+  const parsed = parseCategoryUrlMap(raw);
+  return Object.keys(parsed).length ? parsed : getDefaultCategoryUrlMap();
 }
 
 export const CATALOG_REVALIDATE_SECONDS = Number(

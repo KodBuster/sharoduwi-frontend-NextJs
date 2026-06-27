@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import { useApp } from "@/context/AppContext";
 import { COLORS, TAGS, getCollectionBySlug } from "@/lib/data";
+import type { CollectionSlug } from "@/lib/products";
 import { cluster, fmt, hexa } from "@/lib/balloons";
 
 function CartControl({ id }: { id: number }) {
@@ -37,7 +39,14 @@ function CartControl({ id }: { id: number }) {
   );
 }
 
-export function Shop() {
+interface ShopProps {
+  /** Фиксированная коллекция (страница категории) */
+  pageCollection?: CollectionSlug;
+  heading?: string;
+  description?: string;
+}
+
+export function Shop({ pageCollection, heading, description }: ShopProps) {
   const {
     activeTag,
     setActiveTag,
@@ -52,16 +61,18 @@ export function Shop() {
     catalogLoading,
   } = useApp();
 
-  const activeCollectionName = activeCollection
-    ? getCollectionBySlug(activeCollection)?.name
+  const collectionFilter = pageCollection ?? activeCollection;
+  const activeCollectionName = collectionFilter
+    ? getCollectionBySlug(collectionFilter)?.name
     : null;
+  const isCategoryPage = Boolean(pageCollection);
 
   const list = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return products.filter((p) => {
       const okTag = activeTag === "Все" || p.tags.includes(activeTag);
       const okCollection =
-        !activeCollection || p.collectionSlug === activeCollection;
+        !collectionFilter || p.collectionSlug === collectionFilter;
       const okQ =
         !q ||
         p.name.toLowerCase().includes(q) ||
@@ -70,18 +81,19 @@ export function Shop() {
       const okFav = !favOnly || isFav(p.id);
       return okTag && okCollection && okQ && okFav;
     });
-  }, [activeTag, activeCollection, searchQuery, favOnly, isFav, products]);
+  }, [activeTag, collectionFilter, searchQuery, favOnly, isFav, products]);
 
   return (
     <section className="sec" id="shop">
       <div className="wrap">
         <div className="sec-head reveal">
           <div className="sec-tag">
-            <span className="dot" /> Каталог
+            <span className="dot" /> {isCategoryPage ? "Коллекция" : "Каталог"}
           </div>
-          <h2>Наши шары и композиции</h2>
+          <h2>{heading ?? "Наши шары и композиции"}</h2>
+          {description && <p>{description}</p>}
         </div>
-        {activeCollectionName && (
+        {activeCollectionName && !isCategoryPage && (
           <div className="shop-collection-filter reveal">
             <span>Коллекция: {activeCollectionName}</span>
             <button
@@ -91,6 +103,16 @@ export function Shop() {
             >
               Сбросить
             </button>
+          </div>
+        )}
+        {isCategoryPage && (
+          <div className="shop-collection-filter reveal">
+            <Link href="/#shop" className="chip">
+              ← Полный каталог
+            </Link>
+            <Link href="/#collections" className="chip">
+              Все коллекции
+            </Link>
           </div>
         )}
         <div className="shop-controls reveal">
@@ -128,7 +150,9 @@ export function Shop() {
               🎈{" "}
               {favOnly
                 ? "В избранном пока пусто. Нажмите ♡ на товаре."
-                : "Ничего не нашли. Попробуйте другой запрос."}
+                : isCategoryPage
+                  ? "В этой коллекции пока нет товаров."
+                  : "Ничего не нашли. Попробуйте другой запрос."}
             </div>
           ) : (
             list.map((p, i) => {

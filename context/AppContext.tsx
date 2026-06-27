@@ -59,12 +59,20 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-export function AppProvider({ children }: { children: ReactNode }) {
+interface AppProviderProps {
+  children: ReactNode;
+  /** Загружать только товары выбранной коллекции (страница категории) */
+  catalogCollection?: CollectionSlug;
+}
+
+export function AppProvider({ children, catalogCollection }: AppProviderProps) {
   const [cart, setCart] = useState<Cart>({});
   const [fav, setFav] = useState<Fav>({});
   const [favOnly, setFavOnly] = useState(false);
   const [activeTag, setActiveTag] = useState<TagFilter>("Все");
-  const [activeCollection, setActiveCollection] = useState<CollectionSlug | null>(null);
+  const [activeCollection, setActiveCollection] = useState<CollectionSlug | null>(
+    catalogCollection ?? null
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
   const [mobOpen, setMobOpen] = useState(false);
@@ -79,19 +87,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
+    setCatalogLoading(true);
 
-    fetch("/api/catalog")
+    const catalogUrl = catalogCollection
+      ? `/api/catalog?collection=${encodeURIComponent(catalogCollection)}`
+      : "/api/catalog";
+
+    fetch(catalogUrl)
       .then((response) => response.json())
       .then((data: { products?: Product[]; source?: CatalogSource }) => {
         if (cancelled) return;
-        if (Array.isArray(data.products) && data.products.length) {
-          setProducts(data.products);
+        if (Array.isArray(data.products)) {
+          setProducts(data.products.length ? data.products : PRODUCTS.filter(
+            (product) => !catalogCollection || product.collectionSlug === catalogCollection
+          ));
           setCatalogSource(data.source === "advantshop" ? "advantshop" : "static");
         }
       })
       .catch((error) => {
         console.error("Catalog fetch failed:", error);
-        if (!cancelled) setProducts(PRODUCTS);
+        if (!cancelled) {
+          setProducts(
+            catalogCollection
+              ? PRODUCTS.filter((product) => product.collectionSlug === catalogCollection)
+              : PRODUCTS
+          );
+        }
       })
       .finally(() => {
         if (!cancelled) setCatalogLoading(false);
@@ -100,7 +121,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [catalogCollection]);
 
   const getProduct = useCallback(
     (id: number) => products.find((product) => product.id === id),
