@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useApp } from "@/context/AppContext";
 import { COLLECTIONS, COL_VISIBLE, COLORS } from "@/lib/data";
 import { cluster, hexa } from "@/lib/balloons";
 
 export function Collections() {
+  const { setActiveCollection } = useApp();
   const [expanded, setExpanded] = useState(false);
   const hidden = Math.max(0, COLLECTIONS.length - COL_VISIBLE);
 
@@ -18,6 +20,11 @@ export function Collections() {
       setExpanded(false);
       document.getElementById("collections")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  };
+
+  const openCollection = (slug: (typeof COLLECTIONS)[number]["slug"]) => {
+    setActiveCollection(slug);
+    document.getElementById("shop")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -36,10 +43,11 @@ export function Collections() {
               c.bg ||
               `linear-gradient(150deg,${hexa(COLORS[c.colors[0]], 0.3)},${hexa(COLORS[c.colors[c.colors.length - 1]], 0.16)})`;
             return (
-              <a
-                href="#shop"
-                key={c.name}
+              <button
+                type="button"
+                key={c.slug}
                 className={`col-card reveal${idx >= COL_VISIBLE ? " is-extra" : ""}`}
+                onClick={() => openCollection(c.slug)}
               >
                 <div className="col-bg" style={{ background: grad }}>
                   {c.img && <img className="col-img" src={c.img} alt={c.name} loading="lazy" />}
@@ -59,7 +67,7 @@ export function Collections() {
                     </svg>
                   </span>
                 </div>
-              </a>
+              </button>
             );
           })}
         </div>

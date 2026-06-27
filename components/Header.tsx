@@ -14,7 +14,8 @@ export function Header() {
     setSearchQuery,
     openCart,
     openMob,
-    setActiveCat,
+    setActiveTag,
+    setActiveCollection,
   } = useApp();
 
   const searchRef = useRef<HTMLDivElement>(null);
@@ -94,7 +95,10 @@ export function Header() {
   const onFavClick = () => {
     const next = !favOnly;
     setFavOnly(next);
-    if (next) setActiveCat("Все");
+    if (next) {
+      setActiveTag("Все");
+      setActiveCollection(null);
+    }
     gotoShop();
   };
 

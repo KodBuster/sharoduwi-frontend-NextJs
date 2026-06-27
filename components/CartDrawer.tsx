@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { useApp } from "@/context/AppContext";
-import { PRODUCTS, COLORS } from "@/lib/data";
+import { COLORS } from "@/lib/data";
+import type { Product } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
 
 export function CartDrawer() {
@@ -15,20 +16,21 @@ export function CartDrawer() {
     incrementCart,
     decrementCart,
     removeFromCart,
+    getProduct,
   } = useApp();
 
   const { total, rows } = useMemo(() => {
     let total = 0;
     const rows = Object.keys(cart).map((idStr) => {
       const id = parseInt(idStr, 10);
-      const p = PRODUCTS.find((x) => x.id === id);
+      const p = getProduct(id);
       if (!p) return null;
       const qty = cart[id];
       total += p.price * qty;
       return { p, qty, id };
-    }).filter(Boolean) as { p: (typeof PRODUCTS)[0]; qty: number; id: number }[];
+    }).filter(Boolean) as { p: Product; qty: number; id: number }[];
     return { total, rows };
-  }, [cart]);
+  }, [cart, getProduct]);
 
   const onCheckout = () => {
     closeCart();
@@ -61,7 +63,13 @@ export function CartDrawer() {
           ) : (
             rows.map(({ p, qty, id }) => (
               <div className="ci" key={id}>
-                <div className="ci-vis" dangerouslySetInnerHTML={{ __html: balloonSVG(COLORS[p.colors[0]], 40, `cart-${id}`) }} />
+                <div className="ci-vis">
+                  {p.img ? (
+                    <img src={p.img} alt={p.name} loading="lazy" decoding="async" />
+                  ) : (
+                    <div dangerouslySetInnerHTML={{ __html: balloonSVG(COLORS[p.colors[0]], 40, `cart-${id}`) }} />
+                  )}
+                </div>
                 <div className="ci-info">
                   <h4>{p.name}</h4>
                   <div className="ci-price">{fmt(p.price)} ₽</div>

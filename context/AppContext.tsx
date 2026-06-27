@@ -4,21 +4,25 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from "react";
-import { CATEGORIES, PRODUCTS, type Category } from "@/lib/data";
+import { PRODUCTS, type Product } from "@/lib/data";
+import type { CollectionSlug, TagFilter } from "@/lib/products";
 
 type Cart = Record<number, number>;
 type Fav = Record<number, boolean>;
+type CatalogSource = "advantshop" | "static";
 
 interface AppContextValue {
   cart: Cart;
   fav: Fav;
   favOnly: boolean;
-  activeCat: Category;
+  activeTag: TagFilter;
+  activeCollection: CollectionSlug | null;
   searchQuery: string;
   cartOpen: boolean;
   mobOpen: boolean;
@@ -27,8 +31,12 @@ interface AppContextValue {
   toastVisible: boolean;
   cartCount: number;
   favCount: number;
+  products: Product[];
+  catalogSource: CatalogSource;
+  catalogLoading: boolean;
   setSearchQuery: (q: string) => void;
-  setActiveCat: (cat: Category) => void;
+  setActiveTag: (tag: TagFilter) => void;
+  setActiveCollection: (slug: CollectionSlug | null) => void;
   setFavOnly: (v: boolean) => void;
   toggleFav: (id: number) => void;
   addToCart: (id: number, x?: number, y?: number) => void;
@@ -45,6 +53,7 @@ interface AppContextValue {
   closeAll: () => void;
   getCartQty: (id: number) => number;
   isFav: (id: number) => boolean;
+  getProduct: (id: number) => Product | undefined;
   burstRef: React.MutableRefObject<((x: number, y: number, count?: number) => void) | null>;
 }
 
@@ -54,15 +63,49 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart>({});
   const [fav, setFav] = useState<Fav>({});
   const [favOnly, setFavOnly] = useState(false);
-  const [activeCat, setActiveCat] = useState<Category>("Все");
+  const [activeTag, setActiveTag] = useState<TagFilter>("Все");
+  const [activeCollection, setActiveCollection] = useState<CollectionSlug | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
   const [mobOpen, setMobOpen] = useState(false);
   const [fabOpen, setFabOpenState] = useState(false);
   const [toastName, setToastName] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [catalogSource, setCatalogSource] = useState<CatalogSource>("static");
+  const [catalogLoading, setCatalogLoading] = useState(true);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const burstRef = useRef<((x: number, y: number, count?: number) => void) | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/catalog")
+      .then((response) => response.json())
+      .then((data: { products?: Product[]; source?: CatalogSource }) => {
+        if (cancelled) return;
+        if (Array.isArray(data.products) && data.products.length) {
+          setProducts(data.products);
+          setCatalogSource(data.source === "advantshop" ? "advantshop" : "static");
+        }
+      })
+      .catch((error) => {
+        console.error("Catalog fetch failed:", error);
+        if (!cancelled) setProducts(PRODUCTS);
+      })
+      .finally(() => {
+        if (!cancelled) setCatalogLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const getProduct = useCallback(
+    (id: number) => products.find((product) => product.id === id),
+    [products]
+  );
 
   const cartCount = useMemo(
     () => Object.values(cart).reduce((s, q) => s + q, 0),
@@ -70,14 +113,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const favCount = useMemo(() => Object.keys(fav).length, [fav]);
 
-  const showToast = useCallback((id: number) => {
-    const p = PRODUCTS.find((x) => x.id === id);
-    if (!p) return;
-    setToastName(`«${p.name}»`);
-    setToastVisible(true);
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToastVisible(false), 2800);
-  }, []);
+  const showToast = useCallback(
+    (id: number) => {
+      const p = getProduct(id);
+      if (!p) return;
+      setToastName(`«${p.name}»`);
+      setToastVisible(true);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      toastTimer.current = setTimeout(() => setToastVisible(false), 2800);
+    },
+    [getProduct]
+  );
 
   const addToCart = useCallback(
     (id: number, x?: number, y?: number) => {
@@ -135,9 +181,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const getCartQty = useCallback((id: number) => cart[id] || 0, [cart]);
   const isFav = useCallback((id: number) => !!fav[id], [fav]);
 
+  const handleSetActiveTag = useCallback((tag: TagFilter) => {
+    setActiveTag(tag);
+  }, []);
+
+  const handleSetActiveCollection = useCallback((slug: CollectionSlug | null) => {
+    setActiveCollection(slug);
+    if (slug) setActiveTag("Все");
+  }, []);
+
   const handleSetFavOnly = useCallback((v: boolean) => {
     setFavOnly(v);
-    if (v) setActiveCat("Все");
+    if (v) {
+      setActiveTag("Все");
+      setActiveCollection(null);
+    }
   }, []);
 
   const value = useMemo<AppContextValue>(
@@ -145,7 +203,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       cart,
       fav,
       favOnly,
-      activeCat,
+      activeTag,
+      activeCollection,
       searchQuery,
       cartOpen,
       mobOpen,
@@ -154,8 +213,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       toastVisible,
       cartCount,
       favCount,
+      products,
+      catalogSource,
+      catalogLoading,
       setSearchQuery,
-      setActiveCat,
+      setActiveTag: handleSetActiveTag,
+      setActiveCollection: handleSetActiveCollection,
       setFavOnly: handleSetFavOnly,
       toggleFav,
       addToCart,
@@ -172,13 +235,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       closeAll,
       getCartQty,
       isFav,
+      getProduct,
       burstRef,
     }),
     [
       cart,
       fav,
       favOnly,
-      activeCat,
+      activeTag,
+      activeCollection,
       searchQuery,
       cartOpen,
       mobOpen,
@@ -187,6 +252,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       toastVisible,
       cartCount,
       favCount,
+      products,
+      catalogSource,
+      catalogLoading,
+      handleSetActiveTag,
+      handleSetActiveCollection,
       handleSetFavOnly,
       toggleFav,
       addToCart,
@@ -203,6 +273,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       closeAll,
       getCartQty,
       isFav,
+      getProduct,
     ]
   );
 
@@ -214,5 +285,3 @@ export function useApp() {
   if (!ctx) throw new Error("useApp must be used within AppProvider");
   return ctx;
 }
-
-export { CATEGORIES };

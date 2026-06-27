@@ -1,3 +1,4 @@
+
 export const COLORS = {
   pink: "#FF2D95",
   sky: "#36B7F0",
@@ -11,7 +12,8 @@ export const COLORS = {
 
 export type ColorKey = keyof typeof COLORS;
 
-export const CATEGORIES = [
+/** Теги для фильтра в блоке «Каталог» */
+export const TAGS = [
   "Все",
   "Цифры",
   "Композиции",
@@ -21,35 +23,11 @@ export const CATEGORIES = [
   "Выписка",
 ] as const;
 
-export type Category = (typeof CATEGORIES)[number];
-
-export interface Product {
-  id: number;
-  name: string;
-  cat: Exclude<Category, "Все">;
-  price: number;
-  old?: number;
-  colors: ColorKey[];
-  tag?: "hit" | "new";
-  img?: string;
-}
-
-export const PRODUCTS: Product[] = [
-  { id: 1, name: "Фольгированная цифра «Гелий»", cat: "Цифры", price: 590, colors: ["pink"], tag: "hit" },
-  { id: 2, name: "Набор «С Днём Рождения»", cat: "Композиции", price: 2490, old: 2900, colors: ["pink", "sun", "sky"], tag: "hit" },
-  { id: 3, name: "Облако из 15 шаров", cat: "Латексные", price: 1890, old: 2300, colors: ["pink", "sky", "mint", "lav"] },
-  { id: 4, name: "Композиция «Единорог»", cat: "Детям", price: 2990, colors: ["lav", "pink", "mint"], tag: "new" },
-  { id: 5, name: "Сердца «Я люблю тебя»", cat: "Романтика", price: 1690, colors: ["pink", "red"] },
-  { id: 6, name: "Набор «Выписка: Мальчик»", cat: "Выписка", price: 2290, colors: ["sky", "white", "mint"] },
-  { id: 7, name: "Набор «Выписка: Девочка»", cat: "Выписка", price: 2290, colors: ["pink", "white", "lav"] },
-  { id: 8, name: "Цифра + россыпь звёзд", cat: "Цифры", price: 1290, colors: ["sun", "pink"] },
-  { id: 9, name: "Букет «Радуга»", cat: "Композиции", price: 2190, colors: ["pink", "sun", "mint", "sky", "lav"], tag: "hit" },
-  { id: 10, name: "Шары с конфетти (5 шт)", cat: "Латексные", price: 990, colors: ["pink", "sun", "mint"] },
-  { id: 11, name: "Композиция «Космос»", cat: "Детям", price: 3290, colors: ["lav", "sky", "pink"], tag: "new" },
-  { id: 12, name: "Гигант-сердце 90 см", cat: "Романтика", price: 1490, colors: ["pink"] },
-];
+export type TagFilter = (typeof TAGS)[number];
+export type ProductTag = Exclude<TagFilter, "Все">;
 
 export interface Collection {
+  slug: CollectionSlug;
   name: string;
   sub: string;
   colors: ColorKey[];
@@ -57,27 +35,88 @@ export interface Collection {
   bg?: string;
 }
 
+export type CollectionSlug =
+  | "nabory-bazovye"
+  | "bazovyy-premium"
+  | "premium-shary"
+  | "shary-pod-potolok"
+  | "oblaka-5"
+  | "fontany-7"
+  | "fontany"
+  | "dlya-devochek"
+  | "dlya-malchikov"
+  | "dlya-nee"
+  | "dlya-nego"
+  | "shary-giant"
+  | "shary-giant-nadpisi"
+  | "shary-devichnik"
+  | "set-s-cifroy"
+  | "1-godik"
+  | "korobki"
+  | "dlya-novorozhdennyh"
+  | "dlya-vlyublennyh"
+  | "pirotekhnika";
+
+/** Коллекции = категории каталога (AdvantShop) */
 export const COLLECTIONS: Collection[] = [
-  { name: "Наборы шаров базовые", sub: "на каждый праздник", colors: ["pink", "sun", "sky"] },
-  { name: "Базовый Премиум", sub: "ярче и богаче", colors: ["pink", "lav", "sky"] },
-  { name: "Премиум шары", sub: "вау-эффект", colors: ["sky", "white", "lav"] },
-  { name: "Шары под потолок", sub: "облако под потолком", colors: ["pink", "lav", "pink", "sky"] },
-  { name: "Облака из 5 шаров без грузов", sub: "лёгкий набор", colors: ["pink", "lav", "sky", "mint"] },
-  { name: "Фонтаны из 7 шаров", sub: "пышный фонтан", colors: ["sun", "mint", "lav", "pink"] },
-  { name: "Фонтаны из шаров", sub: "классический фонтан", colors: ["lav", "pink", "mint"] },
-  { name: "Для девочек", sub: "нежно и мило", colors: ["pink", "lav", "white"] },
-  { name: "Для мальчиков", sub: "ярко и смело", colors: ["sky", "mint", "white"] },
-  { name: "Для неё", sub: "с любовью", colors: ["pink", "red", "lav"] },
-  { name: "Для него", sub: "стильно", colors: ["sun", "lav", "sky"] },
-  { name: "Шары Гигант", sub: "огромные шары", colors: ["pink", "sky"] },
-  { name: "Шары Гигант с надписями", sub: "ваш текст на шаре", colors: ["pink", "lav"] },
-  { name: "Шары на девичник", sub: "для подружек", colors: ["pink", "sun", "mint"] },
-  { name: "Сет с цифрой", sub: "возраст в шарах", colors: ["mint", "lav", "pink"] },
-  { name: "1 годик", sub: "первый праздник", colors: ["sky", "pink", "sun"] },
-  { name: "Коробки с шарами", sub: "сюрприз в коробке", colors: ["lav", "pink", "sun"] },
-  { name: "Для новорождённых", sub: "с появлением малыша", colors: ["sky", "white", "mint"] },
-  { name: "Для влюблённых", sub: "сердца", colors: ["red", "pink"] },
-  { name: "Пиротехника", sub: "финальный залп", colors: ["coral", "sun", "red"] },
+  { slug: "nabory-bazovye", name: "Наборы шаров базовые", sub: "на каждый праздник", colors: ["pink", "sun", "sky"] },
+  { slug: "bazovyy-premium", name: "Базовый Премиум", sub: "ярче и богаче", colors: ["pink", "lav", "sky"] },
+  { slug: "premium-shary", name: "Премиум шары", sub: "вау-эффект", colors: ["sky", "white", "lav"] },
+  { slug: "shary-pod-potolok", name: "Шары под потолок", sub: "облако под потолком", colors: ["pink", "lav", "pink", "sky"] },
+  { slug: "oblaka-5", name: "Облака из 5 шаров без грузов", sub: "лёгкий набор", colors: ["pink", "lav", "sky", "mint"] },
+  { slug: "fontany-7", name: "Фонтаны из 7 шаров", sub: "пышный фонтан", colors: ["sun", "mint", "lav", "pink"] },
+  { slug: "fontany", name: "Фонтаны из шаров", sub: "классический фонтан", colors: ["lav", "pink", "mint"] },
+  { slug: "dlya-devochek", name: "Для девочек", sub: "нежно и мило", colors: ["pink", "lav", "white"] },
+  { slug: "dlya-malchikov", name: "Для мальчиков", sub: "ярко и смело", colors: ["sky", "mint", "white"] },
+  { slug: "dlya-nee", name: "Для неё", sub: "с любовью", colors: ["pink", "red", "lav"] },
+  { slug: "dlya-nego", name: "Для него", sub: "стильно", colors: ["sun", "lav", "sky"] },
+  { slug: "shary-giant", name: "Шары Гигант", sub: "огромные шары", colors: ["pink", "sky"] },
+  { slug: "shary-giant-nadpisi", name: "Шары Гигант с надписями", sub: "ваш текст на шаре", colors: ["pink", "lav"] },
+  { slug: "shary-devichnik", name: "Шары на девичник", sub: "для подружек", colors: ["pink", "sun", "mint"] },
+  { slug: "set-s-cifroy", name: "Сет с цифрой", sub: "возраст в шарах", colors: ["mint", "lav", "pink"] },
+  { slug: "1-godik", name: "1 годик", sub: "первый праздник", colors: ["sky", "pink", "sun"] },
+  { slug: "korobki", name: "Коробки с шарами", sub: "сюрприз в коробке", colors: ["lav", "pink", "sun"] },
+  { slug: "dlya-novorozhdennyh", name: "Для новорождённых", sub: "с появлением малыша", colors: ["sky", "white", "mint"] },
+  { slug: "dlya-vlyublennyh", name: "Для влюблённых", sub: "сердца", colors: ["red", "pink"] },
+  { slug: "pirotekhnika", name: "Пиротехника", sub: "финальный залп", colors: ["coral", "sun", "red"] },
+];
+
+export function getCollectionBySlug(slug: string): Collection | undefined {
+  return COLLECTIONS.find((collection) => collection.slug === slug);
+}
+
+export function getCollectionName(slug: CollectionSlug): string {
+  return getCollectionBySlug(slug)?.name ?? slug;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  collectionSlug: CollectionSlug;
+  collection: string;
+  tags: ProductTag[];
+  price: number;
+  old?: number;
+  colors: ColorKey[];
+  tag?: "hit" | "new";
+  img?: string;
+  artNo?: string;
+  urlPath?: string;
+}
+
+export const PRODUCTS: Product[] = [
+  { id: 1, name: "Фольгированная цифра «Гелий»", collectionSlug: "set-s-cifroy", collection: "Сет с цифрой", tags: ["Цифры"], price: 590, colors: ["pink"], tag: "hit" },
+  { id: 2, name: "Набор «С Днём Рождения»", collectionSlug: "nabory-bazovye", collection: "Наборы шаров базовые", tags: ["Композиции"], price: 2490, old: 2900, colors: ["pink", "sun", "sky"], tag: "hit" },
+  { id: 3, name: "Облако из 15 шаров", collectionSlug: "oblaka-5", collection: "Облака из 5 шаров без грузов", tags: ["Латексные"], price: 1890, old: 2300, colors: ["pink", "sky", "mint", "lav"] },
+  { id: 4, name: "Композиция «Единорог»", collectionSlug: "dlya-devochek", collection: "Для девочек", tags: ["Детям", "Композиции"], price: 2990, colors: ["lav", "pink", "mint"], tag: "new" },
+  { id: 5, name: "Сердца «Я люблю тебя»", collectionSlug: "dlya-vlyublennyh", collection: "Для влюблённых", tags: ["Романтика"], price: 1690, colors: ["pink", "red"] },
+  { id: 6, name: "Набор «Выписка: Мальчик»", collectionSlug: "dlya-novorozhdennyh", collection: "Для новорождённых", tags: ["Выписка"], price: 2290, colors: ["sky", "white", "mint"] },
+  { id: 7, name: "Набор «Выписка: Девочка»", collectionSlug: "dlya-novorozhdennyh", collection: "Для новорождённых", tags: ["Выписка"], price: 2290, colors: ["pink", "white", "lav"] },
+  { id: 8, name: "Цифра + россыпь звёзд", collectionSlug: "set-s-cifroy", collection: "Сет с цифрой", tags: ["Цифры"], price: 1290, colors: ["sun", "pink"] },
+  { id: 9, name: "Букет «Радуга»", collectionSlug: "nabory-bazovye", collection: "Наборы шаров базовые", tags: ["Композиции", "Латексные"], price: 2190, colors: ["pink", "sun", "mint", "sky", "lav"], tag: "hit" },
+  { id: 10, name: "Шары с конфетти (5 шт)", collectionSlug: "oblaka-5", collection: "Облака из 5 шаров без грузов", tags: ["Латексные"], price: 990, colors: ["pink", "sun", "mint"] },
+  { id: 11, name: "Композиция «Космос»", collectionSlug: "dlya-malchikov", collection: "Для мальчиков", tags: ["Детям", "Композиции"], price: 3290, colors: ["lav", "sky", "pink"], tag: "new" },
+  { id: 12, name: "Гигант-сердце 90 см", collectionSlug: "dlya-vlyublennyh", collection: "Для влюблённых", tags: ["Романтика"], price: 1490, colors: ["pink"] },
 ];
 
 export const COL_VISIBLE = 8;

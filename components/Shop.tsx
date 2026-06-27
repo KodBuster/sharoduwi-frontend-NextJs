@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { useApp, CATEGORIES } from "@/context/AppContext";
-import { PRODUCTS, COLORS } from "@/lib/data";
+import { useApp } from "@/context/AppContext";
+import { COLORS, TAGS, getCollectionBySlug } from "@/lib/data";
 import { cluster, fmt, hexa } from "@/lib/balloons";
 
 function CartControl({ id }: { id: number }) {
@@ -39,24 +39,38 @@ function CartControl({ id }: { id: number }) {
 
 export function Shop() {
   const {
-    activeCat,
-    setActiveCat,
+    activeTag,
+    setActiveTag,
+    activeCollection,
+    setActiveCollection,
     searchQuery,
     setSearchQuery,
     favOnly,
     toggleFav,
     isFav,
+    products,
+    catalogLoading,
   } = useApp();
+
+  const activeCollectionName = activeCollection
+    ? getCollectionBySlug(activeCollection)?.name
+    : null;
 
   const list = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
-    return PRODUCTS.filter((p) => {
-      const okCat = activeCat === "Все" || p.cat === activeCat;
-      const okQ = !q || p.name.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q);
+    return products.filter((p) => {
+      const okTag = activeTag === "Все" || p.tags.includes(activeTag);
+      const okCollection =
+        !activeCollection || p.collectionSlug === activeCollection;
+      const okQ =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.collection.toLowerCase().includes(q) ||
+        p.tags.some((tag) => tag.toLowerCase().includes(q));
       const okFav = !favOnly || isFav(p.id);
-      return okCat && okQ && okFav;
+      return okTag && okCollection && okQ && okFav;
     });
-  }, [activeCat, searchQuery, favOnly, isFav]);
+  }, [activeTag, activeCollection, searchQuery, favOnly, isFav, products]);
 
   return (
     <section className="sec" id="shop">
@@ -67,16 +81,28 @@ export function Shop() {
           </div>
           <h2>Наши шары и композиции</h2>
         </div>
+        {activeCollectionName && (
+          <div className="shop-collection-filter reveal">
+            <span>Коллекция: {activeCollectionName}</span>
+            <button
+              type="button"
+              className="chip active"
+              onClick={() => setActiveCollection(null)}
+            >
+              Сбросить
+            </button>
+          </div>
+        )}
         <div className="shop-controls reveal">
           <div className="filters" id="filters">
-            {CATEGORIES.map((cat) => (
+            {TAGS.map((tag) => (
               <button
-                key={cat}
-                className={`chip${activeCat === cat ? " active" : ""}`}
+                key={tag}
+                className={`chip${activeTag === tag ? " active" : ""}`}
                 type="button"
-                onClick={() => setActiveCat(cat)}
+                onClick={() => setActiveTag(tag)}
               >
-                {cat}
+                {tag}
               </button>
             ))}
           </div>
@@ -95,7 +121,9 @@ export function Shop() {
           </div>
         </div>
         <div className="products" id="products">
-          {!list.length ? (
+          {catalogLoading ? (
+            <div className="empty">Загружаем каталог…</div>
+          ) : !list.length ? (
             <div className="empty">
               🎈{" "}
               {favOnly
@@ -145,7 +173,7 @@ export function Shop() {
                     </button>
                   </div>
                   <div className="card-body">
-                    <span className="card-cat">{p.cat}</span>
+                    <span className="card-cat">{p.collection}</span>
                     <h3>{p.name}</h3>
                     <div className="card-foot">
                       <div className="card-price">
