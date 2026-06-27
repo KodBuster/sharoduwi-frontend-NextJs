@@ -1,0 +1,381 @@
+"use client";
+
+import { useEffect } from "react";
+import { useApp } from "@/context/AppContext";
+
+const CONF_COLORS = ["#FF2D95", "#36B7F0", "#FFC93C", "#2FD3A5", "#FF7A59", "#A98BF5"];
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  g: number;
+  size: number;
+  rot: number;
+  vr: number;
+  color: string;
+  life: number;
+  decay: number;
+  shape: "rect" | "circ";
+}
+
+interface TrailPoint {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  life: number;
+  decay: number;
+  color: string;
+}
+
+interface RopePoint {
+  x: number;
+  y: number;
+  ox: number;
+  oy: number;
+}
+
+export function useConfettiCursor() {
+  const { burstRef } = useApp();
+
+  useEffect(() => {
+    const fine = window.matchMedia("(pointer:fine)").matches;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canvas = document.getElementById("confetti") as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let W = 0;
+    let H = 0;
+    let DPR = 1;
+
+    function resize() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      const vw = document.documentElement.clientWidth;
+      const vh = document.documentElement.clientHeight;
+      W = canvas!.width = vw * DPR;
+      H = canvas!.height = vh * DPR;
+      canvas!.style.width = vw + "px";
+      canvas!.style.height = vh + "px";
+      ctx!.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const particles: Particle[] = [];
+    const trail: TrailPoint[] = [];
+    let lastTX = window.innerWidth / 2;
+    let lastTY = window.innerHeight / 2;
+
+    function spawnTrail(x: number, y: number) {
+      trail.push({
+        x: x + (Math.random() - 0.5) * 5,
+        y: y + (Math.random() - 0.5) * 5,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -0.25 - Math.random() * 0.5,
+        size: 2.5 + Math.random() * 4.5,
+        life: 1,
+        decay: 0.018 + Math.random() * 0.018,
+        color: CONF_COLORS[(Math.random() * CONF_COLORS.length) | 0],
+      });
+      if (trail.length > 180) trail.splice(0, trail.length - 180);
+    }
+
+    function feedTrail(x: number, y: number) {
+      if (reduceMotion) return;
+      const dx = x - lastTX;
+      const dy = y - lastTY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 4) return;
+      const steps = Math.min(Math.floor(dist / 4), 4);
+      for (let s = 1; s <= steps; s++) {
+        spawnTrail(lastTX + (dx * s) / steps, lastTY + (dy * s) / steps);
+      }
+      lastTX = x;
+      lastTY = y;
+    }
+
+    function burst(x: number, y: number, count = 18) {
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = 2 + Math.random() * 7;
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp - 3,
+          g: 0.16 + Math.random() * 0.1,
+          size: 5 + Math.random() * 6,
+          rot: Math.random() * Math.PI,
+          vr: (Math.random() - 0.5) * 0.4,
+          color: CONF_COLORS[(Math.random() * CONF_COLORS.length) | 0],
+          life: 1,
+          decay: 0.008 + Math.random() * 0.01,
+          shape: Math.random() < 0.5 ? "rect" : "circ",
+        });
+      }
+      if (particles.length > 500) particles.splice(0, particles.length - 500);
+    }
+
+    burstRef.current = burst;
+
+    const cursorEl = document.getElementById("cursor");
+    const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const OFF_Y = 12;
+    const HALF_H = 14;
+    let bx = mouse.x;
+    let by = mouse.y + OFF_Y;
+    let svx = 0;
+    let hasMoved = false;
+
+    const ROPE_N = 8;
+    const SEG = 2.6;
+    let rope: RopePoint[] = [];
+
+    function initRope() {
+      rope = [];
+      const sx = bx;
+      const sy = by + HALF_H;
+      for (let i = 0; i < ROPE_N; i++) {
+        rope.push({ x: sx, y: sy + i * SEG, ox: sx, oy: sy + i * SEG });
+      }
+    }
+    initRope();
+
+    let ribbonPath: SVGPathElement | null = null;
+
+    if (fine) {
+      document.documentElement.classList.add("has-balloon-cursor");
+      if (cursorEl) {
+        cursorEl.style.display = "block";
+        const ribbonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        ribbonSvg.setAttribute("width", "50");
+        ribbonSvg.setAttribute("height", "50");
+        ribbonPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        ribbonPath.setAttribute("fill", "none");
+        ribbonPath.setAttribute("stroke", "#FF2D95");
+        ribbonPath.setAttribute("stroke-width", "1.6");
+        ribbonPath.setAttribute("stroke-linecap", "round");
+        ribbonSvg.appendChild(ribbonPath);
+        cursorEl.appendChild(ribbonSvg);
+      }
+    }
+
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      if (!hasMoved) {
+        hasMoved = true;
+        bx = mouse.x;
+        by = mouse.y + OFF_Y;
+        initRope();
+        const ti = rope[rope.length - 1];
+        lastTX = ti.x;
+        lastTY = ti.y;
+      }
+    };
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+
+    const onMouseDown = (e: MouseEvent) => burst(e.clientX, e.clientY, 10);
+    window.addEventListener("mousedown", onMouseDown);
+
+    let raf = 0;
+    function loop() {
+      if (fine && cursorEl) {
+        const tx = mouse.x;
+        const ty = mouse.y + OFF_Y;
+        const pbx = bx;
+        bx += (tx - bx) * 0.22;
+        by += (ty - by) * 0.22;
+        const vx = bx - pbx;
+        svx += (vx - svx) * 0.22;
+
+        const knotX = bx;
+        const knotY = by + HALF_H;
+        const last = rope.length - 1;
+        const sway = -svx * 1.0;
+        for (let i = 0; i < rope.length; i++) {
+          const p = rope[i];
+          if (i === 0) {
+            p.x = knotX;
+            p.y = knotY;
+            p.ox = knotX;
+            p.oy = knotY;
+            continue;
+          }
+          const w = Math.pow(i / last, 1.25);
+          const nx = p.x + (p.x - p.ox) * 0.88 + sway * w;
+          const ny = p.y + (p.y - p.oy) * 0.88 + 0.62;
+          p.ox = p.x;
+          p.oy = p.y;
+          p.x = nx;
+          p.y = ny;
+        }
+        rope[0].x = knotX;
+        rope[0].y = knotY;
+        for (let i2 = 1; i2 < rope.length; i2++) {
+          const a = rope[i2 - 1];
+          const b = rope[i2];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.0001;
+          b.x = a.x + (dx / dist) * SEG;
+          b.y = a.y + (dy / dist) * SEG;
+        }
+
+        feedTrail(rope[last].x, rope[last].y);
+        cursorEl.style.transform = `translate(${bx}px,${by}px)`;
+
+        let d = `M ${knotX - bx} ${knotY - by}`;
+        for (let i3 = 1; i3 < rope.length; i3++) {
+          const prev = rope[i3 - 1];
+          const cur = rope[i3];
+          const mxp = (prev.x + cur.x) / 2 - bx;
+          const myp = (prev.y + cur.y) / 2 - by;
+          d += ` Q ${prev.x - bx} ${prev.y - by} ${mxp} ${myp}`;
+        }
+        if (ribbonPath) ribbonPath.setAttribute("d", d);
+      }
+
+      ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (let c = particles.length - 1; c >= 0; c--) {
+        const pt = particles[c];
+        pt.vy += pt.g;
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.vx *= 0.99;
+        pt.rot += pt.vr;
+        pt.life -= pt.decay;
+        if (pt.life <= 0 || pt.y > window.innerHeight + 40) {
+          particles.splice(c, 1);
+          continue;
+        }
+        ctx!.save();
+        ctx!.globalAlpha = Math.max(0, pt.life);
+        ctx!.translate(pt.x, pt.y);
+        ctx!.rotate(pt.rot);
+        ctx!.fillStyle = pt.color;
+        if (pt.shape === "rect") {
+          ctx!.fillRect(-pt.size / 2, -pt.size / 2, pt.size, pt.size * 0.6);
+        } else {
+          ctx!.beginPath();
+          ctx!.arc(0, 0, pt.size / 2, 0, Math.PI * 2);
+          ctx!.fill();
+        }
+        ctx!.restore();
+      }
+
+      for (let tr = trail.length - 1; tr >= 0; tr--) {
+        const tp = trail[tr];
+        tp.x += tp.vx;
+        tp.y += tp.vy;
+        tp.vy *= 0.98;
+        tp.life -= tp.decay;
+        if (tp.life <= 0) {
+          trail.splice(tr, 1);
+          continue;
+        }
+        const rad = tp.size * tp.life;
+        ctx!.fillStyle = tp.color;
+        ctx!.globalAlpha = tp.life * 0.16;
+        ctx!.beginPath();
+        ctx!.arc(tp.x, tp.y, rad * 2, 0, Math.PI * 2);
+        ctx!.fill();
+        ctx!.globalAlpha = tp.life * 0.9;
+        ctx!.beginPath();
+        ctx!.arc(tp.x, tp.y, rad, 0, Math.PI * 2);
+        ctx!.fill();
+      }
+      ctx!.globalAlpha = 1;
+
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mousedown", onMouseDown);
+      cancelAnimationFrame(raf);
+      burstRef.current = null;
+      document.documentElement.classList.remove("has-balloon-cursor");
+    };
+  }, [burstRef]);
+}
+
+export function useHeroParallax() {
+  useEffect(() => {
+    const fine = window.matchMedia("(pointer:fine)").matches;
+    const heroMini = document.getElementById("heroMini");
+    if (!fine || !heroMini) return;
+
+    let pmx = 0;
+    let pmy = 0;
+    let ptx = 0;
+    let pty = 0;
+    let praf = 0;
+
+    function pstep() {
+      pmx += (ptx - pmx) * 0.08;
+      pmy += (pty - pmy) * 0.08;
+      heroMini!.style.transform = `translate(${pmx.toFixed(2)}px,${pmy.toFixed(2)}px)`;
+      if (Math.abs(ptx - pmx) > 0.1 || Math.abs(pty - pmy) > 0.1) {
+        praf = requestAnimationFrame(pstep);
+      } else {
+        praf = 0;
+      }
+    }
+
+    const onMove = (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight * 0.42;
+      ptx = ((e.clientX - cx) / cx) * 18;
+      pty = ((e.clientY - cy) / cy) * 14;
+      if (!praf) praf = requestAnimationFrame(pstep);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (praf) cancelAnimationFrame(praf);
+    };
+  }, []);
+}
+
+export function useCardTilt() {
+  useEffect(() => {
+    const fine = window.matchMedia("(pointer:fine)").matches;
+    const prodWrap = document.getElementById("products");
+    if (!fine || !prodWrap) return;
+
+    const onMove = (e: PointerEvent) => {
+      const card = (e.target as Element).closest(".card") as HTMLElement | null;
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      card.classList.add("tilting");
+      card.style.transform = `perspective(900px) rotateX(${((0.5 - y) * 8).toFixed(2)}deg) rotateY(${((x - 0.5) * 8).toFixed(2)}deg) translateY(-6px)`;
+      card.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+      card.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    };
+
+    const onOut = (e: PointerEvent) => {
+      const card = (e.target as Element).closest(".card") as HTMLElement | null;
+      if (card && !card.contains(e.relatedTarget as Node)) {
+        card.classList.remove("tilting");
+        card.style.transform = "";
+      }
+    };
+
+    prodWrap.addEventListener("pointermove", onMove);
+    prodWrap.addEventListener("pointerout", onOut);
+    return () => {
+      prodWrap.removeEventListener("pointermove", onMove);
+      prodWrap.removeEventListener("pointerout", onOut);
+    };
+  }, []);
+}

@@ -1,0 +1,86 @@
+"use client";
+
+import { useCallback } from "react";
+import { AppProvider, useApp } from "@/context/AppContext";
+import {
+  useCountUp,
+  useEscapeKey,
+  useHeaderScroll,
+  useRisingLetters,
+  useScrollProgressFallback,
+  useScrollReveal,
+} from "@/hooks/useSiteEffects";
+import {
+  useCardTilt,
+  useConfettiCursor,
+  useHeroParallax,
+} from "@/hooks/useConfettiCursor";
+import { Background } from "@/components/Background";
+import { TopBar } from "@/components/TopBar";
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
+import { Collections } from "@/components/Collections";
+import { PromoSection } from "@/components/PromoSection";
+import { Shop } from "@/components/Shop";
+import { HowItWorks } from "@/components/HowItWorks";
+import { WhySection } from "@/components/WhySection";
+import { GuaranteeSection } from "@/components/GuaranteeSection";
+import { ReviewsSection } from "@/components/ReviewsSection";
+import { FAQSection } from "@/components/FAQSection";
+import { FinalCTA } from "@/components/FinalCTA";
+import { Footer } from "@/components/Footer";
+import { CartDrawer } from "@/components/CartDrawer";
+import { MobMenu } from "@/components/MobMenu";
+import { Toast } from "@/components/Toast";
+import { FabContacts } from "@/components/FabContacts";
+import { ScrollProgress } from "@/components/ScrollProgress";
+import { ConfettiCursor } from "@/components/ConfettiCursor";
+
+function SiteEffects() {
+  const { closeAll, closeMob } = useApp();
+  const onEscape = useCallback(() => {
+    closeAll();
+    closeMob();
+  }, [closeAll, closeMob]);
+
+  useScrollReveal();
+  useHeaderScroll();
+  useCountUp();
+  useRisingLetters();
+  useScrollProgressFallback();
+  useConfettiCursor();
+  useHeroParallax();
+  useCardTilt();
+  useEscapeKey(onEscape);
+
+  return null;
+}
+
+export default function SitePage() {
+  return (
+    <AppProvider>
+      <SiteEffects />
+      <ScrollProgress />
+      <Background />
+      <ConfettiCursor />
+      <TopBar />
+      <Header />
+      <a id="top" />
+      <Hero />
+      <Collections />
+      <PromoSection />
+      <Shop />
+      <HowItWorks />
+      <WhySection />
+      <GuaranteeSection />
+      <ReviewsSection />
+      <FAQSection />
+      <FinalCTA />
+      <Footer />
+      <CartDrawer />
+      <MobMenu />
+      <Toast />
+      <FabContacts />
+    </AppProvider>
+  );
+}
