@@ -1,18 +1,21 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 import { COLORS } from "@/lib/data";
 import type { Product } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
+import { getProductSlug } from "@/lib/product-slug";
 
 export function CartDrawer() {
+  const router = useRouter();
   const {
     cart,
     cartOpen,
     closeCart,
     closeAll,
-    openContact,
     incrementCart,
     decrementCart,
     removeFromCart,
@@ -34,7 +37,7 @@ export function CartDrawer() {
 
   const onCheckout = () => {
     closeCart();
-    setTimeout(openContact, 250);
+    router.push("/checkout");
   };
 
   return (
@@ -63,16 +66,24 @@ export function CartDrawer() {
           ) : (
             rows.map(({ p, qty, id }) => (
               <div className="ci" key={id}>
-                <div className="ci-vis">
-                  {p.img ? (
-                    <img src={p.img} alt={p.name} loading="lazy" decoding="async" />
-                  ) : (
-                    <div dangerouslySetInnerHTML={{ __html: balloonSVG(COLORS[p.colors[0]], 40, `cart-${id}`) }} />
-                  )}
-                </div>
-                <div className="ci-info">
-                  <h4>{p.name}</h4>
-                  <div className="ci-price">{fmt(p.price)} ₽</div>
+                <Link
+                  href={`/products/${getProductSlug(p)}`}
+                  className="ci-main"
+                  onClick={closeCart}
+                >
+                  <div className="ci-vis">
+                    {p.img ? (
+                      <img src={p.img} alt={p.name} loading="lazy" decoding="async" />
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: balloonSVG(COLORS[p.colors[0]], 40, `cart-${id}`) }} />
+                    )}
+                  </div>
+                  <div className="ci-info">
+                    <h4>{p.name}</h4>
+                    <div className="ci-price">{fmt(p.price)} ₽</div>
+                  </div>
+                </Link>
+                <div className="ci-side">
                   <div className="ci-qty">
                     <button className="qbtn" type="button" onClick={() => decrementCart(id)}>
                       −
@@ -82,12 +93,12 @@ export function CartDrawer() {
                       +
                     </button>
                   </div>
+                  <button className="ci-del" type="button" aria-label="Удалить" onClick={() => removeFromCart(id)}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
+                    </svg>
+                  </button>
                 </div>
-                <button className="ci-del" type="button" aria-label="Удалить" onClick={() => removeFromCart(id)}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
-                  </svg>
-                </button>
               </div>
             ))
           )}

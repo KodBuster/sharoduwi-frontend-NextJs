@@ -18,6 +18,7 @@ import {
   type CatalogSource,
 } from "@/lib/client-catalog-cache";
 import type { CollectionSlug, TagFilter } from "@/lib/products";
+import { persistCart, readStoredCart } from "@/lib/cart-storage";
 import { persistFav, readStoredFav, type FavMap } from "@/lib/fav-storage";
 
 type Cart = Record<number, number>;
@@ -55,6 +56,7 @@ interface AppContextValue {
   incrementCart: (id: number) => void;
   decrementCart: (id: number) => void;
   removeFromCart: (id: number) => void;
+  clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
   openMob: () => void;
@@ -96,7 +98,8 @@ export function AppProvider({
   initialCatalog,
 }: AppProviderProps) {
   const cacheKey = getClientCatalogCacheKey(catalogCollection);
-  const [cart, setCart] = useState<Cart>({});
+  const [cart, setCart] = useState<Cart>(() => readStoredCart());
+  const [cartHydrated, setCartHydrated] = useState(false);
   const [fav, setFav] = useState<Fav>(() => readStoredFav());
   const [favHydrated, setFavHydrated] = useState(false);
   const [favOnly, setFavOnly] = useState(() => readInitialFavOnly());
@@ -137,6 +140,8 @@ export function AppProvider({
   const burstRef = useRef<((x: number, y: number, count?: number) => void) | null>(null);
 
   useEffect(() => {
+    setCart(readStoredCart());
+    setCartHydrated(true);
     setFav(readStoredFav());
     setFavHydrated(true);
 
@@ -144,6 +149,11 @@ export function AppProvider({
       setFavOnly(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!cartHydrated) return;
+    persistCart(cart);
+  }, [cart, cartHydrated]);
 
   useEffect(() => {
     if (!favHydrated) return;
@@ -246,6 +256,10 @@ export function AppProvider({
     });
   }, []);
 
+  const clearCart = useCallback(() => {
+    setCart({});
+  }, []);
+
   const toggleFav = useCallback((id: number) => {
     setFav((prev) => {
       const next = { ...prev };
@@ -321,6 +335,7 @@ export function AppProvider({
       incrementCart,
       decrementCart,
       removeFromCart,
+      clearCart,
       openCart,
       closeCart,
       openMob,
@@ -360,6 +375,7 @@ export function AppProvider({
       incrementCart,
       decrementCart,
       removeFromCart,
+      clearCart,
       openCart,
       closeCart,
       openMob,

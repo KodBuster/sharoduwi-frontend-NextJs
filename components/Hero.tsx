@@ -5,18 +5,13 @@ import { useApp } from "@/context/AppContext";
 import { HERO_MINI } from "@/lib/data";
 import { COLORS } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
-import {
-  findHeroFeaturedProduct,
-  HERO_FEATURED_NAME,
-  HERO_FEATURED_SUBTITLE,
-} from "@/lib/hero-featured";
+import { findHeroFeaturedProduct, HERO_FEATURED_NAME } from "@/lib/hero-featured";
 
 export function Hero() {
   const { addToCart, openContact, products } = useApp();
   const miniRef = useRef<HTMLDivElement>(null);
   const featured = useMemo(() => findHeroFeaturedProduct(products), [products]);
   const title = featured?.name ?? HERO_FEATURED_NAME;
-  const subtitle = featured?.collection ?? HERO_FEATURED_SUBTITLE;
   const price = featured?.price;
   const oldPrice = featured?.old;
 
@@ -99,7 +94,6 @@ export function Hero() {
                 )}
                 <div className="hero-badge-content">
                   <h3>{title}</h3>
-                  <p>{subtitle}</p>
                   <div className="hero-badge-foot">
                     <div className="price">
                       {price != null && price > 0 ? (
