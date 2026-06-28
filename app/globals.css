@@ -325,6 +325,9 @@ a.col-card{color:inherit}
 .more-btn:hover{border-color:var(--pink);color:var(--pink);transform:translateY(-3px);box-shadow:var(--shadow-soft)}
 .more-btn svg{width:18px;height:18px;transition:transform .35s var(--ease)}
 .more-btn.open svg{transform:rotate(180deg)}
+.shop-more-btn{text-decoration:none;color:inherit}
+.shop-more-btn svg{transform:none}
+.shop-more-btn:hover svg{transform:translateX(4px)}
 
 /* ============================================================
    ТОВАРЫ

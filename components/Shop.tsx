@@ -44,9 +44,11 @@ interface ShopProps {
   pageCollection?: CollectionSlug;
   heading?: string;
   description?: string;
+  /** На главной — показать только N товаров и кнопку «Больше шаров» */
+  previewLimit?: number;
 }
 
-export function Shop({ pageCollection, heading, description }: ShopProps) {
+export function Shop({ pageCollection, heading, description, previewLimit }: ShopProps) {
   const {
     activeTag,
     setActiveTag,
@@ -66,6 +68,7 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
     ? getCollectionBySlug(collectionFilter)?.name
     : null;
   const isCategoryPage = Boolean(pageCollection);
+  const isPreview = previewLimit != null && !isCategoryPage;
 
   const list = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
@@ -83,6 +86,9 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
     });
   }, [activeTag, collectionFilter, searchQuery, favOnly, isFav, products]);
 
+  const visibleList = isPreview ? list.slice(0, previewLimit) : list;
+  const hasMore = isPreview && list.length > previewLimit;
+
   return (
     <section className="sec" id="shop">
       <div className="wrap">
@@ -93,7 +99,7 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
           <h2>{heading ?? "Наши шары и композиции"}</h2>
           {description && <p>{description}</p>}
         </div>
-        {activeCollectionName && !isCategoryPage && (
+        {activeCollectionName && !isCategoryPage && !isPreview && (
           <div className="shop-collection-filter reveal">
             <span>Коллекция: {activeCollectionName}</span>
             <button
@@ -107,7 +113,7 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
         )}
         {isCategoryPage && (
           <div className="shop-collection-filter reveal">
-            <Link href="/#shop" className="chip">
+            <Link href="/catalog" className="chip">
               ← Полный каталог
             </Link>
             <Link href="/#collections" className="chip">
@@ -115,6 +121,7 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
             </Link>
           </div>
         )}
+        {!isPreview && (
         <div className="shop-controls reveal">
           <div className="filters" id="filters">
             {TAGS.map((tag) => (
@@ -142,10 +149,11 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
             />
           </div>
         </div>
+        )}
         <div className="products" id="products">
           {catalogLoading ? (
             <div className="empty">Загружаем каталог…</div>
-          ) : !list.length ? (
+          ) : !visibleList.length ? (
             <div className="empty">
               🎈{" "}
               {favOnly
@@ -155,7 +163,7 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
                   : "Ничего не нашли. Попробуйте другой запрос."}
             </div>
           ) : (
-            list.map((p, i) => {
+            visibleList.map((p, i) => {
               const tag =
                 p.tag === "hit" ? (
                   <span className="tag hit">Хит</span>
@@ -221,6 +229,16 @@ export function Shop({ pageCollection, heading, description }: ShopProps) {
             })
           )}
         </div>
+        {hasMore && (
+          <div className="more-wrap reveal">
+            <Link href="/catalog" className="more-btn shop-more-btn">
+              <span>Больше шаров</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -111,7 +111,7 @@ export function Header() {
           ))}
         </a>
         <nav className="nav">
-          <a href="#shop">Каталог</a>
+          <a href="/catalog">Каталог</a>
           <a href="#promo" className="promo">
             Акции
           </a>

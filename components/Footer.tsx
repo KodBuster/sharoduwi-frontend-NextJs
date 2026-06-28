@@ -24,7 +24,7 @@ export function Footer() {
                 <a href="#collections">Коллекции</a>
               </li>
               <li>
-                <a href="#shop">Каталог</a>
+                <a href="/catalog">Каталог</a>
               </li>
               <li>
                 <a href="#how">Как заказать</a>

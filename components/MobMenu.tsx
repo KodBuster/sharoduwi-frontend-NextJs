@@ -30,7 +30,7 @@ export function MobMenu() {
         <a href="#collections" onClick={closeMob}>
           Коллекции
         </a>
-        <a href="#shop" onClick={closeMob}>
+        <a href="/catalog" onClick={closeMob}>
           Каталог
         </a>
         <a href="#promo" onClick={closeMob}>

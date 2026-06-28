@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import Link from "next/link";
 import { AppProvider, useApp } from "@/context/AppContext";
 import {
   useCountUp,
@@ -18,16 +19,7 @@ import {
 import { Background } from "@/components/Background";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
-import { Collections } from "@/components/Collections";
-import { PromoSection } from "@/components/PromoSection";
 import { Shop } from "@/components/Shop";
-import { HowItWorks } from "@/components/HowItWorks";
-import { WhySection } from "@/components/WhySection";
-import { GuaranteeSection } from "@/components/GuaranteeSection";
-import { ReviewsSection } from "@/components/ReviewsSection";
-import { FAQSection } from "@/components/FAQSection";
-import { FinalCTA } from "@/components/FinalCTA";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { MobMenu } from "@/components/MobMenu";
@@ -56,9 +48,9 @@ function SiteEffects() {
   return null;
 }
 
-export default function SitePage() {
+function CatalogContent() {
   return (
-    <AppProvider>
+    <>
       <SiteEffects />
       <ScrollProgress />
       <Background />
@@ -66,21 +58,32 @@ export default function SitePage() {
       <TopBar />
       <Header />
       <a id="top" />
-      <Hero />
-      <Collections />
-      <PromoSection />
-      <Shop previewLimit={4} />
-      <HowItWorks />
-      <WhySection />
-      <GuaranteeSection />
-      <ReviewsSection />
-      <FAQSection />
-      <FinalCTA />
+      <section className="sec category-page">
+        <div className="wrap">
+          <nav className="category-breadcrumb reveal" aria-label="Навигация">
+            <Link href="/">Главная</Link>
+            <span aria-hidden="true">/</span>
+            <span>Каталог</span>
+          </nav>
+        </div>
+      </section>
+      <Shop
+        heading="Наши шары и композиции"
+        description="Полный каталог гелиевых шаров, композиций и наборов — с фильтрами по типу и поиском."
+      />
       <Footer />
       <CartDrawer />
       <MobMenu />
       <Toast />
       <FabContacts />
+    </>
+  );
+}
+
+export function CatalogPage() {
+  return (
+    <AppProvider>
+      <CatalogContent />
     </AppProvider>
   );
 }
