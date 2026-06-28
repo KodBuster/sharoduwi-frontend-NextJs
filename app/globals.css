@@ -1128,7 +1128,8 @@ a.col-card{color:inherit}
     .sd-guarantee .steps li{counter-increment:s;position:relative;padding:8px 0 8px 44px;}
     .sd-guarantee .steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:30px;height:30px;border-radius:50%;background:var(--pink);color:#fff;font-family:"Unbounded",sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;}
     .sd-guarantee .note{font-size:14px;color:var(--muted);margin-top:22px;}
-    .sd-guarantee .tag{display:inline-block;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;}
+    .sd-guarantee .tag{display:inline-block;position:static;top:auto;left:auto;z-index:auto;
+      text-transform:none;letter-spacing:normal;color:inherit;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px}
     .sd-guarantee .tag.win{background:#e9f7f0;color:var(--ok);}
     .sd-guarantee .tag.sum{background:#fdf0e3;color:var(--warn);}
     .sd-guarantee p{margin:12px 0;}
