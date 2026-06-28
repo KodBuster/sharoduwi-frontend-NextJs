@@ -283,7 +283,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   animation:gentleRock 5.5s ease-in-out infinite;transform-origin:50% -120px;z-index:2}
 .hero-badge--photo{padding:0;background:#fff;border-color:rgba(255,200,225,.95);
   box-shadow:0 28px 70px -28px rgba(255,45,149,.28),0 12px 32px -16px rgba(40,16,42,.12)}
-.hero-badge-photo{position:relative;height:220px;overflow:hidden;background:linear-gradient(165deg,#fff8fc 0%,#fff2f8 55%,#ffe8f4 100%)}
+.hero-badge-photo{position:relative;height:330px;overflow:hidden;background:linear-gradient(165deg,#fff8fc 0%,#fff2f8 55%,#ffe8f4 100%)}
 .hero-badge-photo img{width:100%;height:100%;object-fit:cover;object-position:center center;transform:scale(1.08)}
 .hero-badge-content{position:relative;z-index:2;padding:38px 28px 32px}
 .hero-badge--photo .hero-badge-content{padding:10px 16px 14px;text-align:left}
@@ -679,30 +679,34 @@ a.col-card{color:inherit}
 .drawer-foot .btn{width:100%;justify-content:center}
 
 /* Оформление заказа */
-.checkout-page{padding-bottom:48px}
-.checkout-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:32px;align-items:start;margin-top:28px}
+.checkout-page{padding-bottom:48px;overflow-x:clip}
+.checkout-page .wrap{min-width:0;max-width:100%}
+.checkout-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:32px;align-items:start;margin-top:28px;
+  min-width:0;max-width:100%;width:100%}
 .checkout-form,.checkout-summary{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);
-  box-shadow:var(--shadow-soft);padding:28px 28px 32px}
-.checkout-form h1,.checkout-empty h1{font-family:'Unbounded';font-size:clamp(24px,3vw,32px);font-weight:800;margin:0 0 10px}
+  box-shadow:var(--shadow-soft);padding:28px 28px 32px;min-width:0;max-width:100%}
+.checkout-form h1,.checkout-empty h1{font-family:'Unbounded';font-size:clamp(24px,3vw,32px);font-weight:800;margin:0 0 10px;
+  overflow-wrap:anywhere}
 .checkout-lead{color:var(--ink-2);font-weight:500;margin:0 0 24px;line-height:1.5}
-.checkout-field{display:grid;gap:8px;margin-bottom:16px}
+.checkout-field{display:grid;gap:8px;margin-bottom:16px;min-width:0}
 .checkout-field span{font-size:14px;font-weight:800;color:var(--ink)}
-.checkout-field input,.checkout-field textarea{width:100%;border:1.5px solid var(--line);border-radius:16px;
+.checkout-field input,.checkout-field textarea{width:100%;max-width:100%;min-width:0;border:1.5px solid var(--line);border-radius:16px;
   padding:13px 16px;font:inherit;font-size:16px;font-weight:600;color:var(--ink);background:#fff;transition:.2s var(--ease)}
 .checkout-field input:focus,.checkout-field textarea:focus{outline:none;border-color:var(--pink);box-shadow:var(--shadow-soft)}
 .checkout-field textarea{resize:vertical;min-height:96px}
 .checkout-error{margin:0 0 16px;padding:12px 14px;border-radius:14px;background:#ffe8f0;color:var(--pink-deep);
   font-weight:700;font-size:14px}
-.checkout-submit{width:100%;justify-content:center;margin-top:4px}
-.checkout-summary h2{font-family:'Unbounded';font-size:22px;font-weight:800;margin:0 0 18px}
-.checkout-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
-.checkout-item{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;background:var(--cream-2);border:1px solid var(--line)}
+.checkout-submit{width:100%;max-width:100%;justify-content:center;margin-top:4px;white-space:normal;text-align:center}
+.checkout-summary h2{font-family:'Unbounded';font-size:22px;font-weight:800;margin:0 0 18px;overflow-wrap:anywhere}
+.checkout-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.checkout-item{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;background:var(--cream-2);border:1px solid var(--line);
+  min-width:0;max-width:100%}
 .checkout-item-main{flex:1;min-width:0;display:flex;gap:12px;align-items:center;color:inherit;text-decoration:none}
 .checkout-item-main:hover .checkout-item-name{color:var(--pink-deep)}
 .checkout-item-vis{width:52px;height:52px;border-radius:12px;overflow:hidden;flex:none;background:#fff;display:grid;place-items:center}
 .checkout-item-vis img{width:100%;height:100%;object-fit:cover;display:block}
-.checkout-item-info{display:grid;gap:4px;min-width:0}
-.checkout-item-name{font-size:14px;font-weight:800;line-height:1.25;display:block}
+.checkout-item-info{display:grid;gap:4px;min-width:0;flex:1}
+.checkout-item-name{font-size:14px;font-weight:800;line-height:1.25;display:block;overflow-wrap:anywhere;word-break:break-word}
 .checkout-item-price{font-size:13px;font-weight:700;color:var(--pink)}
 .checkout-item-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
 .checkout-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
@@ -719,8 +723,17 @@ a.col-card{color:inherit}
 .checkout-success p{color:var(--ink-2);font-weight:500;line-height:1.55;margin:0 0 24px}
 .checkout-success-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 @media (max-width:860px){
-  .checkout-layout{grid-template-columns:1fr;gap:20px}
+  .checkout-layout{grid-template-columns:minmax(0,1fr);gap:20px}
   .checkout-summary{order:-1}
+}
+@media (max-width:720px){
+  .checkout-form,.checkout-summary{padding:20px 16px 24px}
+  .checkout-item{flex-wrap:wrap;align-items:stretch}
+  .checkout-item-main{width:100%}
+  .checkout-item-actions{flex-direction:row;align-items:center;justify-content:space-between;width:100%;
+    padding-top:8px;margin-top:2px;border-top:1px solid var(--line)}
+  .checkout-total b{font-size:clamp(22px,6vw,28px)}
+  .checkout-success{padding:36px 20px}
 }
 
 /* Модалка контактов */
@@ -969,7 +982,7 @@ a.col-card{color:inherit}
     white-space:normal;text-align:center;box-sizing:border-box}
   .hero-stats{gap:20px}
   .hero-visual{height:auto;transform:none;overflow:visible;max-width:100%;padding:12px 0 0}
-  .hero-stage{height:300px;display:flex;align-items:flex-start;justify-content:center;padding-top:10px;
+  .hero-stage{height:379px;display:flex;align-items:flex-start;justify-content:center;padding-top:10px;
     animation:floatBigMob 7s ease-in-out infinite}
   @keyframes floatBigMob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   .hero-badge{position:relative;left:auto;top:auto;width:min(100%,248px);border-radius:28px;
@@ -977,7 +990,7 @@ a.col-card{color:inherit}
   @keyframes heroBadgeRock{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
   .hero-badge-content{padding:20px 16px 18px}
   .hero-badge--photo .hero-badge-content{padding:8px 12px 10px}
-  .hero-badge-photo{height:158px}
+  .hero-badge-photo{height:237px}
   .hero-badge h3{font-size:14px;margin-bottom:4px;-webkit-line-clamp:2;line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
   .hero-badge p{font-size:12px;margin:2px 0 0}
   .hero-badge .price{font-size:22px}
@@ -1005,10 +1018,10 @@ a.col-card{color:inherit}
   .col-card .col-info h3{font-size:18px}
   .hero-grid{gap:14px}
   .hero-copy{padding-top:4px}
-  .hero-stage{height:288px;padding-top:8px}
+  .hero-stage{height:362px;padding-top:8px}
   .hero-badge{width:min(100%,228px);border-radius:24px}
   .hero-badge--photo .hero-badge-content{padding:8px 10px 10px}
-  .hero-badge-photo{height:148px}
+  .hero-badge-photo{height:222px}
   .hero-badge h3{font-size:13px}
   .hero-badge .price{font-size:20px}
   .hero h1{margin-top:16px;font-size:clamp(28px,8vw,40px)}
@@ -1026,11 +1039,11 @@ a.col-card{color:inherit}
   .head-search{width:34px;height:34px}
   .head-search .hs-btn{width:32px;height:32px}
   .hero-visual{padding-top:10px}
-  .hero-stage{height:276px;padding-top:6px}
+  .hero-stage{height:342px;padding-top:6px}
   .hero-badge{width:min(100%,212px)}
   .hero-badge-content{padding:16px 14px 14px}
   .hero-badge--photo .hero-badge-content{padding:8px 10px 10px}
-  .hero-badge-photo{height:132px}
+  .hero-badge-photo{height:198px}
   .hero-badge--photo .hero-badge-cart{width:34px;height:34px}
   .sec-head h2,.cta-final h2{font-size:27px}
   .modal{padding:26px 22px}
