@@ -105,7 +105,7 @@ export function Header() {
   return (
     <header className="header" id="header">
       <div className="header-inner">
-        <a href="#top" className="logo" aria-label="ШАРОДУВЫ">
+        <a href="/" className="logo" aria-label="ШАРОДУВЫ">
           {LOGO.map((l) => (
             <span key={l}>{l}</span>
           ))}

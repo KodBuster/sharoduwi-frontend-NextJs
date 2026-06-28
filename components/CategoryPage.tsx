@@ -4,17 +4,13 @@ import { useCallback } from "react";
 import Link from "next/link";
 import { AppProvider, useApp } from "@/context/AppContext";
 import {
-  useCountUp,
   useEscapeKey,
   useHeaderScroll,
-  useRisingLetters,
   useScrollProgressFallback,
   useScrollReveal,
 } from "@/hooks/useSiteEffects";
 import {
-  useCardTilt,
   useConfettiCursor,
-  useHeroParallax,
 } from "@/hooks/useConfettiCursor";
 import { Background } from "@/components/Background";
 import { TopBar } from "@/components/TopBar";
@@ -29,6 +25,8 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { ConfettiCursor } from "@/components/ConfettiCursor";
 import { getCollectionBySlug } from "@/lib/data";
 import type { CollectionSlug } from "@/lib/products";
+import type { CatalogSource } from "@/lib/client-catalog-cache";
+import type { Product } from "@/lib/data";
 
 function SiteEffects() {
   const { closeAll, closeMob } = useApp();
@@ -39,12 +37,8 @@ function SiteEffects() {
 
   useScrollReveal();
   useHeaderScroll();
-  useCountUp();
-  useRisingLetters();
   useScrollProgressFallback();
   useConfettiCursor();
-  useHeroParallax();
-  useCardTilt();
   useEscapeKey(onEscape);
 
   return null;
@@ -87,9 +81,22 @@ function CategoryContent({ slug }: { slug: CollectionSlug }) {
   );
 }
 
-export function CategoryPage({ slug }: { slug: CollectionSlug }) {
+export function CategoryPage({
+  slug,
+  initialProducts = [],
+  initialSource = "static",
+}: {
+  slug: CollectionSlug;
+  initialProducts?: Product[];
+  initialSource?: CatalogSource;
+}) {
+  const initialCatalog =
+    initialProducts.length > 0
+      ? { products: initialProducts, source: initialSource }
+      : undefined;
+
   return (
-    <AppProvider catalogCollection={slug}>
+    <AppProvider catalogCollection={slug} initialCatalog={initialCatalog}>
       <CategoryContent slug={slug} />
     </AppProvider>
   );

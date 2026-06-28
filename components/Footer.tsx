@@ -8,7 +8,7 @@ export function Footer() {
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <a href="#top" className="logo">
+            <a href="/" className="logo">
               {LOGO.map((l) => (
                 <span key={l}>{l}</span>
               ))}

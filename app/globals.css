@@ -63,7 +63,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 ::selection{background:var(--pink);color:#fff}
 
 /* Скрываем системный курсор только там, где есть точный указатель */
-@media (pointer:fine){
+@media (pointer:fine) and (min-width:721px){
   html.has-balloon-cursor, html.has-balloon-cursor *{cursor:none !important}
 }
 
@@ -104,6 +104,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
    ============================================================ */
 #confetti{position:fixed;inset:0;z-index:9998;pointer-events:none}
 #cursor{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;will-change:transform;display:none}
+@media (max-width:720px){
+  #cursor{display:none !important}
+}
 .cur-balloon{
   width:22px;height:28px;position:relative;transform:translate(-50%,-50%);transform-origin:center;
   border-radius:50% 50% 50% 50%/47% 47% 53% 53%;
@@ -354,6 +357,7 @@ a.col-card{color:inherit}
 .search input::placeholder{color:var(--ink-2);opacity:.7}
 
 .products{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.products .card{content-visibility:auto;contain-intrinsic-size:auto 420px}
 .card{background:var(--paper);border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);
   box-shadow:var(--shadow-soft);transition:.4s var(--ease);display:flex;flex-direction:column}
 .card:hover{transform:translateY(-8px);box-shadow:var(--shadow-card)}
@@ -696,14 +700,6 @@ a.col-card{color:inherit}
   .col-card{min-height:340px}
   .rv-photo{min-height:190px}
 }
-
-/* 3D-tilt + блик на карточках товара */
-.card{transform-style:preserve-3d;will-change:transform}
-.card::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;
-  opacity:0;transition:opacity .3s var(--ease);
-  background:radial-gradient(180px 180px at var(--mx,50%) var(--my,0%), rgba(255,255,255,.45), transparent 60%)}
-.card.tilting::after{opacity:1}
-.card.tilting{transition:transform .1s ease-out}
 
 /* Липкая мобильная панель действий */
 .mobile-bar{position:fixed;left:0;right:0;bottom:0;z-index:55;display:none;gap:10px;

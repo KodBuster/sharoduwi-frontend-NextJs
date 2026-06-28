@@ -5,17 +5,12 @@ import { useApp } from "@/context/AppContext";
 const LOGO = ["Ш", "А", "Р", "О", "Д", "У", "В", "Ы"];
 
 export function MobMenu() {
-  const { mobOpen, closeMob, openContact } = useApp();
-
-  const onContact = () => {
-    closeMob();
-    setTimeout(openContact, 250);
-  };
+  const { mobOpen, closeMob } = useApp();
 
   return (
     <div className={`mob-menu${mobOpen ? " open" : ""}`} id="mobMenu">
       <div className="mm-head">
-        <a href="#top" className="logo" style={{ fontSize: 22 }}>
+        <a href="/" className="logo" style={{ fontSize: 22 }} onClick={closeMob}>
           {LOGO.map((l) => (
             <span key={l}>{l}</span>
           ))}
@@ -46,9 +41,6 @@ export function MobMenu() {
           Контакты
         </a>
       </nav>
-      <button className="btn btn-primary" id="mobContact" type="button" onClick={onContact}>
-        Связаться с нами
-      </button>
     </div>
   );
 }

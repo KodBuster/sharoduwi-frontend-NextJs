@@ -11,7 +11,6 @@ import {
   useScrollReveal,
 } from "@/hooks/useSiteEffects";
 import {
-  useCardTilt,
   useConfettiCursor,
   useHeroParallax,
 } from "@/hooks/useConfettiCursor";
@@ -50,7 +49,6 @@ function SiteEffects() {
   useScrollProgressFallback();
   useConfettiCursor();
   useHeroParallax();
-  useCardTilt();
   useEscapeKey(onEscape);
 
   return null;

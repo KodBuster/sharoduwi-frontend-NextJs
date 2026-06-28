@@ -5,6 +5,10 @@ import { useApp } from "@/context/AppContext";
 
 const CONF_COLORS = ["#FF2D95", "#36B7F0", "#FFC93C", "#2FD3A5", "#FF7A59", "#A98BF5"];
 
+function isCustomCursorEnabled() {
+  return window.matchMedia("(pointer:fine) and (min-width: 721px)").matches;
+}
+
 interface Particle {
   x: number;
   y: number;
@@ -20,17 +24,6 @@ interface Particle {
   shape: "rect" | "circ";
 }
 
-interface TrailPoint {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  life: number;
-  decay: number;
-  color: string;
-}
-
 interface RopePoint {
   x: number;
   y: number;
@@ -42,8 +35,6 @@ export function useConfettiCursor() {
   const { burstRef } = useApp();
 
   useEffect(() => {
-    const fine = window.matchMedia("(pointer:fine)").matches;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const canvas = document.getElementById("confetti") as HTMLCanvasElement | null;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -67,37 +58,6 @@ export function useConfettiCursor() {
     window.addEventListener("resize", resize);
 
     const particles: Particle[] = [];
-    const trail: TrailPoint[] = [];
-    let lastTX = window.innerWidth / 2;
-    let lastTY = window.innerHeight / 2;
-
-    function spawnTrail(x: number, y: number) {
-      trail.push({
-        x: x + (Math.random() - 0.5) * 5,
-        y: y + (Math.random() - 0.5) * 5,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: -0.25 - Math.random() * 0.5,
-        size: 2.5 + Math.random() * 4.5,
-        life: 1,
-        decay: 0.018 + Math.random() * 0.018,
-        color: CONF_COLORS[(Math.random() * CONF_COLORS.length) | 0],
-      });
-      if (trail.length > 180) trail.splice(0, trail.length - 180);
-    }
-
-    function feedTrail(x: number, y: number) {
-      if (reduceMotion) return;
-      const dx = x - lastTX;
-      const dy = y - lastTY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 4) return;
-      const steps = Math.min(Math.floor(dist / 4), 4);
-      for (let s = 1; s <= steps; s++) {
-        spawnTrail(lastTX + (dx * s) / steps, lastTY + (dy * s) / steps);
-      }
-      lastTX = x;
-      lastTY = y;
-    }
 
     function burst(x: number, y: number, count = 18) {
       for (let i = 0; i < count; i++) {
@@ -148,22 +108,37 @@ export function useConfettiCursor() {
 
     let ribbonPath: SVGPathElement | null = null;
 
-    if (fine) {
-      document.documentElement.classList.add("has-balloon-cursor");
-      if (cursorEl) {
-        cursorEl.style.display = "block";
-        const ribbonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        ribbonSvg.setAttribute("width", "50");
-        ribbonSvg.setAttribute("height", "50");
-        ribbonPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        ribbonPath.setAttribute("fill", "none");
-        ribbonPath.setAttribute("stroke", "#FF2D95");
-        ribbonPath.setAttribute("stroke-width", "1.6");
-        ribbonPath.setAttribute("stroke-linecap", "round");
-        ribbonSvg.appendChild(ribbonPath);
-        cursorEl.appendChild(ribbonSvg);
+    function syncCursorVisibility() {
+      const enabled = isCustomCursorEnabled();
+      if (enabled) {
+        document.documentElement.classList.add("has-balloon-cursor");
+        if (cursorEl) cursorEl.style.display = "block";
+      } else {
+        document.documentElement.classList.remove("has-balloon-cursor");
+        if (cursorEl) cursorEl.style.display = "none";
       }
+      return enabled;
     }
+
+    let cursorEnabled = syncCursorVisibility();
+
+    if (cursorEnabled && cursorEl) {
+      const ribbonSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      ribbonSvg.setAttribute("width", "50");
+      ribbonSvg.setAttribute("height", "50");
+      ribbonPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      ribbonPath.setAttribute("fill", "none");
+      ribbonPath.setAttribute("stroke", "#FF2D95");
+      ribbonPath.setAttribute("stroke-width", "1.6");
+      ribbonPath.setAttribute("stroke-linecap", "round");
+      ribbonSvg.appendChild(ribbonPath);
+      cursorEl.appendChild(ribbonSvg);
+    }
+
+    const onViewportChange = () => {
+      cursorEnabled = syncCursorVisibility();
+    };
+    window.addEventListener("resize", onViewportChange);
 
     const onMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
@@ -173,9 +148,6 @@ export function useConfettiCursor() {
         bx = mouse.x;
         by = mouse.y + OFF_Y;
         initRope();
-        const ti = rope[rope.length - 1];
-        lastTX = ti.x;
-        lastTY = ti.y;
       }
     };
     window.addEventListener("mousemove", onMouseMove, { passive: true });
@@ -184,15 +156,16 @@ export function useConfettiCursor() {
     window.addEventListener("mousedown", onMouseDown);
 
     let raf = 0;
+    let canvasDirty = false;
     function loop() {
-      if (fine && cursorEl) {
+      if (cursorEnabled && cursorEl) {
         const tx = mouse.x;
         const ty = mouse.y + OFF_Y;
         const pbx = bx;
-        bx += (tx - bx) * 0.22;
-        by += (ty - by) * 0.22;
+        bx += (tx - bx) * 0.68;
+        by += (ty - by) * 0.68;
         const vx = bx - pbx;
-        svx += (vx - svx) * 0.22;
+        svx += (vx - svx) * 0.5;
 
         const knotX = bx;
         const knotY = by + HALF_H;
@@ -208,8 +181,8 @@ export function useConfettiCursor() {
             continue;
           }
           const w = Math.pow(i / last, 1.25);
-          const nx = p.x + (p.x - p.ox) * 0.88 + sway * w;
-          const ny = p.y + (p.y - p.oy) * 0.88 + 0.62;
+          const nx = p.x + (p.x - p.ox) * 0.92 + sway * w;
+          const ny = p.y + (p.y - p.oy) * 0.92 + 0.62;
           p.ox = p.x;
           p.oy = p.y;
           p.x = nx;
@@ -227,7 +200,6 @@ export function useConfettiCursor() {
           b.y = a.y + (dy / dist) * SEG;
         }
 
-        feedTrail(rope[last].x, rope[last].y);
         cursorEl.style.transform = `translate(${bx}px,${by}px)`;
 
         let d = `M ${knotX - bx} ${knotY - by}`;
@@ -241,56 +213,40 @@ export function useConfettiCursor() {
         if (ribbonPath) ribbonPath.setAttribute("d", d);
       }
 
-      ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      for (let c = particles.length - 1; c >= 0; c--) {
-        const pt = particles[c];
-        pt.vy += pt.g;
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.vx *= 0.99;
-        pt.rot += pt.vr;
-        pt.life -= pt.decay;
-        if (pt.life <= 0 || pt.y > window.innerHeight + 40) {
-          particles.splice(c, 1);
-          continue;
+      if (particles.length > 0) {
+        ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        canvasDirty = true;
+        for (let c = particles.length - 1; c >= 0; c--) {
+          const pt = particles[c];
+          pt.vy += pt.g;
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          pt.vx *= 0.99;
+          pt.rot += pt.vr;
+          pt.life -= pt.decay;
+          if (pt.life <= 0 || pt.y > window.innerHeight + 40) {
+            particles.splice(c, 1);
+            continue;
+          }
+          ctx!.save();
+          ctx!.globalAlpha = Math.max(0, pt.life);
+          ctx!.translate(pt.x, pt.y);
+          ctx!.rotate(pt.rot);
+          ctx!.fillStyle = pt.color;
+          if (pt.shape === "rect") {
+            ctx!.fillRect(-pt.size / 2, -pt.size / 2, pt.size, pt.size * 0.6);
+          } else {
+            ctx!.beginPath();
+            ctx!.arc(0, 0, pt.size / 2, 0, Math.PI * 2);
+            ctx!.fill();
+          }
+          ctx!.restore();
         }
-        ctx!.save();
-        ctx!.globalAlpha = Math.max(0, pt.life);
-        ctx!.translate(pt.x, pt.y);
-        ctx!.rotate(pt.rot);
-        ctx!.fillStyle = pt.color;
-        if (pt.shape === "rect") {
-          ctx!.fillRect(-pt.size / 2, -pt.size / 2, pt.size, pt.size * 0.6);
-        } else {
-          ctx!.beginPath();
-          ctx!.arc(0, 0, pt.size / 2, 0, Math.PI * 2);
-          ctx!.fill();
-        }
-        ctx!.restore();
+        ctx!.globalAlpha = 1;
+      } else if (canvasDirty) {
+        ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        canvasDirty = false;
       }
-
-      for (let tr = trail.length - 1; tr >= 0; tr--) {
-        const tp = trail[tr];
-        tp.x += tp.vx;
-        tp.y += tp.vy;
-        tp.vy *= 0.98;
-        tp.life -= tp.decay;
-        if (tp.life <= 0) {
-          trail.splice(tr, 1);
-          continue;
-        }
-        const rad = tp.size * tp.life;
-        ctx!.fillStyle = tp.color;
-        ctx!.globalAlpha = tp.life * 0.16;
-        ctx!.beginPath();
-        ctx!.arc(tp.x, tp.y, rad * 2, 0, Math.PI * 2);
-        ctx!.fill();
-        ctx!.globalAlpha = tp.life * 0.9;
-        ctx!.beginPath();
-        ctx!.arc(tp.x, tp.y, rad, 0, Math.PI * 2);
-        ctx!.fill();
-      }
-      ctx!.globalAlpha = 1;
 
       raf = requestAnimationFrame(loop);
     }
@@ -298,6 +254,7 @@ export function useConfettiCursor() {
 
     return () => {
       window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onViewportChange);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mousedown", onMouseDown);
       cancelAnimationFrame(raf);
@@ -309,7 +266,7 @@ export function useConfettiCursor() {
 
 export function useHeroParallax() {
   useEffect(() => {
-    const fine = window.matchMedia("(pointer:fine)").matches;
+    const fine = isCustomCursorEnabled();
     const heroMini = document.getElementById("heroMini");
     if (!fine || !heroMini) return;
 
@@ -341,41 +298,6 @@ export function useHeroParallax() {
     return () => {
       window.removeEventListener("mousemove", onMove);
       if (praf) cancelAnimationFrame(praf);
-    };
-  }, []);
-}
-
-export function useCardTilt() {
-  useEffect(() => {
-    const fine = window.matchMedia("(pointer:fine)").matches;
-    const prodWrap = document.getElementById("products");
-    if (!fine || !prodWrap) return;
-
-    const onMove = (e: PointerEvent) => {
-      const card = (e.target as Element).closest(".card") as HTMLElement | null;
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      card.classList.add("tilting");
-      card.style.transform = `perspective(900px) rotateX(${((0.5 - y) * 8).toFixed(2)}deg) rotateY(${((x - 0.5) * 8).toFixed(2)}deg) translateY(-6px)`;
-      card.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
-      card.style.setProperty("--my", (y * 100).toFixed(1) + "%");
-    };
-
-    const onOut = (e: PointerEvent) => {
-      const card = (e.target as Element).closest(".card") as HTMLElement | null;
-      if (card && !card.contains(e.relatedTarget as Node)) {
-        card.classList.remove("tilting");
-        card.style.transform = "";
-      }
-    };
-
-    prodWrap.addEventListener("pointermove", onMove);
-    prodWrap.addEventListener("pointerout", onOut);
-    return () => {
-      prodWrap.removeEventListener("pointermove", onMove);
-      prodWrap.removeEventListener("pointerout", onOut);
     };
   }, []);
 }

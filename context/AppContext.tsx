@@ -11,11 +11,21 @@ import {
   type ReactNode,
 } from "react";
 import { PRODUCTS, type Product } from "@/lib/data";
+import {
+  getClientCatalogCacheKey,
+  readClientCatalogCache,
+  writeClientCatalogCache,
+  type CatalogSource,
+} from "@/lib/client-catalog-cache";
 import type { CollectionSlug, TagFilter } from "@/lib/products";
 
 type Cart = Record<number, number>;
 type Fav = Record<number, boolean>;
-type CatalogSource = "advantshop" | "static";
+
+interface InitialCatalog {
+  products: Product[];
+  source: CatalogSource;
+}
 
 interface AppContextValue {
   cart: Cart;
@@ -63,9 +73,22 @@ interface AppProviderProps {
   children: ReactNode;
   /** Загружать только товары выбранной коллекции (страница категории) */
   catalogCollection?: CollectionSlug;
+  /** Данные каталога с сервера (SSR, кэш 5 мин) */
+  initialCatalog?: InitialCatalog;
 }
 
-export function AppProvider({ children, catalogCollection }: AppProviderProps) {
+function getStaticFallback(collection?: CollectionSlug): Product[] {
+  return collection
+    ? PRODUCTS.filter((product) => product.collectionSlug === collection)
+    : PRODUCTS;
+}
+
+export function AppProvider({
+  children,
+  catalogCollection,
+  initialCatalog,
+}: AppProviderProps) {
+  const cacheKey = getClientCatalogCacheKey(catalogCollection);
   const [cart, setCart] = useState<Cart>({});
   const [fav, setFav] = useState<Fav>({});
   const [favOnly, setFavOnly] = useState(false);
@@ -79,15 +102,40 @@ export function AppProvider({ children, catalogCollection }: AppProviderProps) {
   const [fabOpen, setFabOpenState] = useState(false);
   const [toastName, setToastName] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
-  const [catalogSource, setCatalogSource] = useState<CatalogSource>("static");
-  const [catalogLoading, setCatalogLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(() => {
+    if (initialCatalog?.products.length) return initialCatalog.products;
+    if (typeof window !== "undefined") {
+      const cached = readClientCatalogCache(cacheKey);
+      if (cached?.products.length) return cached.products;
+    }
+    return getStaticFallback(catalogCollection);
+  });
+  const [catalogSource, setCatalogSource] = useState<CatalogSource>(
+    () =>
+      initialCatalog?.source ??
+      (typeof window !== "undefined"
+        ? readClientCatalogCache(cacheKey)?.source
+        : undefined) ??
+      "static"
+  );
+  const [catalogLoading, setCatalogLoading] = useState(() => {
+    if (initialCatalog?.products.length) return false;
+    if (typeof window !== "undefined" && readClientCatalogCache(cacheKey)) {
+      return false;
+    }
+    return true;
+  });
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const burstRef = useRef<((x: number, y: number, count?: number) => void) | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    setCatalogLoading(true);
+    const cached = readClientCatalogCache(cacheKey);
+    const hasWarmData = Boolean(initialCatalog?.products.length || cached?.products.length);
+
+    if (!hasWarmData) {
+      setCatalogLoading(true);
+    }
 
     const catalogUrl = catalogCollection
       ? `/api/catalog?collection=${encodeURIComponent(catalogCollection)}`
@@ -98,20 +146,20 @@ export function AppProvider({ children, catalogCollection }: AppProviderProps) {
       .then((data: { products?: Product[]; source?: CatalogSource }) => {
         if (cancelled) return;
         if (Array.isArray(data.products)) {
-          setProducts(data.products.length ? data.products : PRODUCTS.filter(
-            (product) => !catalogCollection || product.collectionSlug === catalogCollection
-          ));
-          setCatalogSource(data.source === "advantshop" ? "advantshop" : "static");
+          const list = data.products.length
+            ? data.products
+            : getStaticFallback(catalogCollection);
+          const source: CatalogSource =
+            data.source === "advantshop" ? "advantshop" : "static";
+          setProducts(list);
+          setCatalogSource(source);
+          writeClientCatalogCache(cacheKey, list, source);
         }
       })
       .catch((error) => {
         console.error("Catalog fetch failed:", error);
-        if (!cancelled) {
-          setProducts(
-            catalogCollection
-              ? PRODUCTS.filter((product) => product.collectionSlug === catalogCollection)
-              : PRODUCTS
-          );
+        if (!cancelled && !hasWarmData) {
+          setProducts(getStaticFallback(catalogCollection));
         }
       })
       .finally(() => {
@@ -121,7 +169,7 @@ export function AppProvider({ children, catalogCollection }: AppProviderProps) {
     return () => {
       cancelled = true;
     };
-  }, [catalogCollection]);
+  }, [catalogCollection, cacheKey, initialCatalog?.products.length]);
 
   const getProduct = useCallback(
     (id: number) => products.find((product) => product.id === id),
