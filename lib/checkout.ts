@@ -1,3 +1,5 @@
+import { isCompleteRuPhone } from "@/lib/phone-mask";
+
 export type CheckoutFormData = {
   name: string;
   phone: string;
@@ -9,6 +11,7 @@ export type CheckoutFormData = {
 export function validateCheckoutForm(data: CheckoutFormData): string | null {
   if (!data.name.trim()) return "Укажите имя";
   if (!data.phone.trim()) return "Укажите телефон";
+  if (!isCompleteRuPhone(data.phone)) return "Укажите корректный номер телефона";
   return null;
 }
 

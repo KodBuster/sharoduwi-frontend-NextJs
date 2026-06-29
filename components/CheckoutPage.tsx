@@ -15,7 +15,8 @@ import type { CatalogSource } from "@/lib/client-catalog-cache";
 import type { CartItem } from "@/lib/cart";
 import { COLORS } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
-import { normalizePhone } from "@/lib/checkout";
+import { normalizePhone, validateCheckoutForm } from "@/lib/checkout";
+import { PhoneInput } from "@/components/PhoneInput";
 import { trackOrderSent } from "@/lib/metrika/track";
 import { getProductSlug } from "@/lib/product-slug";
 import { Background } from "@/components/Background";
@@ -84,6 +85,19 @@ function CheckoutContent() {
     if (!rows.length || submitting) return;
 
     setError(null);
+
+    const validationError = validateCheckoutForm({
+      name,
+      phone,
+      city,
+      address,
+      comment,
+    });
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setSubmitting(true);
 
     const items: CartItem[] = rows.map(({ p, qty }) => ({
@@ -227,14 +241,11 @@ function CheckoutContent() {
 
                 <label className="checkout-field">
                   <span>Телефон *</span>
-                  <input
-                    type="tel"
+                  <PhoneInput
                     name="phone"
-                    autoComplete="tel"
                     required
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+7 (999) 123-45-67"
+                    onChange={setPhone}
                   />
                 </label>
 
