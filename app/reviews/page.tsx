@@ -1,0 +1,38 @@
+import type { Metadata } from "next";
+
+import { InfoPageShell } from "@/components/InfoPageShell";
+import { JsonLd } from "@/components/JsonLd";
+import { ReviewsPageContent } from "@/components/ReviewsPageContent";
+import { REVIEWS } from "@/lib/data";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import {
+  buildBreadcrumbSchema,
+  buildReviewsPageSchema,
+  toJsonLdGraph,
+} from "@/lib/seo/schema";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Отзывы клиентов",
+  description:
+    "Отзывы о магазине ШАРОДУВЫ в Жуковском: гелиевые шары, доставка, обслуживание. Реальные отзывы с Яндекс.Карт — ул. Чкалова и ТЦ «Фермер».",
+  path: "/reviews",
+});
+
+export default function ReviewsPage() {
+  const schema = toJsonLdGraph(
+    buildBreadcrumbSchema([
+      { name: "Главная", path: "/" },
+      { name: "Отзывы", path: "/reviews" },
+    ]),
+    buildReviewsPageSchema(REVIEWS)
+  );
+
+  return (
+    <>
+      <JsonLd data={schema} />
+      <InfoPageShell>
+        <ReviewsPageContent />
+      </InfoPageShell>
+    </>
+  );
+}

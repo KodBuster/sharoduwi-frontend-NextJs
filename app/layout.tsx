@@ -1,26 +1,33 @@
-import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
+import { buildRootMetadata } from "@/lib/seo/metadata";
+import {
+  buildLocalBusinessSchema,
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+  toJsonLdGraph,
+} from "@/lib/seo/schema";
 import "./fonts.css";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "ШАРОДУВЫ — гелиевые шары и композиции в Жуковском",
-  description:
-    "ШАРОДУВЫ — гелиевые шары, фольгированные цифры и праздничные композиции в Жуковском и Раменском районе. Делаем праздник с 2005 года.",
-  icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
-  },
-};
+export const metadata = buildRootMetadata();
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const globalSchema = toJsonLdGraph(
+    buildOrganizationSchema(),
+    buildLocalBusinessSchema(),
+    buildWebSiteSchema()
+  );
+
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <body>
+        <JsonLd data={globalSchema} />
+        {children}
+      </body>
     </html>
   );
 }

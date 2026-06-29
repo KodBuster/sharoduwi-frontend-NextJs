@@ -384,6 +384,83 @@ a.col-card{color:inherit}
 .category-breadcrumb a{color:var(--pink-deep);transition:color .2s var(--ease)}
 .category-breadcrumb a:hover{color:var(--pink)}
 .category-breadcrumb span:last-child{color:var(--ink)}
+/* Информационные страницы: о компании, доставка */
+.info-page{padding-top:118px;padding-bottom:0}
+.info-page-section{padding-top:0}
+.info-hero{max-width:760px;margin:28px 0 0}
+.info-hero h1{font-size:clamp(30px,4.5vw,46px);font-weight:800;color:var(--pink-deep);line-height:1.08;margin:16px 0 0}
+.info-lead{font-size:17px;line-height:1.65;color:var(--ink-2);font-weight:500;margin:18px 0 0;max-width:62ch}
+.info-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.info-stat{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;
+  box-shadow:var(--shadow-soft)}
+.info-stat b{display:block;font-family:'Unbounded';font-size:clamp(24px,4vw,34px);font-weight:800;color:var(--pink-deep)}
+.info-stat span{display:block;margin-top:6px;font-size:14px;font-weight:700;color:var(--ink-2)}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.info-card{background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:26px 24px;box-shadow:var(--shadow-soft)}
+.info-card--wide{min-width:0}
+.info-card h2,.info-card h3{font-size:22px;font-weight:800;color:var(--pink-deep);margin:0 0 12px}
+.info-card p,.info-card li{font-size:15.5px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0}
+.info-split{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.info-list{margin:0;padding-left:20px;display:grid;gap:8px}
+.info-link{display:inline-block;margin-top:14px;font-weight:800;color:var(--pink-deep);font-size:14px}
+.info-link:hover{color:var(--pink)}
+.info-stores{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.info-store{background:linear-gradient(145deg,var(--pink-soft),#fff);border:1.5px solid rgba(255,45,149,.2);
+  border-radius:22px;padding:26px 24px}
+.info-store h3{font-size:20px;font-weight:800;margin:0 0 10px;color:var(--ink)}
+.info-store p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2);font-weight:500}
+.info-placeholder{max-width:760px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:24px;
+  padding:32px 28px;box-shadow:var(--shadow-soft);text-align:center}
+.info-placeholder h2{font-size:24px;font-weight:800;color:var(--pink-deep);margin:0 0 12px}
+.info-placeholder p{font-size:15.5px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0}
+.info-placeholder-box{margin:22px 0 16px;padding:28px 20px;border:2px dashed rgba(255,45,149,.35);border-radius:18px;
+  background:var(--pink-soft);color:var(--pink-deep);font-weight:800;font-size:15px}
+.info-note{font-size:14px!important}
+.info-note a{color:var(--pink-deep);font-weight:800}
+.info-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.info-steps{max-width:680px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:24px;
+  padding:32px 28px;box-shadow:var(--shadow-soft)}
+.info-steps h2{font-size:24px;font-weight:800;color:var(--pink-deep);margin:0 0 18px;text-align:center}
+.info-steps-list{margin:0;padding-left:22px;display:grid;gap:12px}
+.info-steps-list li{font-size:15.5px;line-height:1.6;color:var(--ink-2);font-weight:500}
+.info-cta{max-width:720px;margin:0 auto;text-align:center;background:linear-gradient(145deg,var(--pink-soft),#fff);
+  border:1.5px solid rgba(255,45,149,.22);border-radius:28px;padding:36px 28px}
+.info-cta h2{font-size:clamp(24px,3.5vw,32px);font-weight:800;color:var(--pink-deep);margin:0 0 12px}
+.info-cta p{font-size:16px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0}
+.info-cta p a{color:var(--pink-deep);font-weight:800}
+.info-cta-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+/* Отзывы — страница /reviews */
+.reviews-summary{display:flex;align-items:center;gap:18px;margin-top:28px;padding:20px 22px;background:#fff;
+  border:1.5px solid var(--line);border-radius:20px;box-shadow:var(--shadow-soft);max-width:360px}
+.reviews-summary-score{font-family:'Unbounded';font-size:42px;font-weight:900;color:var(--pink-deep);line-height:1}
+.reviews-summary strong{display:block;font-size:15px;color:var(--ink)}
+.reviews-summary span{display:block;margin-top:4px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.review--card{flex:none;max-width:none;scroll-snap-align:unset}
+/* Блог */
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.blog-card{background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:26px 24px;box-shadow:var(--shadow-soft);
+  display:flex;flex-direction:column;gap:12px;min-height:100%}
+.blog-card-date{font-size:13px;font-weight:700;color:var(--ink-2)}
+.blog-card h2{font-size:20px;font-weight:800;line-height:1.25;margin:0}
+.blog-card h2 a{color:var(--pink-deep);transition:color .2s var(--ease)}
+.blog-card h2 a:hover{color:var(--pink)}
+.blog-card p{font-size:15px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0;flex:1}
+.blog-card-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px;font-size:13px;font-weight:700;color:var(--ink-2)}
+.blog-card-more{color:var(--pink-deep);font-weight:800}
+.blog-card-more:hover{color:var(--pink)}
+.blog-article{max-width:760px;margin:28px 0 0}
+.blog-article h1{font-size:clamp(30px,4.2vw,44px);font-weight:800;color:var(--pink-deep);line-height:1.1;margin:16px 0 0}
+.blog-article-meta{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:14px;font-weight:700;color:var(--ink-2)}
+.blog-article-lead{font-size:18px;line-height:1.65;color:var(--ink-2);font-weight:500;margin:20px 0 0}
+.blog-article-body{display:grid;gap:28px;margin-top:32px}
+.blog-article-body section{display:grid;gap:12px}
+.blog-article-body h2{font-size:22px;font-weight:800;color:var(--pink-deep);margin:0}
+.blog-article-body p{font-size:16px;line-height:1.7;color:var(--ink-2);font-weight:500;margin:0}
+.blog-related{margin-top:40px;padding-top:28px;border-top:1px solid var(--line)}
+.blog-related h2{font-size:20px;font-weight:800;color:var(--pink-deep);margin:0 0 16px}
+.blog-article-cta{margin-top:40px;padding-top:28px;border-top:1px solid var(--line);text-align:center}
+.blog-article-cta p{font-size:16px;font-weight:600;color:var(--ink-2);margin:0 0 16px}
 .filters{display:flex;gap:9px;flex-wrap:wrap}
 .chip{font-weight:800;font-size:14px;padding:10px 18px;border-radius:999px;background:#fff;
   border:1.5px solid var(--line);transition:.25s var(--ease);color:var(--ink)}
@@ -1013,6 +1090,9 @@ a.col-card{color:inherit}
   .hero-badge .ribbon-knot{width:12px;height:12px;top:-8px}
   .mb{width:calc(var(--w,64px)*0.78);height:calc(var(--w,64px)*0.78*1.22)}
   .shop-controls{flex-direction:column;align-items:stretch}
+  .info-stats,.info-grid,.info-split,.info-stores{grid-template-columns:1fr}
+  .reviews-grid,.blog-grid{grid-template-columns:1fr}
+  .info-placeholder,.info-steps{padding:26px 20px}
   .search{min-width:0}
   .cta-final{padding:50px 24px}
   .sec{padding:54px 0;overflow-x:clip}
@@ -1149,7 +1229,7 @@ a.col-card{color:inherit}
 
 /* Next.js font variables */
 body{font-family:var(--font-onest),'Onest',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-h1,h2,h3,h4,.display,.logo,.sec-tag,.brand-word,.hero-stats .st b,.hero-badge .price,.card-price,.cart-total b,.card-price,.ci-info .ci-price,.promo-code,.faq summary,.step .num,.review .ava,.bt-hero h3,.bt-badge,.sd-guarantee h2,.sd-guarantee h3,.sd-guarantee .promise b,.sd-guarantee thead th,.sd-guarantee .why .item b,.sd-guarantee .steps li::before{font-family:var(--font-unbounded),'Unbounded',sans-serif}
+h1,h2,h3,h4,.display,.logo,.sec-tag,.brand-word,.hero-stats .st b,.hero-badge .price,.card-price,.cart-total b,.card-price,.ci-info .ci-price,.promo-code,.faq summary,.step .num,.review .ava,.bt-hero h3,.bt-badge,.sd-guarantee h2,.sd-guarantee h3,.sd-guarantee .promise b,.sd-guarantee thead th,.sd-guarantee .why .item b,.sd-guarantee .steps li::before,.info-hero h1,.info-card h2,.info-card h3,.info-stat b,.info-placeholder h2,.info-steps h2,.info-cta h2,.info-store h3,.reviews-summary-score,.blog-card h2,.blog-article h1,.blog-article-body h2,.blog-related h2{font-family:var(--font-unbounded),'Unbounded',sans-serif}
 .qty-stepper .qv,.cv-qty{font-family:var(--font-unbounded),'Unbounded',sans-serif}
 .cart-count{font-family:var(--font-onest),'Onest',sans-serif}
 .head-search input{font-family:var(--font-onest),'Onest',sans-serif}

@@ -32,7 +32,13 @@ export function Footer() {
                 <HowToOrderLink>Как заказать</HowToOrderLink>
               </li>
               <li>
-                <a href="#why">О нас</a>
+                <a href="/about">О компании</a>
+              </li>
+              <li>
+                <a href="/reviews">Отзывы</a>
+              </li>
+              <li>
+                <a href="/blog">Полезное</a>
               </li>
             </ul>
           </div>
@@ -40,16 +46,16 @@ export function Footer() {
             <h4>Доставка</h4>
             <ul>
               <li>
-                <a href="#">По Жуковскому</a>
+                <a href="/delivery/zhukovsky">По Жуковскому</a>
               </li>
               <li>
-                <a href="#">По Раменскому району</a>
+                <a href="/delivery/ramenskoe">По Раменскому району</a>
               </li>
               <li>
-                <a href="#">Самовывоз из магазина</a>
+                <a href="/about#stores">Самовывоз из магазина</a>
               </li>
               <li>
-                <a href="#">Оформление и оплата</a>
+                <a href="/#how">Оформление и оплата</a>
               </li>
               <li>
                 <a href="#guarantee">Гарантия на полёт</a>

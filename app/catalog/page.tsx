@@ -1,23 +1,42 @@
 import type { Metadata } from "next";
 
 import { CatalogPage } from "@/components/CatalogPage";
+import { JsonLd } from "@/components/JsonLd";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import {
+  buildBreadcrumbSchema,
+  buildCatalogItemListSchema,
+  toJsonLdGraph,
+} from "@/lib/seo/schema";
 import { getCatalogProducts, getCatalogSource } from "@/lib/products-service";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Каталог — ШАРОДУВЫ",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Каталог гелиевых шаров и композиций",
   description:
-    "Полный каталог гелиевых шаров, композиций и наборов в Жуковском и Раменском районе.",
-};
+    "Полный каталог гелиевых шаров, композиций и наборов в Жуковском и Раменском районе. Цены, фото и доставка к торжеству.",
+  path: "/catalog",
+});
 
 export default async function CatalogRoutePage() {
-  let initialProducts = await getCatalogProducts().catch(() => []);
+  const initialProducts = await getCatalogProducts().catch(() => []);
+
+  const schema = toJsonLdGraph(
+    buildBreadcrumbSchema([
+      { name: "Главная", path: "/" },
+      { name: "Каталог", path: "/catalog" },
+    ]),
+    buildCatalogItemListSchema(initialProducts)
+  );
 
   return (
-    <CatalogPage
-      initialProducts={initialProducts}
-      initialSource={getCatalogSource()}
-    />
+    <>
+      <JsonLd data={schema} />
+      <CatalogPage
+        initialProducts={initialProducts}
+        initialSource={getCatalogSource()}
+      />
+    </>
   );
 }

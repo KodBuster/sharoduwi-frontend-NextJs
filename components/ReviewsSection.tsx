@@ -1,51 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
+
+import { ReviewCard } from "@/components/ReviewCard";
+import { YandexReviewsWidgets } from "@/components/YandexReviewsWidgets";
 import { REVIEWS } from "@/lib/data";
-
-const YANDEX_REVIEW_WIDGETS = [
-  {
-    orgId: "1855601489",
-    mapUrl: "https://yandex.ru/maps/org/sharoduvy/1855601489/",
-    label: "ул. Чкалова",
-  },
-  {
-    orgId: "1796536309",
-    mapUrl: "https://yandex.ru/maps/org/sharoduvy/1796536309/",
-    label: "ТЦ «Фермер»",
-  },
-] as const;
-
-function YandexReviewsWidget({
-  orgId,
-  mapUrl,
-  label,
-}: {
-  orgId: string;
-  mapUrl: string;
-  label: string;
-}) {
-  return (
-    <div className="yr-widget-wrap">
-      <p className="yr-widget-label">{label}</p>
-      <div className="yr-widget">
-        <iframe
-          src={`https://yandex.ru/maps-reviews-widget/${orgId}?comments`}
-          title={`Отзывы на Яндекс.Картах — ${label}`}
-          loading="lazy"
-        />
-        <a
-          href={mapUrl}
-          className="yr-widget-link"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Шародувы на карте Жуковского — Яндекс&nbsp;Карты
-        </a>
-      </div>
-    </div>
-  );
-}
 
 export function ReviewsSection() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -65,6 +25,11 @@ export function ReviewsSection() {
             <span className="dot" /> Отзывы
           </div>
           <h2>Что пишут наши клиенты</h2>
+          <p>
+            <Link href="/reviews" className="info-link">
+              Все отзывы →
+            </Link>
+          </p>
         </div>
         <div className="reviews-wrap">
           <button
@@ -91,35 +56,12 @@ export function ReviewsSection() {
           </button>
           <div className="reviews" id="reviewsTrack" ref={trackRef}>
             {REVIEWS.map((r) => (
-              <div className="review" key={r.name}>
-                {r.photo ? (
-                  <div className="rv-photo">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={r.photo} alt="" loading="lazy" />
-                  </div>
-                ) : null}
-                <div className="stars">★★★★★</div>
-                <p>{r.text}</p>
-                <div className="who">
-                  <div className="ava" style={{ background: r.color }}>
-                    {r.initial}
-                  </div>
-                  <div>
-                    <b>{r.name}</b>
-                    <span>{r.city}</span>
-                  </div>
-                </div>
-              </div>
+              <ReviewCard key={r.name} review={r} />
             ))}
           </div>
         </div>
-        <div className="yandex-reviews reveal">
-          <p className="yr-lead">Реальные отзывы покупателей — на Яндекс.Картах по обоим магазинам:</p>
-          <div className="yr-widgets">
-            {YANDEX_REVIEW_WIDGETS.map((widget) => (
-              <YandexReviewsWidget key={widget.orgId} {...widget} />
-            ))}
-          </div>
+        <div className="reveal">
+          <YandexReviewsWidgets />
         </div>
       </div>
     </section>

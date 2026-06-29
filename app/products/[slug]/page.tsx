@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { JsonLd } from "@/components/JsonLd";
 import { ProductPageShell } from "@/components/ProductPageShell";
+import { getProductSlug } from "@/lib/product-slug";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import {
+  buildBreadcrumbSchema,
+  buildProductSchema,
+  toJsonLdGraph,
+} from "@/lib/seo/schema";
 import {
   getCatalogProducts,
   getCatalogSource,
@@ -22,22 +30,25 @@ export async function generateMetadata({
   const product = await getProductDetails(slug);
 
   if (!product) {
-    return {
-      title: "Товар не найден — ШАРОДУВЫ",
-    };
+    return buildPageMetadata({
+      title: "Товар не найден",
+      path: `/products/${slug}`,
+    });
   }
 
-  return {
-    title: `${product.name} — ШАРОДУВЫ`,
-    description:
-      product.description ??
-      `${product.name} из коллекции «${product.collection}». Гелиевые шары в Жуковском и Раменском районе.`,
-    openGraph: product.img
-      ? {
-          images: [{ url: product.img }],
-        }
-      : undefined,
-  };
+  const description =
+    product.briefDescription?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() ||
+    product.description?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() ||
+    `${product.name} из коллекции «${product.collection}». Гелиевые шары в Жуковском и Раменском районе.`;
+
+  const image = product.images[0] ?? product.img;
+
+  return buildPageMetadata({
+    title: product.name,
+    description,
+    path: `/products/${getProductSlug(product)}`,
+    image,
+  });
 }
 
 export default async function ProductRoutePage({ params }: ProductRouteProps) {
@@ -51,12 +62,26 @@ export default async function ProductRoutePage({ params }: ProductRouteProps) {
     getCatalogProducts(),
   ]);
 
+  const productSlug = getProductSlug(product);
+  const schema = toJsonLdGraph(
+    buildBreadcrumbSchema([
+      { name: "Главная", path: "/" },
+      { name: "Каталог", path: "/catalog" },
+      { name: product.collection, path: `/categories/${product.collectionSlug}` },
+      { name: product.name, path: `/products/${productSlug}` },
+    ]),
+    buildProductSchema(product)
+  );
+
   return (
-    <ProductPageShell
-      product={product}
-      relatedProducts={relatedProducts}
-      initialProducts={catalogProducts}
-      initialSource={getCatalogSource()}
-    />
+    <>
+      <JsonLd data={schema} />
+      <ProductPageShell
+        product={product}
+        relatedProducts={relatedProducts}
+        initialProducts={catalogProducts}
+        initialSource={getCatalogSource()}
+      />
+    </>
   );
 }
