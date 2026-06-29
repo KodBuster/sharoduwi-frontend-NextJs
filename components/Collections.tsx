@@ -30,7 +30,7 @@ export function Collections() {
             <span className="dot" /> Коллекции
           </div>
           <h2>Выберите повод</h2>
-          <p>Готовые подборки под любое торжество — от первого дня рождения до выписки из роддома.</p>
+          <p>Готовые подборки под любое торжество — от выписки из роддома и до 100-го юбилея!</p>
         </div>
         <div className={`collections${expanded ? " expanded" : ""}`} id="collectionsGrid">
           {COLLECTIONS.map((c, idx) => {

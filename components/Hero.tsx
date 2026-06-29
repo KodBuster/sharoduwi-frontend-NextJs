@@ -43,7 +43,7 @@ export function Hero() {
               </span>
             </h1>
             <p className="lead reveal" data-d="2">
-              Гелиевые и воздушные шары: фольгированные цифры, яркие композиции и облака на гелии. Надуваем при вас и привозим точно к торжеству.
+              Гелиевые и воздушные шары: фольгированные цифры, эксклюзивные яркие композиции, любимые герои, необычные формы. Привозим точно ко времени. Фото или видео перед доставкой.
             </p>
             <div className="hero-cta reveal" data-d="3">
               <button className="btn btn-primary" id="heroContact" type="button" onClick={openContact}>
