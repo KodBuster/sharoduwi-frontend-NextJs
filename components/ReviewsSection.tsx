@@ -92,15 +92,12 @@ export function ReviewsSection() {
           <div className="reviews" id="reviewsTrack" ref={trackRef}>
             {REVIEWS.map((r) => (
               <div className="review" key={r.name}>
-                <div className="rv-photo">
-                  <span className="rv-ph">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 8a2 2 0 012-2h2l1.5-2h7L17 6h2a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                      <circle cx="12" cy="12.5" r="3.5" />
-                    </svg>
-                    Фото клиента
-                  </span>
-                </div>
+                {r.photo ? (
+                  <div className="rv-photo">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={r.photo} alt="" loading="lazy" />
+                  </div>
+                ) : null}
                 <div className="stars">★★★★★</div>
                 <p>{r.text}</p>
                 <div className="who">

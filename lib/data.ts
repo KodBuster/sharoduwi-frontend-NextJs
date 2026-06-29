@@ -143,7 +143,15 @@ export const HERO_MINI = [
   { c: "pink" as ColorKey, x: 42, y: -6, w: 50, d: 1.3, dur: 7.0, rot: -5 },
 ];
 
-export const REVIEWS = [
+export const REVIEWS: {
+  initial: string;
+  color: string;
+  name: string;
+  city: string;
+  rating: number;
+  text: string;
+  photo?: string;
+}[] = [
   {
     initial: "Д",
     color: "var(--pink)",
@@ -192,7 +200,7 @@ export const REVIEWS = [
     rating: 5,
     text: "Большой ассортимент шаров, свечей и всего для праздника. Приятная атмосфера, вежливое обслуживание. Помогли подобрать шары на день рождения ребёнка.",
   },
-] as const;
+];
 
 export const FAQ_ITEMS = [
   { q: "Доставляете в Раменское и район?", a: "Да. Возим по Жуковскому и Раменскому району и привозим точно ко времени торжества. Также удобный самовывоз из двух магазинов в Жуковском." },
