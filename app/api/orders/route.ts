@@ -10,6 +10,9 @@ import {
   type CheckoutFormData,
 } from "@/lib/checkout";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 type CreateOrderRequest = {
   customer: CheckoutFormData;
   items: CartItem[];

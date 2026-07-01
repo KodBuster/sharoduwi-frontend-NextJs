@@ -1,5 +1,5 @@
 import {
-  getAdvantShopBaseUrl,
+  getAdvantShopApiBaseUrl,
   getAdvantShopClientApiKey,
   getAdvantShopServerApiKey,
   CATALOG_REVALIDATE_SECONDS,
@@ -124,6 +124,13 @@ async function parseAdvantShopResponse<T>(response: Response): Promise<T> {
         "AdvantShop API 404: проверьте ADVANTSHOP_BASE_URL. Для технического домена нужен путь магазина (https://s4.advantme.ru/437293-slug)."
       );
     }
+    if (response.status === 405) {
+      const allow = response.headers.get("Allow");
+      throw new Error(
+        `AdvantShop API 405: метод ${allow ? `разрешены только ${allow}` : "POST не принят"}. ` +
+          "Проверьте ADVANTSHOP_BASE_URL / ADVANTSHOP_API_BASE_URL (нужен домен магазина AdvantShop, например http://shop.funshar.ru, не sharoduwi.ru)."
+      );
+    }
     throw new Error(`AdvantShop API ${response.status}: ${text.slice(0, 300)}`);
   }
 
@@ -153,9 +160,10 @@ async function advantshopRequest<T>(
   path: string,
   apiKey: string,
   options: FetchOptions = {},
-  extraHeaders?: Record<string, string>
+  extraHeaders?: Record<string, string>,
+  baseUrl = getAdvantShopApiBaseUrl()
 ): Promise<T> {
-  const url = buildAdvantShopUrl(getAdvantShopBaseUrl(), path);
+  const url = buildAdvantShopUrl(baseUrl, path);
   url.searchParams.set("apikey", apiKey);
 
   if (options.searchParams) {
@@ -166,8 +174,11 @@ async function advantshopRequest<T>(
     }
   }
 
-  const response = await fetchWithRetry(url.toString(), {
-    method: options.method ?? "GET",
+  const method = options.method ?? "GET";
+  const isMutation = method !== "GET";
+
+  const fetchInit: RequestInit & { next?: { revalidate: number } } = {
+    method,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -175,18 +186,26 @@ async function advantshopRequest<T>(
       ...extraHeaders,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
-    next:
+  };
+
+  // Next.js Data Cache с `next.revalidate` может превратить POST в GET → IIS 405 на /api/order/add.
+  if (isMutation) {
+    fetchInit.cache = "no-store";
+  } else {
+    fetchInit.next =
       options.revalidate === false
         ? { revalidate: 0 }
-        : { revalidate: options.revalidate ?? CATALOG_REVALIDATE_SECONDS },
-  });
+        : { revalidate: options.revalidate ?? CATALOG_REVALIDATE_SECONDS };
+  }
+
+  const response = await fetchWithRetry(url.toString(), fetchInit);
 
   return parseAdvantShopResponse<T>(response);
 }
 
 async function fetchClientUserId(): Promise<string> {
   const apiKey = getAdvantShopClientApiKey();
-  const url = buildAdvantShopUrl(getAdvantShopBaseUrl(), "api/init");
+  const url = buildAdvantShopUrl(getAdvantShopApiBaseUrl(), "api/init");
   url.searchParams.set("apikey", apiKey);
 
   const response = await fetchWithRetry(url.toString(), {
@@ -243,9 +262,10 @@ async function ensureClientUserId(): Promise<string> {
 
 export async function advantshopFetch<T>(
   path: string,
-  options: FetchOptions = {}
+  options: FetchOptions = {},
+  baseUrl?: string
 ): Promise<T> {
-  return advantshopRequest<T>(path, getAdvantShopServerApiKey(), options);
+  return advantshopRequest<T>(path, getAdvantShopServerApiKey(), options, undefined, baseUrl);
 }
 
 export async function advantshopClientFetch<T>(

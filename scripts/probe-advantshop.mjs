@@ -151,6 +151,38 @@ if (!categoryEntries.length) {
   }
 }
 
+try {
+  const { ok: resOk, status, data } = await request(`${base}/api/order/add`, {
+    apiKey: serverKey,
+    method: "POST",
+    body: {
+      OrderCustomer: { FirstName: "Probe", Phone: "79000000000" },
+      OrderItems: [],
+      Currency: "RUB",
+      ShippingName: "probe",
+      ShippingCost: 0,
+      CheckOrderItemExist: false,
+      CheckOrderItemAvailable: false,
+    },
+  });
+  if (status === 405) {
+    ok = fail("Server API POST /api/order/add", "405 Method Not Allowed — проверьте ADVANTSHOP_BASE_URL (http://shop.funshar.ru) или ADVANTSHOP_API_BASE_URL") && ok;
+  } else if (!resOk && data.status === "error") {
+    const err = Array.isArray(data.errors) ? data.errors.join(", ") : data.errors;
+    if (String(err).toLowerCase().includes("orderitems") || String(err).toLowerCase().includes("ordercustomer")) {
+      console.log(`OK    Server API order/add: POST принят (валидация: ${err})`);
+    } else {
+      ok = fail("Server API POST /api/order/add", err ?? status) && ok;
+    }
+  } else if (resOk) {
+    console.log("OK    Server API order/add: POST принят");
+  } else {
+    ok = fail("Server API POST /api/order/add", data.raw ?? status) && ok;
+  }
+} catch (e) {
+  ok = fail("Server API POST /api/order/add", e) && ok;
+}
+
 console.log("");
 console.log(ok ? "All checks passed." : "Some checks failed — see errors above.");
 process.exit(ok ? 0 : 1);

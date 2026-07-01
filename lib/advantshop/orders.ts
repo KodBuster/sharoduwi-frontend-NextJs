@@ -1,9 +1,12 @@
 import type { CartItem } from "@/lib/cart";
 import type { CheckoutFormData } from "@/lib/checkout";
-import { normalizePhone } from "@/lib/checkout";
+import { formatAdvantShopPhone } from "@/lib/checkout";
 import { findAdvantShopProductById } from "@/lib/advantshop/catalog";
 import { advantshopFetch } from "./client";
-import { isAdvantShopConfigured } from "./config";
+import {
+  getAdvantShopApiBaseUrlProtocolFallback,
+  isAdvantShopConfigured,
+} from "./config";
 import type { AdvantShopOrderAddResponse } from "./types";
 
 type AdvantShopOrderItem = {
@@ -74,7 +77,7 @@ function buildOrderPayload(
   orderItems: AdvantShopOrderItem[]
 ): AdvantShopOrderPayload {
   const { firstName, lastName } = splitCustomerName(input.customer.name);
-  const phone = normalizePhone(input.customer.phone);
+  const phone = formatAdvantShopPhone(input.customer.phone);
 
   return {
     OrderCustomer: {
@@ -119,11 +122,32 @@ export async function submitAdvantShopOrder(
   }
 
   const payload = buildOrderPayload(input, orderItems);
-  const response = await advantshopFetch<AdvantShopOrderAddResponse>("/api/order/add", {
-    method: "POST",
-    body: payload,
-    revalidate: false,
-  });
+
+  try {
+    return await postAdvantShopOrder(payload);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    const fallbackBase = getAdvantShopApiBaseUrlProtocolFallback();
+    if (message.includes("405") && fallbackBase) {
+      return await postAdvantShopOrder(payload, fallbackBase);
+    }
+    throw error;
+  }
+}
+
+async function postAdvantShopOrder(
+  payload: AdvantShopOrderPayload,
+  baseUrl?: string
+): Promise<SubmitStorefrontOrderResult> {
+  const response = await advantshopFetch<AdvantShopOrderAddResponse>(
+    "/api/order/add",
+    {
+      method: "POST",
+      body: payload,
+      revalidate: false,
+    },
+    baseUrl
+  );
 
   if (response.result === false) {
     throw new Error(formatAdvantShopErrors(response.errors));

@@ -29,6 +29,11 @@ export function normalizePhone(phone: string): string {
   return phone.trim();
 }
 
+/** Формат телефона для AdvantShop API: 79001234567 */
+export function formatAdvantShopPhone(phone: string): string {
+  return normalizePhone(phone).replace(/\D/g, "");
+}
+
 export function generateOrderId(): string {
   return `SH-${Date.now()}`;
 }

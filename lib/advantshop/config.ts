@@ -41,6 +41,33 @@ export function getAdvantShopBaseUrl(): string {
   return assertAdvantShopBaseUrl(base);
 }
 
+/** Базовый URL для API-запросов (можно переопределить, если витрина на другом домене). */
+export function getAdvantShopApiBaseUrl(): string {
+  const override = readEnv("ADVANTSHOP_API_BASE_URL");
+  if (override) return assertAdvantShopBaseUrl(override);
+  return getAdvantShopBaseUrl();
+}
+
+/** Альтернативный протокол (http↔https) — на некоторых хостингах POST доступен только по http. */
+export function getAdvantShopApiBaseUrlProtocolFallback(
+  base = getAdvantShopApiBaseUrl()
+): string | undefined {
+  try {
+    const url = new URL(base);
+    if (url.protocol === "https:") {
+      url.protocol = "http:";
+      return url.toString().replace(/\/$/, "");
+    }
+    if (url.protocol === "http:") {
+      url.protocol = "https:";
+      return url.toString().replace(/\/$/, "");
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
+
 export function getAdvantShopServerApiKey(): string {
   const key =
     readEnv("ADVANTSHOP_SERVER_API_KEY") ?? readEnv("ADVANTSHOP_API_KEY");
