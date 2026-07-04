@@ -124,10 +124,6 @@ export function ProductPageContent({
                 <dt>Наполнение</dt>
                 <dd>Гелий</dd>
               </div>
-              <div className="product-spec">
-                <dt>Доставка</dt>
-                <dd>Жуковский и Раменский район</dd>
-              </div>
             </dl>
 
             <div className="product-helpful">
