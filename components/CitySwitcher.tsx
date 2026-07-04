@@ -70,11 +70,46 @@ export function CitySwitcher({
     if (!open) setQuery("");
   }, [open]);
 
+  useEffect(() => {
+    if (!inHeader) return;
+    const bodyClass = "city-picker-open";
+    if (open) document.body.classList.add(bodyClass);
+    else document.body.classList.remove(bodyClass);
+    return () => document.body.classList.remove(bodyClass);
+  }, [open, inHeader]);
+
+  useEffect(() => {
+    if (!open || !inHeader) return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const syncPanelHeight = () => {
+      const root = rootRef.current;
+      const panel = root?.querySelector<HTMLElement>(".city-switcher-panel");
+      if (!panel) return;
+      const top = root!.getBoundingClientRect().top;
+      const maxH = Math.max(180, vv.height - top - 12);
+      panel.style.maxHeight = `${maxH}px`;
+    };
+
+    syncPanelHeight();
+    vv.addEventListener("resize", syncPanelHeight);
+    vv.addEventListener("scroll", syncPanelHeight);
+    window.addEventListener("resize", syncPanelHeight);
+    return () => {
+      vv.removeEventListener("resize", syncPanelHeight);
+      vv.removeEventListener("scroll", syncPanelHeight);
+      window.removeEventListener("resize", syncPanelHeight);
+      const panel = rootRef.current?.querySelector<HTMLElement>(".city-switcher-panel");
+      if (panel) panel.style.maxHeight = "";
+    };
+  }, [open, inHeader]);
+
   const label = city?.name ?? "Куда доставить?";
 
   return (
     <div
-      className={`city-switcher${compact ? " city-switcher--compact" : ""}${inHeader ? " city-switcher--header" : ""}`}
+      className={`city-switcher${compact ? " city-switcher--compact" : ""}${inHeader ? " city-switcher--header" : ""}${open ? " city-switcher--open" : ""}`}
       ref={rootRef}
     >
       <button
