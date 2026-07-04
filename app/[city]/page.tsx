@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import SitePage from "@/components/SitePage";
 import { JsonLd } from "@/components/JsonLd";
@@ -23,7 +24,8 @@ export async function generateMetadata({ params }: CityHomeProps): Promise<Metad
 
 export default async function CityHomePage({ params }: CityHomeProps) {
   const { city: cityParam } = await params;
-  const city = getCityForParams(cityParam)!;
+  const city = getCityForParams(cityParam);
+  if (!city) notFound();
   const faqItems = getCityFaqItems(city);
 
   const schema = toJsonLdGraph(

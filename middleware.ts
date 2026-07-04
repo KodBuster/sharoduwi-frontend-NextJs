@@ -14,6 +14,7 @@ import {
   CITY_COOKIE_MAX_AGE,
   getLegacyPathRedirect,
   getRegionalRootConsolidationRedirect,
+  isAppRootSegment,
 } from "@/lib/cities/routing";
 
 const STATIC_FILE = /\.[a-z0-9]+$/i;
@@ -57,6 +58,15 @@ export async function middleware(request: NextRequest) {
     const rest = segments.slice(1);
     const newPath = cityPath(canonical, rest.length ? `/${rest.join("/")}` : "/");
     return redirectTo(request, newPath, 301);
+  }
+
+  if (
+    segments.length === 1 &&
+    firstSegment &&
+    !isCitySlug(firstSegment) &&
+    !isAppRootSegment(firstSegment)
+  ) {
+    return redirectTo(request, "/", 302);
   }
 
   const cookieCity = request.cookies.get(CITY_COOKIE)?.value;

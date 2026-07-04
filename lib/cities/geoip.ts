@@ -223,7 +223,7 @@ export async function detectGeoCitySlug(request: NextRequest): Promise<CitySlug 
   const fromHeaders = getGeoLocationFromRequest(request);
   if (fromHeaders) {
     const slug = resolveCitySlugFromGeo(fromHeaders);
-    if (slug) return getCityBySlug(slug)!.slug;
+    if (slug) return getCityBySlug(slug)?.slug ?? null;
   }
 
   if (process.env.GEOIP_IP_API === "false") return null;
@@ -235,5 +235,5 @@ export async function detectGeoCitySlug(request: NextRequest): Promise<CitySlug 
   if (!fromApi) return null;
 
   const slug = resolveCitySlugFromGeo(fromApi);
-  return slug ? getCityBySlug(slug)!.slug : null;
+  return slug ? getCityBySlug(slug)?.slug ?? null : null;
 }

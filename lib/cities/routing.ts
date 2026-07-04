@@ -108,6 +108,23 @@ export function getRegionalCityRedirect(
   return getRegionalRootConsolidationRedirect(pathname, citySlug);
 }
 
+/** Первый сегмент URL — не город, а отдельная страница приложения */
+const APP_ROOT_SEGMENTS = new Set([
+  "about",
+  "blog",
+  "catalog",
+  "categories",
+  "checkout",
+  "cities",
+  "delivery",
+  "products",
+  "reviews",
+]);
+
+export function isAppRootSegment(segment: string): boolean {
+  return APP_ROOT_SEGMENTS.has(segment);
+}
+
 export function getLegacyPathRedirect(pathname: string): string | null {
   return LEGACY_PATH_REDIRECTS[normalizePathname(pathname)] ?? null;
 }

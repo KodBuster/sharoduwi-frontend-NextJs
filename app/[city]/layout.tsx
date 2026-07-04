@@ -13,6 +13,8 @@ export function generateStaticParams() {
   return CITY_SLUGS.map((city) => ({ city }));
 }
 
+export const dynamicParams = false;
+
 export default async function CityLayout({ children, params }: CityLayoutProps) {
   const { city: cityParam } = await params;
   const city = getCityBySlug(cityParam);
