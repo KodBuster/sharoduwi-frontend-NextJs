@@ -451,6 +451,8 @@ a.col-card{color:inherit}
 .delivery-table td strong{font-family:'Unbounded',var(--font-unbounded),sans-serif;font-size:18px;
   font-weight:800;color:var(--pink-deep)}
 .delivery-note{font-size:15px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0;max-width:72ch}
+.delivery-note-block{display:grid;gap:6px;margin:0}
+.delivery-note-phone{white-space:nowrap}
 .delivery-note a,.delivery-contact-links a{color:var(--pink-deep);font-weight:800}
 .delivery-note a:hover,.delivery-contact-links a:hover{color:var(--pink)}
 .delivery-note--center{text-align:center;margin:0 auto}
@@ -607,14 +609,15 @@ a.col-card{color:inherit}
 .step{position:relative;text-align:center;padding:34px 22px;border-radius:var(--r-md);background:var(--paper);
   border:1px solid var(--line);box-shadow:var(--shadow-soft);transition:.35s var(--ease)}
 .step:hover{transform:translateY(-8px)}
-.step .num{font-family:'Unbounded';font-size:15px;font-weight:800;color:#fff;width:34px;height:34px;border-radius:50%;
-  display:grid;place-items:center;margin:0 auto 16px}
+.step-visual{display:flex;justify-content:center;margin-bottom:16px}
+.step .ico{position:relative;width:64px;height:64px;margin:0;display:grid;place-items:center;border-radius:20px;background:var(--cream-2)}
+.step .num{position:absolute;top:-7px;left:-7px;font-family:'Unbounded';font-size:13px;font-weight:800;color:#fff;width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;margin:0;z-index:1;box-shadow:0 2px 10px rgba(0,0,0,.12);border:2px solid var(--paper)}
 .step:nth-child(1) .num{background:var(--pink)}
 .step:nth-child(2) .num{background:var(--sky)}
 .step:nth-child(3) .num{background:var(--mint)}
 .step:nth-child(4) .num{background:var(--coral)}
-.step .ico{width:56px;height:56px;margin:0 auto 14px;display:grid;place-items:center;border-radius:18px;background:var(--cream-2)}
-.step .ico svg{width:28px;height:28px;color:var(--pink)}
+.step .ico svg{width:30px;height:30px;color:var(--pink)}
 .step h3{font-size:18px;font-weight:800;margin-bottom:6px}
 .step p{font-size:14.5px;color:var(--ink-2);font-weight:500}
 
@@ -747,6 +750,9 @@ a.col-card{color:inherit}
 .f-social a img{width:24px;height:24px;border-radius:50%;display:block}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:48px;padding-top:24px;
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:rgba(255,255,255,.45);font-size:13px;font-weight:600}
+.footer-credit{margin:16px 0 0;text-align:center;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.35)}
+.footer-credit a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s var(--ease)}
+.footer-credit a:hover{color:var(--pink)}
 
 /* ============================================================
    КОРЗИНА (drawer) + МОДАЛКА КОНТАКТОВ + МОБ.МЕНЮ
@@ -1063,7 +1069,7 @@ a.col-card{color:inherit}
   .card-cart{flex-shrink:0}
   .reviews{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr;gap:14px}
-  .step{padding:24px 18px;min-width:0;overflow:hidden}
+  .step{padding:28px 18px 24px;min-width:0;overflow:visible}
   .step h3,.step p{overflow-wrap:anywhere;word-break:break-word}
   .bento{grid-template-columns:1fr;min-width:0}
   .bt-hero,.bt-wide{grid-column:span 1;grid-row:span 1}
@@ -1260,6 +1266,7 @@ a.col-card{color:inherit}
       text-transform:none;letter-spacing:normal;color:inherit;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px}
     .sd-guarantee .tag.win{background:#e9f7f0;color:var(--ok);}
     .sd-guarantee .tag.sum{background:#fdf0e3;color:var(--warn);}
+    .sd-guarantee .tag.rain{background:#fff0e6;color:var(--coral);}
     .sd-guarantee p{margin:12px 0;}
 
 /* Next.js font variables */

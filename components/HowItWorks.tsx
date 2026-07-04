@@ -55,11 +55,15 @@ export function HowItWorks() {
         <div className="steps">
           {STEPS.map((s) => (
             <div className="step reveal" data-d={s.num} key={s.num}>
-              <div className="num">{s.num}</div>
-              <div className="ico">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  {s.icon}
-                </svg>
+              <div className="step-visual">
+                <div className="ico">
+                  <span className="num" aria-hidden="true">
+                    {s.num}
+                  </span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    {s.icon}
+                  </svg>
+                </div>
               </div>
               <h3>{s.title}</h3>
               <p>{s.text}</p>

@@ -18,6 +18,17 @@ export function getCityHeroStats(city: CityPublic | null | undefined) {
   };
 }
 
+function buildDeliveryPageTitle(city: CityPublic): string {
+  const base = "Доставка гелиевых и воздушных шаров";
+  if (city.slug === "lyubertsy") {
+    return `${base} по Люберцам`;
+  }
+  if (city.hasStores) {
+    return `${base} по ${city.nameInstrumental}`;
+  }
+  return `${base} в ${city.namePrepositional}`;
+}
+
 export function getDeliveryConfigForCity(city: CityPublic) {
   const detailsSlug = city.delivery.detailsSlug;
   return {
@@ -25,7 +36,7 @@ export function getDeliveryConfigForCity(city: CityPublic) {
     path: `/${city.slug}/delivery`,
     cityLabel: city.name,
     deliveryInLabel: city.delivery.deliveryInLabel,
-    title: `Доставка гелиевых и воздушных шаров ${city.hasStores ? "по" : "в"} ${city.nameInstrumental}`,
+    title: buildDeliveryPageTitle(city),
     metaDescription: city.seo.homeDescription,
     lead: city.delivery.lead,
     zones: city.delivery.zones,

@@ -65,10 +65,14 @@ export function DeliveryAreaDetails({ details }: { details: DeliveryAreaDetailsD
               <p className="delivery-pricing-footer">{details.pricingFooterNote}</p>
             ) : null}
 
-            <p className="delivery-note">
-              {details.pricingOtherNote}{" "}
-              <a href={DELIVERY_MANAGER_PHONE_HREF}>{DELIVERY_MANAGER_PHONE}</a>
-            </p>
+            <div className="delivery-note-block">
+              <p className="delivery-note">{details.pricingOtherNote}</p>
+              <p className="delivery-note">
+                <a href={DELIVERY_MANAGER_PHONE_HREF} className="delivery-note-phone">
+                  {DELIVERY_MANAGER_PHONE}
+                </a>
+              </p>
+            </div>
 
             <div className="delivery-extras">
               <article className="info-card">

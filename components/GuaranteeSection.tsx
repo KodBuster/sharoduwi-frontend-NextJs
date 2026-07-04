@@ -84,7 +84,7 @@ export function GuaranteeSection() {
               </tr>
               <tr>
                 <td>
-                  <span className="tag sum">Дождливая погода</span>
+                  <span className="tag rain">Дождливая погода</span>
                 </td>
                 <td>очень влажный</td>
                 <td className="num">1–2&nbsp;дня</td>

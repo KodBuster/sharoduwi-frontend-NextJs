@@ -62,6 +62,9 @@ export function Footer() {
                 <CityLink href="/ramenskoe/delivery">По Раменскому району</CityLink>
               </li>
               <li>
+                <CityLink href="/lyubertsy/delivery">По Люберецкому округу</CityLink>
+              </li>
+              <li>
                 <CityLink href="/about#stores">Самовывоз из магазина</CityLink>
               </li>
               <li>
@@ -121,6 +124,12 @@ export function Footer() {
           </span>
           <span>Сделано с любовью 🎈</span>
         </div>
+        <p className="footer-credit">
+          Разработка Digital Агентство{" "}
+          <a href="https://kodbuster.ru/" target="_blank" rel="noopener noreferrer">
+            KodBuster
+          </a>
+        </p>
       </div>
     </footer>
   );
