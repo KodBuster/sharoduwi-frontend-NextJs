@@ -7,13 +7,19 @@ export function getCityFaqItems(city: CityPublic | null | undefined) {
   return FAQ_ITEMS;
 }
 
+export type HeroMiddleStat =
+  | { type: "count"; value: number; suffix?: string; label: string }
+  | { type: "text"; value: string; label: string };
+
 export function getCityHeroStats(city: CityPublic | null | undefined) {
-  const storesLabel = city?.hasStores
-    ? "магазина в городе"
-    : `доставка в ${city?.namePrepositional ?? "район"}`;
+  const middle: HeroMiddleStat = city?.hasStores
+    ? { type: "count", value: 2, label: "магазина в городе" }
+    : city
+      ? { type: "text", value: "24/7", label: `доставка в ${city.namePrepositional}` }
+      : { type: "count", value: 2, label: "магазина в Жуковском" };
 
   return {
-    storesLabel,
+    middle,
     areaLabel: city?.seo.areaLabel ?? "Жуковском и Раменском районе",
   };
 }

@@ -1,8 +1,8 @@
 import type { Product } from "@/lib/data";
 
-export const HERO_FEATURED_NAME = "Товар а588";
+export const HERO_FEATURED_NAME = "Товар а220";
 export const HERO_FEATURED_SUBTITLE = "фонтан для праздника";
-export const HERO_FEATURED_ART_NO = "а588";
+export const HERO_FEATURED_ART_NO = "а220";
 
 function normalize(value: string): string {
   return value.replace(/\s+/g, "").toLowerCase().replace(/а/g, "a");

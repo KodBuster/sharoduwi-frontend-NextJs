@@ -70,8 +70,19 @@ export function Hero() {
                 <span>лет дарим праздник</span>
               </div>
               <div className="st">
-                <b data-count="2">0</b>
-                <span>{heroStats.storesLabel}</span>
+                {heroStats.middle.type === "count" ? (
+                  <b
+                    data-count={heroStats.middle.value}
+                    {...(heroStats.middle.suffix
+                      ? { "data-suffix": heroStats.middle.suffix }
+                      : {})}
+                  >
+                    0
+                  </b>
+                ) : (
+                  <b>{heroStats.middle.value}</b>
+                )}
+                <span>{heroStats.middle.label}</span>
               </div>
               <div className="st">
                 <b data-count="5000" data-suffix="+">
