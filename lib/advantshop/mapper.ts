@@ -21,12 +21,12 @@ function pickImage(
   const main = photos.find((photo) => photo.main) ?? photos[0];
 
   return (
-    main?.bigSrc ??
-    product.photoBig ??
     main?.middleSrc ??
     product.photoMiddle ??
     main?.smallSrc ??
     product.photoSmall ??
+    main?.bigSrc ??
+    product.photoBig ??
     undefined
   );
 }
@@ -132,7 +132,7 @@ export function collectImages(photos?: AdvantShopPhoto[] | null): string[] {
   if (!photos?.length) return [];
 
   return photos
-    .map((photo) => photo.bigSrc ?? photo.middleSrc ?? photo.smallSrc)
+    .map((photo) => photo.middleSrc ?? photo.smallSrc ?? photo.bigSrc)
     .filter((src): src is string => Boolean(src));
 }
 

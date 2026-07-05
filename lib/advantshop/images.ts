@@ -51,11 +51,20 @@ export function isAllowedAdvantShopImageUrl(src: string): boolean {
   }
 }
 
+/** Средний размер вместо big — быстрее грузится и не упирается в лимит кэша Next.js (2 MB). */
+export function preferMiddleAdvantShopImageUrl(src: string): string {
+  if (!src.includes("/pictures/")) return src;
+  return src
+    .replace("/pictures/product/big/", "/pictures/product/middle/")
+    .replace(/_big\.(png|jpe?g|webp|gif)/gi, "_middle.$1");
+}
+
 export function resolveProductImageUrl(src: string): string {
   if (!src || src.startsWith("/")) return src;
 
   if (isAdvantShopConfigured() && isAdvantShopImageUrl(src)) {
-    return `/api/advantshop-image?src=${encodeURIComponent(src)}`;
+    const normalized = preferMiddleAdvantShopImageUrl(src);
+    return `/api/advantshop-image?src=${encodeURIComponent(normalized)}`;
   }
 
   return src;
