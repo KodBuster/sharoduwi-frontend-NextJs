@@ -13,7 +13,8 @@ export function generateStaticParams() {
   return CITY_SLUGS.map((city) => ({ city }));
 }
 
-export const dynamicParams = false;
+/** Неизвестные slug — 404 через layout; без этого Next отдаёт 500 NoFallbackError */
+export const dynamicParams = true;
 
 export default async function CityLayout({ children, params }: CityLayoutProps) {
   const { city: cityParam } = await params;

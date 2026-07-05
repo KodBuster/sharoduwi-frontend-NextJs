@@ -61,7 +61,6 @@ export async function middleware(request: NextRequest) {
   }
 
   if (
-    segments.length === 1 &&
     firstSegment &&
     !isCitySlug(firstSegment) &&
     !isAppRootSegment(firstSegment)
