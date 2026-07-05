@@ -1,28 +1,27 @@
 import { NextResponse } from "next/server";
 
-import { isAllowedAdvantShopImageUrl, preferMiddleAdvantShopImageUrl } from "@/lib/advantshop/images";
+import {
+  getAdvantShopImageFallbackUrl,
+  isAllowedAdvantShopImageUrl,
+} from "@/lib/advantshop/images";
 
 async function fetchAdvantShopImage(src: string, headers: HeadersInit) {
   const response = await fetch(src, { headers, cache: "no-store" });
   if (response.ok) return response;
 
-  const bigSrc = src
-    .replace("/pictures/product/middle/", "/pictures/product/big/")
-    .replace(/_middle\.(png|jpe?g|webp|gif)/gi, "_big.$1");
-  if (bigSrc === src) return response;
+  const fallbackSrc = getAdvantShopImageFallbackUrl(src);
+  if (!fallbackSrc || fallbackSrc === src) return response;
 
-  return fetch(bigSrc, { headers, cache: "no-store" });
+  return fetch(fallbackSrc, { headers, cache: "no-store" });
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const rawSrc = searchParams.get("src");
+  const src = searchParams.get("src")?.trim();
 
-  if (!rawSrc || !isAllowedAdvantShopImageUrl(rawSrc)) {
+  if (!src || !isAllowedAdvantShopImageUrl(src)) {
     return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
   }
-
-  const src = preferMiddleAdvantShopImageUrl(rawSrc);
 
   const headers: HeadersInit = {
     Accept: "image/*",

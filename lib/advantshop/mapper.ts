@@ -3,7 +3,7 @@ import { getCollectionName } from "@/lib/data";
 import type { CollectionSlug } from "@/lib/products";
 import { getProductSlug } from "@/lib/product-slug";
 import { inferProductTags, parseTagsFromPropertyValue } from "@/lib/products";
-import { resolveProductImageUrl, resolveProductImages } from "./images";
+import { resolveAdvantShopImageUrl, resolveAdvantShopImageUrls } from "./images";
 import type {
   AdvantShopCatalogProduct,
   AdvantShopPhoto,
@@ -11,7 +11,7 @@ import type {
   AdvantShopProperty,
 } from "./types";
 
-function pickImage(
+function pickCatalogImage(
   product: Pick<
     AdvantShopCatalogProduct,
     "photoBig" | "photoMiddle" | "photoSmall" | "photos"
@@ -29,6 +29,39 @@ function pickImage(
     product.photoBig ??
     undefined
   );
+}
+
+function pickProductPageImage(
+  product: Pick<
+    AdvantShopCatalogProduct,
+    "photoBig" | "photoMiddle" | "photoSmall" | "photos"
+  >
+): string | undefined {
+  const photos = product.photos ?? [];
+  const main = photos.find((photo) => photo.main) ?? photos[0];
+
+  return (
+    main?.bigSrc ??
+    product.photoBig ??
+    main?.middleSrc ??
+    product.photoMiddle ??
+    main?.smallSrc ??
+    product.photoSmall ??
+    undefined
+  );
+}
+
+function collectProductPageImages(
+  product: Pick<AdvantShopProductDetails, "photoBig" | "photoMiddle" | "photoSmall" | "photos">
+): string[] {
+  const fromPhotos = (product.photos ?? [])
+    .map((photo) => photo.bigSrc ?? photo.middleSrc ?? photo.smallSrc)
+    .filter((src): src is string => Boolean(src));
+
+  if (fromPhotos.length) return fromPhotos;
+
+  const single = pickProductPageImage(product);
+  return single ? [single] : [];
 }
 
 function pickArtNo(
@@ -110,7 +143,7 @@ export function mapCatalogProduct(
   properties: AdvantShopProperty[] = []
 ): Product {
   const { price, old } = pickPrices(item);
-  const rawImage = pickImage(item);
+  const rawImage = pickCatalogImage(item);
 
   return {
     id: item.productId,
@@ -122,18 +155,10 @@ export function mapCatalogProduct(
     old,
     colors: ["pink"],
     tag: mapBadge(item),
-    img: rawImage ? resolveProductImageUrl(rawImage) : undefined,
+    img: rawImage ? resolveAdvantShopImageUrl(rawImage, "middle") : undefined,
     artNo: pickArtNo(item),
     urlPath: item.urlPath,
   };
-}
-
-export function collectImages(photos?: AdvantShopPhoto[] | null): string[] {
-  if (!photos?.length) return [];
-
-  return photos
-    .map((photo) => photo.middleSrc ?? photo.smallSrc ?? photo.bigSrc)
-    .filter((src): src is string => Boolean(src));
 }
 
 export function mapProductDetails(
@@ -142,7 +167,7 @@ export function mapProductDetails(
   properties: AdvantShopProperty[] = []
 ): ProductDetails {
   const base = mapCatalogProduct(item, collectionSlug, properties);
-  const images = resolveProductImages(collectImages(item.photos));
+  const images = resolveAdvantShopImageUrls(collectProductPageImages(item), "big");
   const primaryImage = images[0] ?? base.img;
 
   return {
