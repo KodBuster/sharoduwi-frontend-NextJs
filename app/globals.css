@@ -1072,13 +1072,13 @@ a.col-card{color:inherit}
   .header-city .city-switcher--header.city-switcher--open .city-switcher-panel{
     position:relative;top:0;left:0;right:0;width:calc(100% - 16px);max-width:none;margin:0;
     max-height:min(52dvh,360px);box-shadow:0 12px 32px rgba(29,20,38,.14)}
-  body.site-scrolled-down:not(.city-picker-open) .header-inner{grid-template-areas:"logo actions"}
+  body.site-scrolled-down:not(.city-picker-open) .header-inner{row-gap:0}
   body.site-scrolled-down:not(.city-picker-open) .topbar,
-  body.site-scrolled-down:not(.city-picker-open) .header-city,
   body.city-picker-open .topbar{max-height:0;padding-top:0;padding-bottom:0;opacity:0;pointer-events:none;transform:translateY(-100%)}
+  body.site-scrolled-down:not(.city-picker-open) .header-city{max-height:0;padding:0;margin:0;opacity:0;pointer-events:none;overflow:hidden;border:none}
   body.city-picker-open .header-city{max-height:none;opacity:1;pointer-events:auto;transform:none;overflow:visible}
   body.city-picker-open .header-city{z-index:45}
-  .head-actions{grid-area:actions;gap:3px;flex:0 0 auto;padding-right:0;position:relative}
+  .head-actions{grid-area:actions;justify-self:end;align-self:center;gap:3px;flex:0 0 auto;padding-right:0;position:relative}
   .icon-btn{width:36px;height:36px;flex-shrink:0;background:#fff;
     box-shadow:0 0 0 1px var(--line),0 4px 12px -6px rgba(40,16,42,.12)}
   .icon-btn svg{width:18px;height:18px}
