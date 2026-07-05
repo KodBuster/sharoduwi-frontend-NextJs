@@ -32,6 +32,7 @@ type AdvantShopOrderPayload = {
   ShippingCost: number;
   CheckOrderItemExist: boolean;
   CheckOrderItemAvailable: boolean;
+  SkipBusinessProcessesAfterCreatingOrder?: boolean;
   OrderItems: AdvantShopOrderItem[];
 };
 
@@ -115,6 +116,7 @@ function buildOrderPayload(
     ShippingCost: input.deliveryFee,
     CheckOrderItemExist: true,
     CheckOrderItemAvailable: false,
+    SkipBusinessProcessesAfterCreatingOrder: false,
     OrderItems: orderItems,
   };
 }

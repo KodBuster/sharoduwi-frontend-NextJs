@@ -76,6 +76,7 @@ function CheckoutContent() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [confirmationEmailSent, setConfirmationEmailSent] = useState(false);
 
   useEffect(() => {
     setCity(resolveCheckoutCityName(ctxCity));
@@ -146,7 +147,11 @@ function CheckoutContent() {
         }),
       });
 
-      const data = (await response.json()) as { id?: string; error?: string };
+      const data = (await response.json()) as {
+        id?: string;
+        error?: string;
+        emailSent?: boolean;
+      };
 
       if (!response.ok) {
         setError(data.error ?? "Не удалось оформить заказ");
@@ -154,6 +159,7 @@ function CheckoutContent() {
       }
 
       const id = data.id ?? "unknown";
+      setConfirmationEmailSent(Boolean(data.emailSent));
       trackOrderSent(
         id,
         total,
@@ -193,6 +199,11 @@ function CheckoutContent() {
                 Номер заказа: <strong>{orderId}</strong>. Мы свяжемся с вами в ближайшее время для
                 подтверждения.
               </p>
+              {confirmationEmailSent && email.trim() && (
+                <p>
+                  Письмо с подтверждением отправлено на <strong>{email.trim()}</strong>.
+                </p>
+              )}
               <div className="checkout-success-actions">
                 <CityLink href="/catalog" className="btn btn-primary">
                   В каталог

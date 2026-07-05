@@ -9,6 +9,7 @@ import {
   validateCheckoutForm,
   type CheckoutFormData,
 } from "@/lib/checkout";
+import { sendOrderConfirmationEmail } from "@/lib/order-email";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -71,12 +72,31 @@ export async function POST(request: Request) {
       citySlug: body.citySlug?.trim() || undefined,
     });
 
+    let emailSent = false;
+    if (customer.email) {
+      try {
+        await sendOrderConfirmationEmail({
+          orderId,
+          advantshopOrderNumber: advantshop.advantshopOrderNumber,
+          customer,
+          items: body.items,
+          subtotal,
+          deliveryFee,
+          total,
+        });
+        emailSent = true;
+      } catch (emailError) {
+        console.error("Order confirmation email error:", emailError);
+      }
+    }
+
     return NextResponse.json({
       id: orderId,
       advantshopOrderId: advantshop.advantshopOrderId,
       advantshopOrderNumber: advantshop.advantshopOrderNumber,
       deliveryFee,
       total,
+      emailSent,
     });
   } catch (error) {
     console.error("Order error:", error);
