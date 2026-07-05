@@ -66,8 +66,7 @@ function orderEmailLogoAttachment():
 }
 
 export async function sendOrderConfirmationEmail(input: {
-  orderId: string;
-  advantshopOrderNumber?: string;
+  orderNumber: string;
   customer: CheckoutFormData;
   items: CartItem[];
   subtotal: number;
@@ -88,9 +87,7 @@ export async function sendOrderConfirmationEmail(input: {
   const from =
     process.env.ORDER_EMAIL_FROM?.trim() || process.env.SMTP_USER!.trim();
   const replyTo = process.env.ORDER_EMAIL_REPLY_TO?.trim() || from;
-  const orderNumber =
-    input.advantshopOrderNumber?.trim() ||
-    input.orderId.replace(/^SH-/, "");
+  const orderNumber = input.orderNumber.trim();
   const subject = `Заказ ${orderNumber} принят — ${SITE_NAME}`;
   const { html, text } = buildOrderConfirmationEmail(input);
   const logo = orderEmailLogoAttachment();

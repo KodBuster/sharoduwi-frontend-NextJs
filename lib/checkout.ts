@@ -38,10 +38,6 @@ export function formatAdvantShopPhone(phone: string): string {
   return normalizePhone(phone).replace(/\D/g, "");
 }
 
-export function generateOrderId(): string {
-  return `SH-${Date.now()}`;
-}
-
 export function getDeliveryFee(): number {
   return 0;
 }

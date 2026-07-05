@@ -24,7 +24,7 @@ type AdvantShopOrderPayload = {
     Apartment?: string;
     Country?: string;
   };
-  Number: string;
+  Number?: string;
   OrderSource: string;
   Currency: string;
   CustomerComment?: string;
@@ -38,7 +38,6 @@ type AdvantShopOrderPayload = {
 };
 
 export type SubmitStorefrontOrderInput = {
-  orderId: string;
   customer: CheckoutFormData;
   items: CartItem[];
   deliveryFee: number;
@@ -107,7 +106,6 @@ function buildOrderPayload(
       City: input.customer.city?.trim() || "Жуковский",
       Street: input.customer.address?.trim() || "Самовывоз / уточнить при звонке",
     },
-    Number: input.orderId.replace(/^SH-/, ""),
     OrderSource: input.citySlug
       ? `${process.env.ADVANTSHOP_ORDER_SOURCE?.trim() || "sharoduwi.ru"} · ${input.citySlug}`
       : process.env.ADVANTSHOP_ORDER_SOURCE?.trim() || "sharoduwi.ru",
@@ -164,8 +162,13 @@ async function postAdvantShopOrder(
     throw new Error(formatAdvantShopErrors(response.errors));
   }
 
+  const advantshopOrderNumber = response.obj?.Number?.trim();
+  if (!advantshopOrderNumber) {
+    throw new Error("AdvantShop не вернул номер заказа");
+  }
+
   return {
     advantshopOrderId: response.obj?.Id,
-    advantshopOrderNumber: response.obj?.Number,
+    advantshopOrderNumber,
   };
 }

@@ -4,7 +4,6 @@ import { submitAdvantShopOrder } from "@/lib/advantshop/orders";
 import { isAdvantShopConfigured } from "@/lib/advantshop/config";
 import type { CartItem } from "@/lib/cart";
 import {
-  generateOrderId,
   getDeliveryFee,
   validateCheckoutForm,
   type CheckoutFormData,
@@ -61,23 +60,22 @@ export async function POST(request: Request) {
       : body.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryFee = getDeliveryFee();
   const total = subtotal + deliveryFee;
-  const orderId = generateOrderId();
 
   try {
     const advantshop = await submitAdvantShopOrder({
-      orderId,
       customer,
       items: body.items,
       deliveryFee,
       citySlug: body.citySlug?.trim() || undefined,
     });
 
+    const orderNumber = advantshop.advantshopOrderNumber!;
+
     let emailSent = false;
     if (customer.email) {
       try {
         emailSent = await sendOrderConfirmationEmail({
-          orderId,
-          advantshopOrderNumber: advantshop.advantshopOrderNumber,
+          orderNumber,
           customer,
           items: body.items,
           subtotal,
@@ -87,7 +85,7 @@ export async function POST(request: Request) {
         });
         if (!emailSent) {
           console.warn(
-            `Order ${orderId}: confirmation email not sent (SMTP not configured on server)`
+            `Order ${orderNumber}: confirmation email not sent (SMTP not configured on server)`
           );
         }
       } catch (emailError) {
@@ -96,9 +94,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      id: orderId,
+      id: orderNumber,
       advantshopOrderId: advantshop.advantshopOrderId,
-      advantshopOrderNumber: advantshop.advantshopOrderNumber,
       deliveryFee,
       total,
       emailSent,

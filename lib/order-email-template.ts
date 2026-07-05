@@ -16,8 +16,7 @@ export const ORDER_EMAIL_LOGO_PATH = path.join(
 );
 
 export type OrderEmailContentInput = {
-  orderId: string;
-  advantshopOrderNumber?: string;
+  orderNumber: string;
   customer: CheckoutFormData;
   items: CartItem[];
   subtotal: number;
@@ -60,10 +59,7 @@ function splitCustomerName(fullName: string): {
 }
 
 function displayOrderNumber(input: OrderEmailContentInput): string {
-  if (input.advantshopOrderNumber?.trim()) {
-    return input.advantshopOrderNumber.trim();
-  }
-  return input.orderId.replace(/^SH-/, "");
+  return input.orderNumber.trim();
 }
 
 function productHref(item: CartItem, citySlug?: string): string {
