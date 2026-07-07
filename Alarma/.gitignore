@@ -1,9 +1,0 @@
-/node_modules
-/.next
-/out
-.env.local
-.env*.local
-# Хранилище подписок — не коммитим (у каждого сервера своё).
-/data/subscriptions.json
-*.tsbuildinfo
-next-env.d.ts

@@ -119,6 +119,7 @@ const APP_ROOT_SEGMENTS = new Set([
   "delivery",
   "products",
   "reviews",
+  "staff-alert",
 ]);
 
 export function isAppRootSegment(segment: string): boolean {

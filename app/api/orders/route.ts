@@ -9,6 +9,7 @@ import {
   type CheckoutFormData,
 } from "@/lib/checkout";
 import { sendOrderConfirmationEmail } from "@/lib/order-email";
+import { sendStaffAlert } from "@/lib/staff-alert/send";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -92,6 +93,14 @@ export async function POST(request: Request) {
         console.error("Order confirmation email error:", emailError);
       }
     }
+
+    void sendStaffAlert({
+      title: "🚨 Новый заказ в ШАРОДУВЫ!",
+      body: `Заказ №${orderNumber} на сумму ${total} ₽`,
+      orderId: String(orderNumber),
+    }).catch((alertError) => {
+      console.error("Staff alert error:", alertError);
+    });
 
     return NextResponse.json({
       id: orderNumber,

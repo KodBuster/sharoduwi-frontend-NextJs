@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           "/checkout",
           "/*/checkout",
+          "/staff-alert",
           "/api/",
           ...NON_INDEXABLE_ROOT_REGIONAL_PATHS,
         ],
@@ -22,6 +23,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           "/checkout",
           "/*/checkout",
+          "/staff-alert",
           "/api/",
           ...NON_INDEXABLE_ROOT_REGIONAL_PATHS,
         ],

@@ -8,7 +8,8 @@
     "start": "node scripts/start-server.mjs",
     "lint": "eslint",
     "probe:advantshop": "node scripts/probe-advantshop.mjs",
-    "seo:check": "node scripts/seo-webmaster-check.mjs"
+    "seo:check": "node scripts/seo-webmaster-check.mjs",
+    "vapid": "node scripts/generate-vapid.mjs"
   },
   "dependencies": {
     "@fontsource/onest": "^5.2.11",
@@ -22,12 +23,15 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@types/nodemailer": "^8.0.1",
+    "@types/web-push": "^3.6.4",
     "eslint": "^9",
-    "eslint-config-next": "^15.5.19"
+    "eslint-config-next": "^15.5.19",
+    "exceljs": "^4.4.0"
   }
 }

@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Staff Alert PWA — push subscriptions (per-server)
+/data/subscriptions.json

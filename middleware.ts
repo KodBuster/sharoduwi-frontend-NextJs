@@ -16,6 +16,11 @@ import {
   getRegionalRootConsolidationRedirect,
   isAppRootSegment,
 } from "@/lib/cities/routing";
+import {
+  STAFF_ALERT_COOKIE,
+  isStaffAlertPasswordConfigured,
+} from "@/lib/staff-alert/constants";
+import { isValidStaffAlertSession } from "@/lib/staff-alert/session-token";
 
 const STATIC_FILE = /\.[a-z0-9]+$/i;
 
@@ -34,6 +39,20 @@ function setCityCookie(response: NextResponse, slug: string) {
   response.headers.set("x-city-slug", slug);
 }
 
+function getStaffAlertAuthRedirect(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (!pathname.startsWith("/staff-alert")) {
+    return null;
+  }
+
+  if (pathname === "/staff-alert/login" || pathname.startsWith("/staff-alert/login/")) {
+    return null;
+  }
+
+  return "check";
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -42,6 +61,29 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/_next") ||
     STATIC_FILE.test(pathname)
   ) {
+    return NextResponse.next();
+  }
+
+  if (getStaffAlertAuthRedirect(request) === "check") {
+    if (!isStaffAlertPasswordConfigured()) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/staff-alert/login";
+      loginUrl.search = "";
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const token = request.cookies.get(STAFF_ALERT_COOKIE)?.value;
+    const authenticated = await isValidStaffAlertSession(token);
+    if (!authenticated) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/staff-alert/login";
+      loginUrl.search = "";
+      loginUrl.searchParams.set(
+        "redirect",
+        `${pathname}${request.nextUrl.search}`
+      );
+      return NextResponse.redirect(loginUrl);
+    }
     return NextResponse.next();
   }
 
