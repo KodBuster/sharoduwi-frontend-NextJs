@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { COLLECTIONS, COL_VISIBLE, COLORS } from "@/lib/data";
-import { getCollectionImageSrc } from "@/lib/collection-images";
+import { getCollectionImageSrc, getCollectionVideoSrc } from "@/lib/collection-images";
 import { hexa } from "@/lib/balloons";
 import { CityLink } from "@/components/CityLink";
 
@@ -39,6 +39,7 @@ export function Collections() {
               c.bg ||
               `linear-gradient(150deg,${hexa(COLORS[c.colors[0]], 0.3)},${hexa(COLORS[c.colors[c.colors.length - 1]], 0.16)})`;
             const imgSrc = c.img ?? getCollectionImageSrc(c.slug);
+            const videoSrc = getCollectionVideoSrc(c.slug);
             return (
               <CityLink
                 href={`/categories/${c.slug}`}
@@ -47,7 +48,21 @@ export function Collections() {
                 style={{ animationDelay: `${idx * 0.04}s` }}
               >
                 <div className="col-bg" style={{ background: grad }}>
-                  <img className="col-img" src={imgSrc} alt={c.name} loading="lazy" decoding="async" />
+                  {videoSrc ? (
+                    <video
+                      className="col-img col-video"
+                      src={videoSrc}
+                      poster={imgSrc}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <img className="col-img" src={imgSrc} alt={c.name} loading="lazy" decoding="async" />
+                  )}
                 </div>
                 <div className="col-overlay" />
                 <div className="col-info">

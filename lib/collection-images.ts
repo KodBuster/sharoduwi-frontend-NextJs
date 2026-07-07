@@ -24,7 +24,17 @@ const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
   pirotekhnika: "Пиротехника.png",
 };
 
+const COLLECTION_VIDEO_FILES: Partial<Record<CollectionSlug, string>> = {
+  "nabory-sharov-bazovye": "Наборы шаров базовые_video.mp4",
+};
+
 export function getCollectionImageSrc(slug: CollectionSlug): string {
   const file = COLLECTION_IMAGE_FILES[slug];
+  return `/images/${encodeURIComponent(file)}`;
+}
+
+export function getCollectionVideoSrc(slug: CollectionSlug): string | undefined {
+  const file = COLLECTION_VIDEO_FILES[slug];
+  if (!file) return undefined;
   return `/images/${encodeURIComponent(file)}`;
 }
