@@ -329,8 +329,11 @@ export default function StaffAlertPage() {
       const json = (await res.json()) as {
         ok?: boolean;
         error?: string;
+        errors?: string[];
         sent?: number;
+        failed?: number;
         total?: number;
+        removed?: number;
       };
 
       if (!res.ok) {
@@ -338,9 +341,24 @@ export default function StaffAlertPage() {
       }
 
       if (json.ok) {
-        setMessage(`Сигнал отправлен! Доставлено устройств: ${json.sent} из ${json.total}.`);
+        const failedPart =
+          json.failed && json.failed > 0
+            ? ` Не доставлено: ${json.failed}.`
+            : "";
+        const removedPart =
+          json.removed && json.removed > 0
+            ? ` Удалено устаревших подписок: ${json.removed}.`
+            : "";
+        setMessage(
+          `Сигнал отправлен! Доставлено устройств: ${json.sent} из ${json.total}.${failedPart}${removedPart}`
+        );
       } else {
-        setMessage(json.error || "Не удалось отправить сигнал.");
+        const details = json.errors?.length
+          ? ` ${json.errors.join(" ")}`
+          : "";
+        setMessage(
+          (json.error || "Не удалось отправить сигнал.") + details
+        );
       }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Ошибка отправки");

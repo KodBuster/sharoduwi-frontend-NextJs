@@ -22,17 +22,13 @@ export async function POST(request: NextRequest) {
 
   const result = await sendStaffAlert(payload);
 
-  if (!result.ok) {
-    return NextResponse.json(
-      { ok: false, error: result.error },
-      { status: 200 }
-    );
-  }
-
   return NextResponse.json({
-    ok: true,
+    ok: result.ok,
     sent: result.sent,
+    failed: result.failed,
     removed: result.removed,
     total: result.total,
+    error: result.error,
+    errors: result.errors,
   });
 }
