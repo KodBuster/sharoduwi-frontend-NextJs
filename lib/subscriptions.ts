@@ -2,14 +2,14 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { PushSubscription } from "web-push";
 
-export type AlarmSoundId = 0 | 1 | 2;
+export type AlarmSoundId = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export type StoredPushSubscription = PushSubscription & {
   soundId?: AlarmSoundId;
 };
 
 function isAlarmSoundId(value: number): value is AlarmSoundId {
-  return value === 0 || value === 1 || value === 2;
+  return Number.isInteger(value) && value >= 0 && value <= 9;
 }
 
 const DATA_DIR = path.join(process.cwd(), "data");

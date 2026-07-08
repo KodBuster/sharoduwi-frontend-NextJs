@@ -13,7 +13,7 @@ import {
 export const runtime = "nodejs";
 
 function isAlarmSoundId(value: number): value is AlarmSoundId {
-  return value === 0 || value === 1 || value === 2;
+  return Number.isInteger(value) && value >= 0 && value <= 9;
 }
 
 type SubscribeBody = {

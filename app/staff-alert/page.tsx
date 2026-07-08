@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
+  ALARM_SOUND_GROUPS,
   ALARM_SOUNDS,
+  getSoundsByGroup,
   type AlarmSoundId,
   ensureAudioContext,
   getAlarmCycleInterval,
@@ -33,6 +35,7 @@ export default function StaffAlertPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const [alarmOn, setAlarmOn] = useState(false);
+  const [orderBannerOn, setOrderBannerOn] = useState(false);
   const [selectedSound, setSelectedSound] = useState<AlarmSoundId>(0);
   const [soundSaved, setSoundSaved] = useState(false);
   const [isWindows, setIsWindows] = useState(false);
@@ -78,10 +81,16 @@ export default function StaffAlertPage() {
 
   const stopAlarm = useCallback(() => {
     setAlarmOn(false);
+    setOrderBannerOn(false);
     clearAlarmTimer();
     clearPreviewTimer();
     if ("vibrate" in navigator) navigator.vibrate(0);
   }, [clearAlarmTimer, clearPreviewTimer]);
+
+  const startOrderAlarm = useCallback(() => {
+    setOrderBannerOn(true);
+    startAlarm();
+  }, [startAlarm]);
 
   const persistSoundChoice = useCallback(
     async (soundId: AlarmSoundId, preview = true) => {
@@ -199,11 +208,11 @@ export default function StaffAlertPage() {
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("alarm") === "1") {
-      setTimeout(() => startAlarm(), 150);
+      setTimeout(() => startOrderAlarm(), 150);
     }
 
     const onMessage = (event: MessageEvent) => {
-      if (event.data?.type === "PLAY_ALARM") startAlarm();
+      if (event.data?.type === "PLAY_ALARM") startOrderAlarm();
     };
     navigator.serviceWorker.addEventListener("message", onMessage);
 
@@ -212,7 +221,12 @@ export default function StaffAlertPage() {
       clearAlarmTimer();
       clearPreviewTimer();
     };
-  }, [clearAlarmTimer, clearPreviewTimer, startAlarm, syncExistingSubscription]);
+  }, [
+    clearAlarmTimer,
+    clearPreviewTimer,
+    startOrderAlarm,
+    syncExistingSubscription,
+  ]);
 
   const subscribe = useCallback(async () => {
     try {
@@ -322,9 +336,11 @@ export default function StaffAlertPage() {
 
   return (
     <main className="staff-alert-page">
-      <p className="staff-alert-order-blink" role="status" aria-live="polite">
-        Новый заказ на сайте!
-      </p>
+      {orderBannerOn && (
+        <p className="staff-alert-order-blink" role="status" aria-live="polite">
+          Новый заказ на сайте!
+        </p>
+      )}
 
       <div className="staff-alert-balloons" aria-hidden>
         🎈🎈🎈🎈🎈
@@ -351,24 +367,31 @@ export default function StaffAlertPage() {
         aria-label="Выбор сигнала"
       >
         <strong>{isSubscribed ? "Шаг 2. Выберите и сохраните сигнал" : "Шаг 2. Выбор сигнала"}</strong>
-        <div className="staff-alert-sound-grid">
-          {ALARM_SOUNDS.map((sound) => {
-            const active = selectedSound === sound.id;
-            return (
-              <button
-                key={sound.id}
-                type="button"
-                className={`staff-alert-sound-option${active ? " staff-alert-sound-option--active" : ""}`}
-                disabled={!isSubscribed || isBusy}
-                onClick={() => void persistSoundChoice(sound.id)}
-              >
-                <span className="staff-alert-sound-emoji">{sound.emoji}</span>
-                <span className="staff-alert-sound-name">{sound.name}</span>
-                <span className="staff-alert-sound-desc">{sound.description}</span>
-              </button>
-            );
-          })}
-        </div>
+        {ALARM_SOUND_GROUPS.map((group) => (
+          <div key={group.id} className="staff-alert-sound-group">
+            <h3 className="staff-alert-sound-group-title">
+              <span aria-hidden>{group.emoji}</span> {group.title}
+            </h3>
+            <div className="staff-alert-sound-grid">
+              {getSoundsByGroup(group.id).map((sound) => {
+                const active = selectedSound === sound.id;
+                return (
+                  <button
+                    key={sound.id}
+                    type="button"
+                    className={`staff-alert-sound-option staff-alert-sound-option--${group.id}${active ? " staff-alert-sound-option--active" : ""}`}
+                    disabled={!isSubscribed || isBusy}
+                    onClick={() => void persistSoundChoice(sound.id)}
+                  >
+                    <span className="staff-alert-sound-emoji">{sound.emoji}</span>
+                    <span className="staff-alert-sound-name">{sound.name}</span>
+                    <span className="staff-alert-sound-desc">{sound.description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
         <p className="staff-alert-hint">
           {isSubscribed
             ? soundSaved
