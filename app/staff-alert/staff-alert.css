@@ -28,16 +28,57 @@ button:active {
   color: #fff;
 }
 
+.staff-alert-order-blink {
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: clamp(14px, 4.2vw, 20px);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  border: 3px solid #fff;
+  animation: staff-alert-order-blink 1.1s ease-in-out infinite;
+}
+
+@keyframes staff-alert-order-blink {
+  0%,
+  100% {
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 0 0 2px #7f1d1d, 0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+
+  50% {
+    background: #fef08a;
+    color: #7f1d1d;
+    box-shadow: 0 0 0 2px #fff, 0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+}
+
 .staff-alert-balloons {
-  font-size: 40px;
-  letter-spacing: 6px;
+  width: 100%;
+  max-width: 420px;
+  font-size: clamp(18px, 5.2vw, 36px);
+  letter-spacing: clamp(1px, 1.1vw, 5px);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .staff-alert-title {
-  font-size: 44px;
+  font-size: clamp(28px, 8vw, 44px);
+  line-height: 1.05;
   margin: 0;
   font-weight: 900;
   text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .staff-alert-subtitle {
@@ -221,4 +262,20 @@ button:active {
 .staff-alert-sound-desc {
   font-size: 13px;
   opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .staff-alert-order-blink {
+    animation: none;
+    background: #dc2626;
+    color: #fff;
+  }
+}
+
+@media (max-width: 380px) {
+  .staff-alert-page,
+  .staff-alert-login {
+    padding: 16px;
+    gap: 12px;
+  }
 }

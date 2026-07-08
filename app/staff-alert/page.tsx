@@ -322,11 +322,15 @@ export default function StaffAlertPage() {
 
   return (
     <main className="staff-alert-page">
+      <p className="staff-alert-order-blink" role="status" aria-live="polite">
+        Новый заказ на сайте!
+      </p>
+
       <div className="staff-alert-balloons" aria-hidden>
         🎈🎈🎈🎈🎈
       </div>
 
-      <h1 className="staff-alert-title">🎈 ШАРОДУВЫ</h1>
+      <h1 className="staff-alert-title">ШАРОДУВЫ</h1>
       <p className="staff-alert-subtitle">Сигнал о новых заказах для сотрудников</p>
 
       <button
