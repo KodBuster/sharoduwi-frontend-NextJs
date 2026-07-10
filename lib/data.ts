@@ -101,6 +101,13 @@ export const COLLECTION_MULTI_CATEGORY_PATHS: Partial<
   ],
 };
 
+/** Показывать только товары с amount > 0 (AdvantShop) */
+export const COLLECTION_REQUIRE_POSITIVE_STOCK: Partial<
+  Record<CollectionSlug, true>
+> = {
+  pirotekhnika: true,
+};
+
 export function getCollectionBySlug(slug: string): Collection | undefined {
   return COLLECTIONS.find((collection) => collection.slug === slug);
 }

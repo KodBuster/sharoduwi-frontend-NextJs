@@ -1,9 +1,10 @@
 import type { CollectionSlug } from "@/lib/products";
 import type { Product, ProductDetails } from "@/lib/data";
-import { COLLECTIONS } from "@/lib/data";
+import { COLLECTIONS, COLLECTION_REQUIRE_POSITIVE_STOCK } from "@/lib/data";
 import { advantshopClientFetch, advantshopFetch } from "./client";
 import { getCollectionCategoryPaths } from "./config";
 import { mapCatalogProduct, mapProductDetails } from "./mapper";
+import { isAdvantShopProductInStock } from "./stock";
 import type {
   AdvantShopCatalogResponse,
   AdvantShopCategoriesResponse,
@@ -106,7 +107,9 @@ async function fetchProductsForCollection(
   for (const url of paths) {
     try {
       const items = await fetchAllCatalogProducts({ url, sorting: sort });
+      const requireStock = COLLECTION_REQUIRE_POSITIVE_STOCK[collectionSlug];
       for (const item of items) {
+        if (requireStock && !isAdvantShopProductInStock(item)) continue;
         itemsById.set(item.productId, item);
       }
     } catch (error) {

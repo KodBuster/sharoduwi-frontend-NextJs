@@ -12,6 +12,8 @@ export type AdvantShopCatalogProduct = {
   name: string;
   briefDescription?: string;
   artNo?: string;
+  amount?: number;
+  amountOffer?: number;
   price: number;
   priceWithDiscount?: number;
   newProduct?: boolean;
@@ -70,6 +72,7 @@ export type AdvantShopProductDetails = {
   photoBig?: string | null;
   photos?: AdvantShopPhoto[] | null;
   offers?: AdvantShopOffer[];
+  amount?: number;
 };
 
 export type AdvantShopProperty = {
