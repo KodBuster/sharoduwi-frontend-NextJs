@@ -50,6 +50,39 @@ export function isValidTagFilter(value: string): value is TagFilter {
   return (TAGS as readonly string[]).includes(value);
 }
 
+/** Модули каталога → категории AdvantShop */
+export const TAG_COLLECTION_SLUGS: Partial<Record<ProductTag, CollectionSlug[]>> = {
+  Цифры: ["set-s-tsifroi"],
+  Выписка: ["dlya-novorozhdennykh"],
+  Романтика: ["dlya-vliublennykh"],
+  Детям: ["dlya-devochek-1", "dlya-malchikov-1"],
+  Латексные: ["shary-pod-potolok-1"],
+};
+
+export function productMatchesTag(product: Product, tag: TagFilter): boolean {
+  if (tag === "Все") return true;
+
+  const collectionSlugs = TAG_COLLECTION_SLUGS[tag as ProductTag];
+  if (collectionSlugs) {
+    return collectionSlugs.includes(product.collectionSlug);
+  }
+
+  return product.tags.includes(tag as ProductTag);
+}
+
+export function inferTagsFromCollection(collectionSlug: CollectionSlug): ProductTag[] {
+  const tags = new Set<ProductTag>();
+  for (const [tag, slugs] of Object.entries(TAG_COLLECTION_SLUGS) as [
+    ProductTag,
+    CollectionSlug[],
+  ][]) {
+    if (slugs.includes(collectionSlug)) {
+      tags.add(tag);
+    }
+  }
+  return [...tags];
+}
+
 const TAG_KEYWORDS: Record<ProductTag, string[]> = {
   Цифры: ["цифр", "числ", "number"],
   Композиции: ["композиц", "набор", "букет", "фонтан"],

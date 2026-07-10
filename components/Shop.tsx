@@ -5,7 +5,7 @@ import { CityLink } from "@/components/CityLink";
 import { useMemo } from "react";
 import { useApp } from "@/context/AppContext";
 import { TAGS, getCollectionBySlug } from "@/lib/data";
-import { productMatchesSearch, type CollectionSlug } from "@/lib/products";
+import { productMatchesSearch, productMatchesTag, type CollectionSlug } from "@/lib/products";
 import { ProductCard } from "@/components/product/ProductCard";
 
 interface ShopProps {
@@ -42,7 +42,7 @@ export function Shop({ pageCollection, heading, description, previewLimit }: Sho
 
   const list = useMemo(() => {
     return products.filter((p) => {
-      const okTag = activeTag === "Все" || p.tags.includes(activeTag);
+      const okTag = productMatchesTag(p, activeTag);
       const okCollection =
         !collectionFilter || p.collectionSlug === collectionFilter;
       const okQ = productMatchesSearch(p, searchQuery);

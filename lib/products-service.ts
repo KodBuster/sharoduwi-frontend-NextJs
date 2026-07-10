@@ -14,6 +14,7 @@ import {
   findProductBySlug,
 } from "@/lib/product-slug";
 import {
+  productMatchesTag,
   resolveCollectionSlug,
   type CollectionSlug,
   type TagFilter,
@@ -87,7 +88,7 @@ export function filterProductsByTag(
   tag: TagFilter
 ): Product[] {
   if (tag === "Все") return products;
-  return products.filter((product) => product.tags.includes(tag as ProductTag));
+  return products.filter((product) => productMatchesTag(product, tag));
 }
 
 export function filterProductsByCollection(

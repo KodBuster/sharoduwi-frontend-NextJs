@@ -2,7 +2,7 @@ import type { Product, ProductDetails, ProductTag } from "@/lib/data";
 import { getCollectionName } from "@/lib/data";
 import type { CollectionSlug } from "@/lib/products";
 import { getProductSlug } from "@/lib/product-slug";
-import { inferProductTags, parseTagsFromPropertyValue } from "@/lib/products";
+import { inferProductTags, inferTagsFromCollection, parseTagsFromPropertyValue } from "@/lib/products";
 import { resolveAdvantShopImageUrl, resolveAdvantShopImageUrls } from "./images";
 import type {
   AdvantShopCatalogProduct,
@@ -115,9 +115,13 @@ function mapBadge(
 
 function resolveProductTags(
   item: AdvantShopCatalogProduct,
-  properties: AdvantShopProperty[] = []
+  properties: AdvantShopProperty[] = [],
+  collectionSlug?: CollectionSlug
 ): ProductTag[] {
-  const fromProperties = new Set<ProductTag>();
+  const fromCollection = collectionSlug
+    ? inferTagsFromCollection(collectionSlug)
+    : [];
+  const fromProperties = new Set<ProductTag>(fromCollection);
 
   for (const property of properties) {
     const name = (property.propertyName ?? property.name ?? "").toLowerCase();
@@ -150,7 +154,7 @@ export function mapCatalogProduct(
     name: item.name,
     collectionSlug,
     collection: getCollectionName(collectionSlug),
-    tags: resolveProductTags(item, properties),
+    tags: resolveProductTags(item, properties, collectionSlug),
     price,
     old,
     colors: ["pink"],
