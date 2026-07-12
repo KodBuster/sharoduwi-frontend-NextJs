@@ -56,6 +56,10 @@ function getStaffAlertAuthRedirect(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/sitemap.xml" || pathname.startsWith("/sitemap/")) {
+    return NextResponse.next();
+  }
+
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
@@ -155,5 +159,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\..*).*)"],
+  matcher: [
+    "/sitemap.xml",
+    "/sitemap/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\..*).*)",
+  ],
 };
