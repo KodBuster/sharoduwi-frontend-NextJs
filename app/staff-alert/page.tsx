@@ -512,6 +512,48 @@ export default function StaffAlertPage() {
         </p>
       )}
 
+      {isWindows && (
+        <div className="staff-alert-steps">
+          <strong>Windows — приложение в трее</strong>
+          <ol>
+            <li>
+              Скачайте и установите программу:{" "}
+              <a
+                className="staff-alert-download-link"
+                href="/downloads/Sharoduwy-Staff-Alert-Setup-1.0.0.exe"
+                download
+              >
+                Sharoduwy-Staff-Alert-Setup-1.0.0.exe
+              </a>
+            </li>
+            <li>
+              При запуске укажите сайт <strong>https://sharoduwi.ru</strong> и пароль Staff Alert.
+            </li>
+            <li>Включите «Запускать с Windows». Иконка будет у часов.</li>
+            <li>
+              Если Windows покажет предупреждение SmartScreen — «Подробнее» → «Выполнить в любом
+              случае» (приложение без цифровой подписи).
+            </li>
+          </ol>
+        </div>
+      )}
+
+      {!isWindows && (
+        <div className="staff-alert-steps">
+          <strong>Windows (ПК сотрудника)</strong>
+          <p className="staff-alert-hint" style={{ margin: "8px 0 0" }}>
+            Установщик приложения в трее:{" "}
+            <a
+              className="staff-alert-download-link"
+              href="/downloads/Sharoduwy-Staff-Alert-Setup-1.0.0.exe"
+              download
+            >
+              скачать для Windows 10/11
+            </a>
+          </p>
+        </div>
+      )}
+
       <div className="staff-alert-steps">
         <strong>Android</strong>
         <ol>
@@ -529,16 +571,6 @@ export default function StaffAlertPage() {
           <li>Подписаться на сигналы и выбрать звук.</li>
         </ol>
       </div>
-
-      {isWindows && (
-        <div className="staff-alert-steps">
-          <strong>Windows</strong>
-          <ol>
-            <li>Chrome или Edge → подписка → выбор сигнала.</li>
-            <li>Параметры Windows → Уведомления → включить для браузера.</li>
-          </ol>
-        </div>
-      )}
     </main>
   );
 }

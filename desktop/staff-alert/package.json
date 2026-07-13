@@ -14,6 +14,7 @@
   "build": {
     "appId": "ru.sharoduwi.staffalert",
     "productName": "ШАРОДУВЫ Staff Alert",
+    "electronDist": "node_modules/electron/dist",
     "directories": {
       "output": "dist"
     },
@@ -24,6 +25,7 @@
       "setup.html",
       "assets/**/*"
     ],
+    "artifactName": "Sharoduwy-Staff-Alert-Setup-${version}.${ext}",
     "win": {
       "target": [
         {
@@ -33,18 +35,23 @@
           ]
         }
       ],
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "signAndEditExecutable": false
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "ШАРОДУВЫ Staff Alert"
+      "shortcutName": "ШАРОДУВЫ Staff Alert",
+      "artifactName": "Sharoduwy-Staff-Alert-Setup-${version}.${ext}"
     }
   },
   "devDependencies": {
-    "electron": "^33.2.1",
+    "electron": "^33.4.11",
     "electron-builder": "^25.1.8"
+  },
+  "allowScripts": {
+    "electron@33.4.11": true
   }
 }

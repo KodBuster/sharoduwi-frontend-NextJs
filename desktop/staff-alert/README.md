@@ -6,44 +6,41 @@
 - **запускается вместе с Windows**
 - не зависит от «протухшей» web-push подписки браузера
 
+## Скачать и установить на другом компьютере
+
+После деплоя сайта откройте на том ПК:
+
+**https://sharoduwi.ru/downloads/Sharoduwy-Staff-Alert-Setup-1.0.0.exe**
+
+или раздел Windows на странице `/staff-alert`.
+
+1. Запустите установщик.
+2. Если SmartScreen ругается: «Подробнее» → «Выполнить в любом случае».
+3. При первом запуске укажите:
+   - сайт: `https://sharoduwi.ru`
+   - пароль Staff Alert
+   - галочку «Запускать с Windows»
+4. Иконка появится у часов (трей).
+
 ## Что нужно на сервере
 
-1. Задеплоить сайт с endpoint: `GET /api/staff-alert/poll`
-2. Пароль = `STAFF_ALERT_PASSWORD` (тот же, что для `/staff-alert`)
+1. Endpoint: `GET /api/staff-alert/poll`
+2. Пароль = `STAFF_ALERT_PASSWORD`
+3. Файл установщика в `public/downloads/Sharoduwy-Staff-Alert-Setup-1.0.0.exe`
 
-## Установка для разработки
+## Сборка установщика заново
 
-```bash
+```powershell
 cd desktop/staff-alert
 npm install
-npm start
-```
-
-При первом запуске введите:
-- адрес сайта (например `https://sharoduwi.ru`)
-- пароль Staff Alert
-- включите «Запускать с Windows»
-
-Иконка появится **у часов** (трей). Правый клик → меню.
-
-## Сборка установщика (.exe)
-
-```bash
-cd desktop/staff-alert
-npm install
+npm approve-scripts electron
+$env:CSC_IDENTITY_AUTO_DISCOVERY='false'
 npm run dist
+Copy-Item "dist\Sharoduwy-Staff-Alert-Setup-1.0.0.exe" "..\..\public\downloads\" -Force
 ```
-
-Установщик: `desktop/staff-alert/dist/*.exe`
-
-## Как проверить
-
-1. Запустите приложение, сохраните настройки, нажмите «Проверить соединение»
-2. На сайте `/staff-alert` нажмите «Симулировать новый заказ»
-3. Через ~12 секунд должно открыться окно сигнала и заиграть сирена
 
 ## Важно
 
-- Windows 10 / 11 (x64). Windows 8 не поддерживается современным Electron.
-- Первый заказ после запуска **не** сигналит (запоминается как «текущий»), сигналят следующие.
-- В Windows разрешите уведомления для приложения «ШАРОДУВЫ Staff Alert».
+- Windows 10 / 11 (x64).
+- Первый заказ после запуска не сигналит (запоминается), сигналят следующие.
+- В Windows разрешите уведомления для «ШАРОДУВЫ Staff Alert».

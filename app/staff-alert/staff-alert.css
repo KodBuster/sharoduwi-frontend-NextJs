@@ -210,10 +210,14 @@ button:active {
   border-radius: 14px;
 }
 
-.staff-alert-hint {
-  font-size: 14px;
-  opacity: 0.9;
-  max-width: 460px;
+.staff-alert-download-link {
+  color: #ffd93d;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.staff-alert-download-link:hover {
+  color: #fff;
 }
 
 .staff-alert-steps {
