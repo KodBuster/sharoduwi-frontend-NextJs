@@ -41,9 +41,9 @@ export function MobMenu() {
         <CityLink href="/catalog" onClick={closeMob}>
           Каталог
         </CityLink>
-        <SiteSectionLink sectionId="delivery" scrollOnAnyPage onNavigate={closeMob}>
+        <CityLink href="/delivery" onClick={closeMob}>
           Доставка
-        </SiteSectionLink>
+        </CityLink>
         <SiteSectionLink sectionId="reviews" onNavigate={closeMob}>
           Отзывы
         </SiteSectionLink>

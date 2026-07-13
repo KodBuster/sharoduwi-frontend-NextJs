@@ -217,7 +217,7 @@ export function Header() {
         </CityLink>
         <nav className="nav">
           <CityLink href="/catalog">Каталог</CityLink>
-          <a href={isHome ? "#delivery" : `${href("/")}#delivery`}>Доставка</a>
+          <CityLink href="/delivery">Доставка</CityLink>
           <HowToOrderLink>Как заказать</HowToOrderLink>
           <a href={isHome ? "#contacts" : `${href("/")}#contacts`}>Контакты</a>
         </nav>
