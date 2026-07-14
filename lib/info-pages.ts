@@ -179,6 +179,16 @@ export const DELIVERY_RAMENSKOE_DETAILS: DeliveryAreaDetails = {
       price: "700 ₽",
     },
     {
+      location: "п. Спартак",
+      condition: "заказ от 2 000 ₽",
+      price: "500 ₽",
+    },
+    {
+      location: "п. Спартак",
+      condition: "заказ до 2 000 ₽",
+      price: "700 ₽",
+    },
+    {
       location: "Другие населённые пункты",
       condition: "минимальный заказ",
       price: "от 2 500 ₽",
