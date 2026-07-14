@@ -42,6 +42,7 @@ function readConfig() {
       password: "",
       autoLaunch: true,
       pollMs: POLL_MS,
+      melodyId: 0,
     };
   }
 }
@@ -77,13 +78,24 @@ function applyAutoLaunch(enabled) {
 }
 
 function trayIcon() {
-  const iconFile = path.join(__dirname, "assets", "icon.png");
-  let image = nativeImage.createFromPath(iconFile);
+  const icoFile = path.join(__dirname, "assets", "icon.ico");
+  const pngFile = path.join(__dirname, "assets", "icon.png");
+  let image = nativeImage.createFromPath(icoFile);
   if (image.isEmpty()) {
-    // 16x16 purple fallback
+    image = nativeImage.createFromPath(pngFile);
+  }
+  if (image.isEmpty()) {
     image = nativeImage.createEmpty();
   }
   return image.resize({ width: 16, height: 16 });
+}
+
+function appWindowIcon() {
+  const icoFile = path.join(__dirname, "assets", "icon.ico");
+  const pngFile = path.join(__dirname, "assets", "icon.png");
+  let image = nativeImage.createFromPath(icoFile);
+  if (image.isEmpty()) image = nativeImage.createFromPath(pngFile);
+  return image;
 }
 
 function ensureAlarmWindow() {
@@ -95,6 +107,7 @@ function ensureAlarmWindow() {
     show: false,
     skipTaskbar: true,
     resizable: false,
+    icon: appWindowIcon(),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -110,11 +123,14 @@ function ensureAlarmWindow() {
   return alarmWindow;
 }
 
-function showAlarmWindow() {
+function showAlarmWindow(melodyId) {
+  const config = readConfig();
+  const id =
+    typeof melodyId === "number" ? melodyId : Number(config.melodyId) || 0;
   const win = ensureAlarmWindow();
   win.show();
   win.focus();
-  win.webContents.send("alarm-start");
+  win.webContents.send("alarm-start", id);
 }
 
 function stopAlarm() {
@@ -140,8 +156,9 @@ function openSetup() {
 
   setupWindow = new BrowserWindow({
     width: 480,
-    height: 560,
+    height: 640,
     resizable: false,
+    icon: appWindowIcon(),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -157,6 +174,20 @@ function openSetup() {
 
 function buildTrayMenu() {
   const config = readConfig();
+  const melodyId = Number(config.melodyId) || 0;
+  const melodies = [
+    [0, "Сирена скорой"],
+    [1, "Пожарная"],
+    [2, "Красная тревога"],
+    [3, "Скорый заказ"],
+    [4, "Шаровой звон"],
+    [5, "Фанфар"],
+    [6, "Кассовый"],
+    [7, "Бас"],
+    [8, "Неон"],
+    [9, "Сирена доставки"],
+  ];
+
   return Menu.buildFromTemplate([
     {
       label: alarming ? "🛑 Остановить сигнал" : "▶️ Проверить звук",
@@ -164,9 +195,25 @@ function buildTrayMenu() {
         if (alarming) stopAlarm();
         else {
           alarming = true;
-          showAlarmWindow();
+          showAlarmWindow(melodyId);
         }
       },
+    },
+    {
+      label: "Мелодия оповещения",
+      submenu: melodies.map(([id, name]) => ({
+        label: name,
+        type: "radio",
+        checked: melodyId === id,
+        click: () => {
+          const next = readConfig();
+          next.melodyId = id;
+          writeConfig(next);
+          tray?.setContextMenu(buildTrayMenu());
+          alarming = true;
+          showAlarmWindow(id);
+        },
+      })),
     },
     { type: "separator" },
     {
@@ -250,13 +297,14 @@ async function pollOnce() {
     writeLastSeen(alert.orderId);
 
     alarming = true;
-    showAlarmWindow();
+    showAlarmWindow(Number(config.melodyId) || 0);
 
     if (Notification.isSupported()) {
       const note = new Notification({
         title: alert.title || "Новый заказ в ШАРОДУВЫ!",
         body: alert.body || "Откройте Staff Alert",
-        silent: false,
+        icon: path.join(__dirname, "assets", "icon.png"),
+        silent: true,
       });
       note.on("click", () => openStaffAlert());
       note.show();
@@ -286,12 +334,22 @@ ipcMain.handle("save-config", (_event, next) => {
     siteUrl: String(next.siteUrl || current.siteUrl || DEFAULT_SITE).trim(),
     password: String(next.password || "").trim(),
     autoLaunch: Boolean(next.autoLaunch),
+    melodyId: Number.isFinite(Number(next.melodyId))
+      ? Math.min(9, Math.max(0, Number(next.melodyId)))
+      : Number(current.melodyId) || 0,
   };
   writeConfig(merged);
   applyAutoLaunch(merged.autoLaunch);
   tray?.setContextMenu(buildTrayMenu());
   startPolling();
   return merged;
+});
+
+ipcMain.handle("preview-melody", () => {
+  const config = readConfig();
+  alarming = true;
+  showAlarmWindow(Number(config.melodyId) || 0);
+  return true;
 });
 
 ipcMain.handle("test-connection", async () => {

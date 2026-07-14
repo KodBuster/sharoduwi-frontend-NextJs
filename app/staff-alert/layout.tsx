@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     title: "ШАРОДУВЫ",
   },
   icons: {
+    icon: [
+      { url: "/icons/staff-alert/favicon.ico", sizes: "any" },
+      { url: "/icons/staff-alert/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/staff-alert/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/icons/staff-alert/favicon.ico",
     apple: "/icons/staff-alert/icon-192.png",
   },
 };

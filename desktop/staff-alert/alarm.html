@@ -23,6 +23,11 @@
         margin: 0;
         font-size: 28px;
         animation: blink 0.9s ease-in-out infinite;
+        width: 100%;
+        max-width: 360px;
+        padding: 14px;
+        border-radius: 14px;
+        border: 3px solid #fff;
       }
       @keyframes blink {
         0%,
@@ -35,12 +40,9 @@
           color: #7f1d1d;
         }
       }
-      h1 {
-        width: 100%;
-        max-width: 360px;
-        padding: 14px;
-        border-radius: 14px;
-        border: 3px solid #fff;
+      #melodyName {
+        opacity: 0.9;
+        font-size: 14px;
       }
       button {
         border: none;
@@ -57,11 +59,14 @@
   <body>
     <h1>Новый заказ на сайте!</h1>
     <p>ШАРОДУВЫ Staff Alert</p>
+    <p id="melodyName"></p>
     <button id="stop" type="button">🛑 ОСТАНОВИТЬ СИГНАЛ</button>
 
+    <script src="./melodies.js"></script>
     <script>
       let ctx = null;
       let timer = null;
+      let currentMelodyId = 0;
 
       function ensureCtx() {
         if (!ctx) {
@@ -72,7 +77,7 @@
         return ctx;
       }
 
-      function beep(freq, durationMs, type, delayMs = 0) {
+      function beep(freq, durationMs, type, delayMs = 0, volume = 1) {
         const audio = ensureCtx();
         const startAt = audio.currentTime + delayMs / 1000;
         const endAt = startAt + durationMs / 1000;
@@ -84,8 +89,11 @@
         osc.frequency.value = freq;
         sub.frequency.value = freq * 0.5;
         gain.gain.setValueAtTime(0.0001, startAt);
-        gain.gain.exponentialRampToValueAtTime(1, startAt + 0.015);
-        gain.gain.setValueAtTime(1, endAt - 0.02);
+        gain.gain.exponentialRampToValueAtTime(
+          Math.max(volume, 0.0002),
+          startAt + 0.015
+        );
+        gain.gain.setValueAtTime(volume, endAt - 0.02);
         gain.gain.exponentialRampToValueAtTime(0.0001, endAt);
         osc.connect(gain);
         sub.connect(gain);
@@ -96,17 +104,37 @@
         sub.stop(endAt);
       }
 
-      function playCycle() {
-        beep(920, 380, "sawtooth");
-        beep(680, 380, "sawtooth", 400);
-        beep(920, 380, "sawtooth", 800);
+      function kick(delayMs = 0, freq = 55, vol = 0.9) {
+        const audio = ensureCtx();
+        const start = audio.currentTime + delayMs / 1000;
+        const osc = audio.createOscillator();
+        const gain = audio.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq * 2, start);
+        osc.frequency.exponentialRampToValueAtTime(freq, start + 0.08);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(vol, start + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.28);
+        osc.connect(gain);
+        gain.connect(audio.destination);
+        osc.start(start);
+        osc.stop(start + 0.32);
       }
 
-      function startAlarm() {
+      function playCycle() {
+        const melody = window.getStaffAlertMelody(currentMelodyId);
+        melody.play(ensureCtx(), beep, kick);
+      }
+
+      function startAlarm(melodyId) {
         stopAlarm(false);
+        currentMelodyId = Number(melodyId) || 0;
+        const melody = window.getStaffAlertMelody(currentMelodyId);
+        document.getElementById("melodyName").textContent =
+          "Мелодия: " + melody.name;
         ensureCtx();
         playCycle();
-        timer = setInterval(playCycle, 1400);
+        timer = setInterval(playCycle, melody.cycleMs);
       }
 
       function stopAlarm(notify = true) {
@@ -119,7 +147,7 @@
 
       document.getElementById("stop").onclick = () => stopAlarm(true);
 
-      window.staffAlertDesktop.onAlarmStart(() => startAlarm());
+      window.staffAlertDesktop.onAlarmStart((melodyId) => startAlarm(melodyId));
       window.staffAlertDesktop.onAlarmStop(() => stopAlarm(false));
     </script>
   </body>

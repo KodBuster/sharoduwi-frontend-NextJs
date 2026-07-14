@@ -12,6 +12,11 @@
   "permissions": ["notifications", "badging"],
   "icons": [
     {
+      "src": "/icons/staff-alert/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
       "src": "/icons/staff-alert/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",

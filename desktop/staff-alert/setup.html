@@ -21,12 +21,14 @@
       }
       .card {
         width: 100%;
-        max-width: 400px;
+        max-width: 420px;
         background: rgba(255, 255, 255, 0.14);
         border: 1px solid rgba(255, 255, 255, 0.35);
         border-radius: 20px;
         padding: 22px;
         backdrop-filter: blur(10px);
+        max-height: 92vh;
+        overflow: auto;
       }
       h1 {
         margin: 0 0 8px;
@@ -43,7 +45,8 @@
         margin: 12px 0 6px;
       }
       input[type="url"],
-      input[type="password"] {
+      input[type="password"],
+      select {
         width: 100%;
         box-sizing: border-box;
         border: none;
@@ -59,7 +62,7 @@
       }
       button {
         width: 100%;
-        margin-top: 14px;
+        margin-top: 12px;
         border: none;
         border-radius: 999px;
         padding: 14px 16px;
@@ -104,20 +107,60 @@
         placeholder="тот же, что на /staff-alert"
       />
 
+      <label for="melodyId">Мелодия оповещения</label>
+      <select id="melodyId"></select>
+
       <div class="row">
         <input id="autoLaunch" type="checkbox" checked />
         <label for="autoLaunch" style="margin: 0">Запускать с Windows</label>
       </div>
 
       <button class="primary" id="saveBtn" type="button">Сохранить</button>
+      <button class="secondary" id="previewBtn" type="button">
+        Прослушать мелодию
+      </button>
       <button class="secondary" id="testBtn" type="button">
         Проверить соединение
       </button>
       <div class="msg" id="msg"></div>
     </div>
 
+    <script src="./melodies.js"></script>
     <script>
       const msg = document.getElementById("msg");
+      const melodySelect = document.getElementById("melodyId");
+
+      function fillMelodies(selected) {
+        const groups = {};
+        window.STAFF_ALERT_MELODIES.forEach((m) => {
+          if (!groups[m.group]) groups[m.group] = [];
+          groups[m.group].push(m);
+        });
+        melodySelect.innerHTML = "";
+        Object.keys(groups).forEach((groupName) => {
+          const optgroup = document.createElement("optgroup");
+          optgroup.label = groupName;
+          groups[groupName].forEach((m) => {
+            const opt = document.createElement("option");
+            opt.value = String(m.id);
+            opt.textContent = m.name;
+            optgroup.appendChild(opt);
+          });
+          melodySelect.appendChild(optgroup);
+        });
+        melodySelect.value = String(
+          selected === undefined || selected === null ? 0 : selected
+        );
+      }
+
+      function currentConfigDraft() {
+        return {
+          siteUrl: document.getElementById("siteUrl").value.trim(),
+          password: document.getElementById("password").value.trim(),
+          autoLaunch: document.getElementById("autoLaunch").checked,
+          melodyId: Number(melodySelect.value) || 0,
+        };
+      }
 
       async function load() {
         const config = await window.staffAlertDesktop.getConfig();
@@ -126,29 +169,32 @@
         document.getElementById("password").value = config.password || "";
         document.getElementById("autoLaunch").checked =
           config.autoLaunch !== false;
+        fillMelodies(config.melodyId ?? 0);
       }
 
       document.getElementById("saveBtn").onclick = async () => {
         try {
-          await window.staffAlertDesktop.saveConfig({
-            siteUrl: document.getElementById("siteUrl").value.trim(),
-            password: document.getElementById("password").value.trim(),
-            autoLaunch: document.getElementById("autoLaunch").checked,
-          });
+          await window.staffAlertDesktop.saveConfig(currentConfigDraft());
           msg.textContent =
-            "Сохранено. Приложение слушает заказы в трее (иконка у часов).";
+            "Сохранено. Выбранная мелодия будет играть при новом заказе.";
         } catch (error) {
           msg.textContent = error.message || "Ошибка сохранения";
         }
       };
 
+      document.getElementById("previewBtn").onclick = async () => {
+        try {
+          await window.staffAlertDesktop.saveConfig(currentConfigDraft());
+          await window.staffAlertDesktop.previewMelody();
+          msg.textContent = "Проигрываю выбранную мелодию…";
+        } catch (error) {
+          msg.textContent = error.message || "Не удалось проиграть";
+        }
+      };
+
       document.getElementById("testBtn").onclick = async () => {
         try {
-          await window.staffAlertDesktop.saveConfig({
-            siteUrl: document.getElementById("siteUrl").value.trim(),
-            password: document.getElementById("password").value.trim(),
-            autoLaunch: document.getElementById("autoLaunch").checked,
-          });
+          await window.staffAlertDesktop.saveConfig(currentConfigDraft());
           const json = await window.staffAlertDesktop.testConnection();
           msg.textContent = json.alert
             ? `Связь есть. Последний заказ: ${json.alert.orderId}`
