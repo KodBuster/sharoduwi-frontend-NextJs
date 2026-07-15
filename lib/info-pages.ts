@@ -237,10 +237,98 @@ export const DELIVERY_LYUBERTSY_DETAILS: DeliveryAreaDetails = {
   ...DELIVERY_STANDARD_EXTRAS,
 };
 
+export const DELIVERY_MOSCOW_DETAILS: DeliveryAreaDetails = {
+  highlights: DELIVERY_STANDARD_HIGHLIGHTS,
+  pricingTitle: "Стоимость доставки в Москве",
+  pricingRows: [
+    {
+      location: "Москва",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+  ],
+  pricingFooterNote: "Минимальная сумма заказа по Москве — 2 500 ₽.",
+  pricingOtherNote:
+    "Стоимость доставки по конкретному адресу Москвы (ЮВАО, ВАО у Люберец) уточняйте у менеджеров.",
+  ...DELIVERY_STANDARD_EXTRAS,
+};
+
+export const DELIVERY_BALASHIKHA_DETAILS: DeliveryAreaDetails = {
+  highlights: DELIVERY_STANDARD_HIGHLIGHTS,
+  pricingTitle: "Стоимость доставки в городском округе Балашиха",
+  pricingRows: [
+    {
+      location: "Железнодорожный",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+    {
+      location: "Новое Павлино",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+    {
+      location: "Кучино",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+    {
+      location: "Саввино",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+    {
+      location: "Никольско-Архангельский",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+  ],
+  pricingFooterNote: "Минимальная сумма заказа по г.о. Балашиха — 2 500 ₽.",
+  pricingOtherNote:
+    "Стоимость доставки по другим адресам городского округа Балашиха уточняйте у менеджеров.",
+  ...DELIVERY_STANDARD_EXTRAS,
+};
+
+export const DELIVERY_KOTELNIKI_DETAILS: DeliveryAreaDetails = {
+  highlights: DELIVERY_STANDARD_HIGHLIGHTS,
+  pricingTitle: "Стоимость доставки в Котельниках",
+  pricingRows: [
+    {
+      location: "Котельники",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+  ],
+  pricingFooterNote: "Минимальная сумма заказа по Котельникам — 2 500 ₽.",
+  pricingOtherNote:
+    "Стоимость доставки по конкретному адресу в Котельниках уточняйте у менеджеров.",
+  ...DELIVERY_STANDARD_EXTRAS,
+};
+
+export const DELIVERY_LYTKARINO_DETAILS: DeliveryAreaDetails = {
+  highlights: DELIVERY_STANDARD_HIGHLIGHTS,
+  pricingTitle: "Стоимость доставки в Лыткарино",
+  pricingRows: [
+    {
+      location: "Лыткарино",
+      condition: "заказ от 2 500 ₽",
+      price: "800 ₽",
+    },
+  ],
+  pricingFooterNote: "Минимальная сумма заказа по Лыткарино — 2 500 ₽.",
+  pricingOtherNote:
+    "Стоимость доставки по конкретному адресу в Лыткарино уточняйте у менеджеров.",
+  ...DELIVERY_STANDARD_EXTRAS,
+};
+
 export const DELIVERY_DETAILS_BY_SLUG: Record<string, DeliveryAreaDetails> = {
   zhukovsky: DELIVERY_ZHUKOVSKY_DETAILS,
   ramenskoe: DELIVERY_RAMENSKOE_DETAILS,
   lyubertsy: DELIVERY_LYUBERTSY_DETAILS,
+  moscow: DELIVERY_MOSCOW_DETAILS,
+  balashikha: DELIVERY_BALASHIKHA_DETAILS,
+  kotelniki: DELIVERY_KOTELNIKI_DETAILS,
+  lytkarino: DELIVERY_LYTKARINO_DETAILS,
 };
 
 /** @deprecated Use DeliveryAreaDetails */
@@ -312,6 +400,80 @@ export const DELIVERY_LYUBERTSY: DeliveryAreaConfig = {
     "Жилино, Октябрьский, Марусино",
     "Посёлки и деревни Люберецкого округа",
   ],
+  pickupNote:
+    "Самовывоз возможен в Жуковском: ул. Чкалова, 6 или ТЦ «Фермер» на ул. Мясищева — удобно, если забираете заказ по пути.",
+  mapUrl: "https://yandex.ru/maps/org/sharoduvy/1796536309/",
+  mapLabel: "ШАРОДУВЫ на Яндекс.Картах — ТЦ «Фермер»",
+};
+
+export const DELIVERY_MOSCOW: DeliveryAreaConfig = {
+  slug: "moscow",
+  path: "/delivery/moscow",
+  cityLabel: "Москва",
+  deliveryInLabel: "Москве",
+  title: "Доставка гелиевых и воздушных шаров в Москву",
+  metaDescription:
+    "Доставка гелиевых и воздушных шаров в Москву (ЮВАО и ВАО у Люберец) — 800 ₽. Сборка в Жуковском, курьер к празднику. Предоплата 100%.",
+  lead:
+    "Привозим шары из Жуковского в Москву — Жулебино, Некрасовку, Косино и соседние районы у Люберец. Согласуем состав и время заранее.",
+  zones: ["Москва, ЮВАО и ВАО", "мкр. Жулебино", "мкр. Некрасовка", "мкр. Косино"],
+  pickupNote:
+    "Самовывоз возможен в Жуковском: ул. Чкалова, 6 или ТЦ «Фермер» на ул. Мясищева — удобно, если забираете заказ по пути.",
+  mapUrl: "https://yandex.ru/maps/org/sharoduvy/1796536309/",
+  mapLabel: "ШАРОДУВЫ на Яндекс.Картах — ТЦ «Фермер»",
+};
+
+export const DELIVERY_BALASHIKHA: DeliveryAreaConfig = {
+  slug: "balashikha",
+  path: "/delivery/balashikha",
+  cityLabel: "городской округ Балашиха",
+  deliveryInLabel: "городском округе Балашиха",
+  title: "Доставка гелиевых и воздушных шаров в городской округ Балашиха",
+  metaDescription:
+    "Доставка гелиевых и воздушных шаров в г.о. Балашиха — Железнодорожный, Новое Павлино, Кучино, Саввино, Никольско-Архангельский — 800 ₽. Сборка в Жуковском.",
+  lead:
+    "Возим шары из Жуковского в городской округ Балашиха — Железнодорожный, Новое Павлино, Кучино, Саввино и Никольско-Архангельский. Согласуем время заранее.",
+  zones: [
+    "Железнодорожный",
+    "Новое Павлино",
+    "Кучино",
+    "Саввино",
+    "Никольско-Архангельский",
+  ],
+  pickupNote:
+    "Самовывоз возможен в Жуковском: ул. Чкалова, 6 или ТЦ «Фермер» на ул. Мясищева — удобно, если забираете заказ по пути.",
+  mapUrl: "https://yandex.ru/maps/org/sharoduvy/1796536309/",
+  mapLabel: "ШАРОДУВЫ на Яндекс.Картах — ТЦ «Фермер»",
+};
+
+export const DELIVERY_KOTELNIKI: DeliveryAreaConfig = {
+  slug: "kotelniki",
+  path: "/delivery/kotelniki",
+  cityLabel: "Котельники",
+  deliveryInLabel: "Котельниках",
+  title: "Доставка гелиевых и воздушных шаров в Котельники",
+  metaDescription:
+    "Доставка гелиевых и воздушных шаров в Котельники — 800 ₽. Сборка в Жуковском, курьер к празднику. Предоплата 100%.",
+  lead:
+    "Привозим шары из Жуковского в Котельники — новостройки, жилые кварталы и частный сектор. Согласуем состав и время заранее.",
+  zones: ["г. Котельники", "Новостройки и жилые кварталы", "Частный сектор"],
+  pickupNote:
+    "Самовывоз возможен в Жуковском: ул. Чкалова, 6 или ТЦ «Фермер» на ул. Мясищева — удобно, если забираете заказ по пути.",
+  mapUrl: "https://yandex.ru/maps/org/sharoduvy/1796536309/",
+  mapLabel: "ШАРОДУВЫ на Яндекс.Картах — ТЦ «Фермер»",
+};
+
+export const DELIVERY_LYTKARINO: DeliveryAreaConfig = {
+  slug: "lytkarino",
+  path: "/delivery/lytkarino",
+  cityLabel: "Лыткарино",
+  deliveryInLabel: "Лыткарино",
+  title: "Доставка гелиевых и воздушных шаров в Лыткарино",
+  metaDescription:
+    "Доставка гелиевых и воздушных шаров в Лыткарино — 800 ₽. Сборка в Жуковском, курьер к празднику. Предоплата 100%.",
+  lead:
+    "Привозим шары из Жуковского в Лыткарино — жилые кварталы и частный сектор. Согласуем состав и время заранее.",
+  zones: ["г. Лыткарино", "Жилые кварталы", "Частные дома и коттеджи"],
   pickupNote:
     "Самовывоз возможен в Жуковском: ул. Чкалова, 6 или ТЦ «Фермер» на ул. Мясищева — удобно, если забираете заказ по пути.",
   mapUrl: "https://yandex.ru/maps/org/sharoduvy/1796536309/",

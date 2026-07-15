@@ -8,7 +8,13 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        allow: [
+          "/",
+          "/delivery/moscow",
+          "/delivery/balashikha",
+          "/delivery/kotelniki",
+          "/delivery/lytkarino",
+        ],
         disallow: [
           "/checkout",
           "/*/checkout",
@@ -19,7 +25,13 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Yandex",
-        allow: "/",
+        allow: [
+          "/",
+          "/delivery/moscow",
+          "/delivery/balashikha",
+          "/delivery/kotelniki",
+          "/delivery/lytkarino",
+        ],
         disallow: [
           "/checkout",
           "/*/checkout",

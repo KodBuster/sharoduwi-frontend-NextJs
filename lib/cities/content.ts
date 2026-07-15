@@ -50,12 +50,12 @@ export function getDeliveryConfigForCity(city: CityPublic) {
       ? "Можно забрать заказ самостоятельно: ул. Чкалова, 6 (цокольный этаж) или ул. Мясищева, 28/1, ТЦ «Фермер»."
       : "Самовывоз возможен в Жуковском: ул. Чкалова, 6 или ТЦ «Фермер» на ул. Мясищева — удобно, если забираете заказ по пути.",
     mapUrl:
-      city.delivery.detailsSlug === "ramenskoe" || city.delivery.detailsSlug === "lyubertsy"
-        ? "https://yandex.ru/maps/org/sharoduvy/1796536309/"
-        : "https://yandex.ru/maps/org/sharoduvy/1855601489/",
+      city.delivery.detailsSlug === "zhukovsky"
+        ? "https://yandex.ru/maps/org/sharoduvy/1855601489/"
+        : "https://yandex.ru/maps/org/sharoduvy/1796536309/",
     mapLabel:
-      city.delivery.detailsSlug === "ramenskoe" || city.delivery.detailsSlug === "lyubertsy"
-        ? "ШАРОДУВЫ на Яндекс.Картах — ТЦ «Фермер»"
-        : "ШАРОДУВЫ на Яндекс.Картах — ул. Чкалова",
+      city.delivery.detailsSlug === "zhukovsky"
+        ? "ШАРОДУВЫ на Яндекс.Картах — ул. Чкалова"
+        : "ШАРОДУВЫ на Яндекс.Картах — ТЦ «Фермер»",
   };
 }

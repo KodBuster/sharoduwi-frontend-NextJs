@@ -56,7 +56,7 @@ export const SETTLEMENT_NAMES = [
   "Торбеево",
   "Хлыстово",
   "Часовня",
-  // Расширение зоны: Котельники, Лыткарино, юг Балашихи у Люберец
+  // Расширение зоны: Котельники, Лыткарино, юг Балашихи у Люберец, Москва (ЮВАО/ВАО)
   "Котельники",
   "Лыткарино",
   "Железнодорожный",
@@ -67,6 +67,7 @@ export const SETTLEMENT_NAMES = [
   "Красная Горка",
   "Жулебино",
   "Некрасовка",
+  "Косино",
   "Агашкино",
   "Аксёново",
   "Амирово",
@@ -291,6 +292,7 @@ export const SETTLEMENT_SLUG_OVERRIDES: Record<string, string> = {
   "Красная Горка": "krasnaya-gorka",
   Жулебино: "zhulebino",
   Некрасовка: "nekrasovka",
+  Косино: "kosino",
 };
 
 export const SETTLEMENT_FORM_OVERRIDES: Record<
@@ -457,6 +459,11 @@ export const SETTLEMENT_FORM_OVERRIDES: Record<
     nameGenitive: "Некрасовки",
     nameInstrumental: "Некрасовке",
   },
+  Косино: {
+    namePrepositional: "Косино",
+    nameGenitive: "Косино",
+    nameInstrumental: "Косино",
+  },
 };
 
 export const SETTLEMENT_DISTRICT_OVERRIDES: Record<string, string> = {
@@ -499,6 +506,7 @@ export const SETTLEMENT_DISTRICT_OVERRIDES: Record<string, string> = {
   "Красная Горка": "г.о. Люберцы",
   Жулебино: "Москва, ЮВАО",
   Некрасовка: "Москва, ЮВАО",
+  Косино: "Москва, ВАО",
 };
 
 /** Населённый пункт относится к зоне доставки Люберецкого округа */
@@ -509,10 +517,25 @@ export function isLyuberetskyDistrict(district: string): boolean {
     district.includes("Котельник") ||
     district.includes("Лыткарин") ||
     district.includes("Балаших") ||
-    district.includes("ЮВАО")
+    district.includes("ЮВАО") ||
+    district.includes("ВАО")
   );
 }
 
-export const PRIMARY_SETTLEMENT_NAMES = ["Жуковский", "Раменское", "Люберцы"] as const;
+export const PRIMARY_SETTLEMENT_NAMES = [
+  "Жуковский",
+  "Раменское",
+  "Люберцы",
+  "Котельники",
+  "Лыткарино",
+  "Железнодорожный",
+  "Новое Павлино",
+  "Кучино",
+  "Саввино",
+  "Никольско-Архангельский",
+  "Жулебино",
+  "Некрасовка",
+  "Косино",
+] as const;
 
 export const DEFAULT_SETTLEMENT_DISTRICT = "Раменский городской округ";

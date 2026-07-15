@@ -179,6 +179,42 @@ export function DeliveryPageContent({ config }: { config: DeliveryAreaConfig }) 
                   <Link href="/zhukovskiy/delivery">Жуковский</Link>
                   {" · "}
                   <Link href="/ramenskoe/delivery">Раменское и район</Link>
+                  {" · "}
+                  <Link href="/delivery/moscow">Москва</Link>
+                  {" · "}
+                  <Link href="/delivery/kotelniki">Котельники</Link>
+                </>
+              ) : config.slug === "moscow" ? (
+                <>
+                  <Link href="/lyubertsy/delivery">Люберцы и округ</Link>
+                  {" · "}
+                  <Link href="/delivery/balashikha">г.о. Балашиха</Link>
+                  {" · "}
+                  <Link href="/delivery/kotelniki">Котельники</Link>
+                </>
+              ) : config.slug === "balashikha" ? (
+                <>
+                  <Link href="/lyubertsy/delivery">Люберцы и округ</Link>
+                  {" · "}
+                  <Link href="/delivery/moscow">Москва</Link>
+                  {" · "}
+                  <Link href="/delivery/lytkarino">Лыткарино</Link>
+                </>
+              ) : config.slug === "kotelniki" ? (
+                <>
+                  <Link href="/lyubertsy/delivery">Люберцы и округ</Link>
+                  {" · "}
+                  <Link href="/delivery/lytkarino">Лыткарино</Link>
+                  {" · "}
+                  <Link href="/delivery/moscow">Москва</Link>
+                </>
+              ) : config.slug === "lytkarino" ? (
+                <>
+                  <Link href="/delivery/kotelniki">Котельники</Link>
+                  {" · "}
+                  <Link href="/delivery/balashikha">г.о. Балашиха</Link>
+                  {" · "}
+                  <Link href="/lyubertsy/delivery">Люберцы и округ</Link>
                 </>
               ) : (
                 <>

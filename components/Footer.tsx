@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { HowToOrderLink } from "@/components/HowToOrderLink";
 import { CityLink } from "@/components/CityLink";
 import { useCity } from "@/context/CityContext";
@@ -63,6 +65,18 @@ export function Footer() {
               </li>
               <li>
                 <CityLink href="/lyubertsy/delivery">По Люберецкому округу</CityLink>
+              </li>
+              <li>
+                <Link href="/delivery/moscow">По Москве</Link>
+              </li>
+              <li>
+                <Link href="/delivery/balashikha">По г.о. Балашиха</Link>
+              </li>
+              <li>
+                <Link href="/delivery/kotelniki">По Котельникам</Link>
+              </li>
+              <li>
+                <Link href="/delivery/lytkarino">По Лыткарино</Link>
               </li>
               <li>
                 <CityLink href="/about#stores">Самовывоз из магазина</CityLink>

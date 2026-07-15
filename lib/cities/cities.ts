@@ -50,15 +50,17 @@ function buildSettlementSeo(
 
 function resolveDetailsSlug(name: string, district: string): string {
   if (name === "Жуковский") return "zhukovsky";
+  if (district.includes("Котельник")) return "kotelniki";
+  if (district.includes("Лыткарин")) return "lytkarino";
+  if (district.includes("Балаших")) return "balashikha";
   if (
-    district.includes("Люберц") ||
-    district.includes("Дзержинск") ||
-    district.includes("Котельник") ||
-    district.includes("Лыткарин") ||
-    district.includes("Балаших") ||
     district.includes("ЮВАО") ||
+    district.includes("ВАО") ||
     district.includes("Москва")
   ) {
+    return "moscow";
+  }
+  if (district.includes("Люберц") || district.includes("Дзержинск")) {
     return "lyubertsy";
   }
   return "ramenskoe";

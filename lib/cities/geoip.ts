@@ -53,6 +53,7 @@ const GEO_CITY_ALIASES: Record<string, string> = {
   savvino: "Саввино",
   zhulebino: "Жулебино",
   nekrasovka: "Некрасовка",
+  kosino: "Косино",
 };
 
 const citiesByNormalizedName = (() => {
