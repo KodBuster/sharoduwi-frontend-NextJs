@@ -56,7 +56,11 @@ function getStaffAlertAuthRedirect(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/sitemap.xml" || pathname.startsWith("/sitemap/")) {
+  if (
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    pathname.startsWith("/sitemap/")
+  ) {
     return NextResponse.next();
   }
 
@@ -160,6 +164,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/robots.txt",
     "/sitemap.xml",
     "/sitemap/:path*",
     "/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\..*).*)",
