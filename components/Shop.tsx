@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { CityLink } from "@/components/CityLink";
 import { useMemo } from "react";
 import { useApp } from "@/context/AppContext";
-import { TAGS, getCollectionBySlug } from "@/lib/data";
+import { COLLECTIONS, TAGS, getCollectionBySlug } from "@/lib/data";
 import { productMatchesSearch, productMatchesTag, type CollectionSlug } from "@/lib/products";
 import { ProductCard } from "@/components/product/ProductCard";
 
@@ -112,17 +111,30 @@ export function Shop({ pageCollection, heading, description, previewLimit }: Sho
         )}
         {!isPreview && !favOnly && (
         <div className="shop-controls reveal">
-          <div className="filters" id="filters">
-            {TAGS.map((tag) => (
-              <button
-                key={tag}
-                className={`chip${activeTag === tag ? " active" : ""}`}
-                type="button"
-                onClick={() => setActiveTag(tag)}
-              >
-                {tag}
-              </button>
-            ))}
+          <div className="shop-filters-stack">
+            <div className="filters" id="filters">
+              {TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  className={`chip${activeTag === tag ? " active" : ""}`}
+                  type="button"
+                  onClick={() => setActiveTag(tag)}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+            <div className="filters filters-collections" aria-label="Коллекции">
+              {COLLECTIONS.map((collection) => (
+                <CityLink
+                  key={collection.slug}
+                  href={`/categories/${collection.slug}`}
+                  className={`chip${collectionFilter === collection.slug ? " active" : ""}`}
+                >
+                  {collection.name}
+                </CityLink>
+              ))}
+            </div>
           </div>
           <div className="search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">

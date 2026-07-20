@@ -377,7 +377,9 @@ a.col-card{color:inherit}
 /* ============================================================
    ТОВАРЫ
    ============================================================ */
-.shop-controls{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:34px}
+.shop-controls{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:34px}
+.shop-filters-stack{display:flex;flex-direction:column;gap:12px;flex:1 1 280px;min-width:0}
+.filters-collections .chip{text-decoration:none;display:inline-flex;align-items:center}
 .shop-collection-filter{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-12px 0 22px;font-size:14px;font-weight:700;color:var(--ink-soft)}
 .shop-collection-filter .chip{margin:0;padding:8px 14px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center}
 .shop-fav-clear{border-color:var(--pink);color:var(--pink)}
