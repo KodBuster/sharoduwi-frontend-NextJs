@@ -18,7 +18,7 @@ const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
   "shary-na-devichnik": "Шары на Девичник.png",
   "set-s-tsifroi": "Сет с цифрой.png",
   "1-godik-1": "1 годик.png",
-  "korobki-s-sharami": "Коробки с шарами.png",
+  "korobki-s-sharami": "Коробки с шарами.jpg",
   "dlya-novorozhdennykh": "Для Новорожденных.jpg",
   "dlya-vliublennykh": "Для Влюбленных.png",
   pirotekhnika: "Пиротехника.png",
