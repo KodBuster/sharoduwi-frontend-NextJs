@@ -390,6 +390,12 @@ a.col-card{color:inherit}
 .collections--catalog .col-card.is-extra{display:flex}
 .col-card--catalog.active{outline:3px solid var(--pink);outline-offset:2px}
 @media (min-width:861px){
+  .catalog-page-shell .shop-controls{
+    display:grid;grid-template-columns:1fr minmax(240px,320px);gap:18px;align-items:start}
+  .catalog-page-shell .shop-filters-stack{display:contents}
+  .catalog-page-shell .shop-filters-stack .filters{grid-column:1;grid-row:1}
+  .catalog-page-shell .shop-filters-stack .collections--catalog{grid-column:1 / -1;grid-row:2;margin-top:4px}
+  .catalog-page-shell .shop-controls > .search{grid-column:2;grid-row:1;justify-self:stretch}
   .collections--catalog{grid-template-columns:repeat(5,1fr);gap:16px}
   .collections--catalog .col-card{aspect-ratio:4/5;padding:24px;border-radius:var(--r-lg)}
   .collections--catalog .col-card .col-info h3{font-size:21px}
@@ -398,6 +404,10 @@ a.col-card{color:inherit}
 .catalog-page-shell .reveal{opacity:1;transform:none;transition:none}
 .catalog-page-shell .category-page{padding-top:16px;padding-bottom:0}
 .catalog-page-shell #shop.sec{padding-top:28px}
+.cities-page-shell .reveal{opacity:1;transform:none;transition:none}
+.collection-page-shell .reveal{opacity:1;transform:none;transition:none}
+.collection-page-shell .category-page{padding-top:16px;padding-bottom:0}
+.collection-page-shell #shop.sec{padding-top:12px}
 .shop-collection-filter{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-12px 0 22px;font-size:14px;font-weight:700;color:var(--ink-soft)}
 .shop-collection-filter .chip{margin:0;padding:8px 14px;font-size:13px;text-decoration:none;display:inline-flex;align-items:center}
 .shop-fav-clear{border-color:var(--pink);color:var(--pink)}
@@ -1074,6 +1084,24 @@ a.col-card{color:inherit}
 @media (max-width:860px){
   .topbar:not(.topbar--home){display:none}
   .catalog-page-shell #shop.sec{padding-top:16px}
+  .collection-page-shell .category-page.sec{padding:16px 0 0}
+  .collection-page-shell .category-breadcrumb{margin-bottom:0}
+  .collection-page-shell #shop.sec{padding-top:8px}
+  .collection-page-shell #shop .sec-head{margin-bottom:18px}
+  .collection-page-shell #shop .sec-head h2{margin-top:0}
+  .collection-page-shell #shop .sec-head .sec-tag{margin-bottom:8px}
+  .cities-page-shell .sec{padding:16px 0}
+  .cities-page-shell .info-page{padding-top:16px;padding-bottom:0}
+  .cities-page-shell .category-breadcrumb{margin-bottom:0}
+  .cities-page-shell .info-hero{margin:10px 0 0}
+  .cities-page-shell .info-hero h1{margin:10px 0 0}
+  .cities-page-shell .info-hero .sec-tag{margin-bottom:8px}
+  .cities-page-shell .cities-hero-lead{margin-top:10px;font-size:15px;line-height:1.5}
+  .cities-page-shell .info-page-section.sec{padding:8px 0}
+  .cities-page-shell .cities-search-section{padding:6px 0 4px}
+  .cities-page-shell .cities-grid{margin:4px 0 0}
+  .cities-page-shell .cities-primary-title{margin:0 0 12px;font-size:20px}
+  .cities-page-shell .city-search-meta{margin-top:8px;margin-bottom:0}
   .collections--catalog .col-card{aspect-ratio:1/1;padding:10px;border-radius:18px;animation:none}
   .collections--catalog .col-card .col-info h3{font-size:12px;line-height:1.25}
   .collections--catalog .col-card .col-info span{display:none}
@@ -1108,6 +1136,12 @@ a.col-card{color:inherit}
   body.site-scrolled-down:not(.city-picker-open) .header-city{max-height:0;padding:0;margin:0;opacity:0;pointer-events:none;overflow:hidden;border:none}
   body.city-picker-open .header-city{max-height:none;opacity:1;pointer-events:auto;transform:none;overflow:visible}
   body.city-picker-open .header-city{z-index:45}
+  .catalog-page-shell .header-inner,
+  .cities-page-shell .header-inner,
+  .collection-page-shell .header-inner{grid-template-areas:"logo actions";grid-template-columns:minmax(0,1fr) auto;row-gap:0}
+  .catalog-page-shell .header-city,
+  .cities-page-shell .header-city,
+  .collection-page-shell .header-city{display:none !important;max-height:0 !important;margin:0;padding:0;overflow:hidden;pointer-events:none;opacity:0 !important}
   .head-actions{grid-area:actions;justify-self:end;align-self:center;gap:2px;flex:0 0 auto;padding-right:0;position:relative;max-width:min(168px,48vw)}
   .icon-btn{width:34px;height:34px;flex-shrink:0;background:#fff;
     box-shadow:0 0 0 1px var(--line),0 4px 12px -6px rgba(40,16,42,.12)}

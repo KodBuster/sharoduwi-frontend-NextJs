@@ -57,11 +57,19 @@ function InfoPageLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function InfoPageShell({ children }: { children: React.ReactNode }) {
+export function InfoPageShell({
+  children,
+  shellClassName,
+}: {
+  children: React.ReactNode;
+  shellClassName?: string;
+}) {
+  const layout = <InfoPageLayout>{children}</InfoPageLayout>;
+
   return (
     <MaybeCityProvider>
       <AppProvider>
-        <InfoPageLayout>{children}</InfoPageLayout>
+        {shellClassName ? <div className={shellClassName}>{layout}</div> : layout}
       </AppProvider>
     </MaybeCityProvider>
   );

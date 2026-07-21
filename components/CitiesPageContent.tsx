@@ -52,7 +52,7 @@ export function CitiesPageContent() {
         <section className="sec info-page-section">
           <div className="wrap">
             <div className="cities-grid reveal in">
-              <h2>Города</h2>
+              <h2 className="cities-primary-title">Города</h2>
               <div className="cities-cards">
                 {filteredPrimary.map((city) => (
                   <CityCard key={city.slug} city={city} />

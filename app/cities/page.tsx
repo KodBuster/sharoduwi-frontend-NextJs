@@ -24,7 +24,7 @@ export default function CitiesPage() {
   return (
     <>
       <JsonLd data={schema} />
-      <InfoPageShell>
+      <InfoPageShell shellClassName="cities-page-shell">
         <section className="sec info-page">
           <div className="wrap">
             <nav className="category-breadcrumb reveal" aria-label="Навигация">
@@ -38,7 +38,7 @@ export default function CitiesPage() {
                 <span className="dot" /> Регионы доставки
               </div>
               <h1>Выберите место доставки</h1>
-              <p className="info-lead">
+              <p className="info-lead cities-hero-lead">
                 У каждого пункта — своя страница с актуальными условиями доставки, контактами и каталогом шаров.
               </p>
             </div>

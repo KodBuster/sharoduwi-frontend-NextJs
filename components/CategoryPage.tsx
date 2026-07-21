@@ -100,7 +100,9 @@ export function CategoryPage({
   return (
     <MaybeCityProvider>
       <AppProvider catalogCollection={slug} initialCatalog={initialCatalog}>
-        <CategoryContent slug={slug} />
+        <div className="collection-page-shell">
+          <CategoryContent slug={slug} />
+        </div>
       </AppProvider>
     </MaybeCityProvider>
   );
