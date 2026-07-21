@@ -134,7 +134,8 @@ export function Header() {
   const clearSearchQuery = useCallback(() => {
     setSearchQuery("");
     setResultsOpen(false);
-    focusHeaderSearchInput();
+    setSearchOpen(true);
+    requestAnimationFrame(() => focusHeaderSearchInput());
   }, [setSearchQuery]);
 
   const onFavClick = () => {
@@ -249,7 +250,12 @@ export function Header() {
                 type="button"
                 className="hs-clear"
                 aria-label="Очистить поиск"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   clearSearchQuery();
                 }}
