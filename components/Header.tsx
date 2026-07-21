@@ -146,14 +146,11 @@ export function Header() {
     return () => document.removeEventListener("click", onDocClick);
   }, [closeSearchUi, resultsOpen, searchOpen]);
 
-  useEffect(() => {
-    if (!resultsOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [resultsOpen]);
+  const clearSearchQuery = useCallback(() => {
+    setSearchQuery("");
+    setResultsOpen(false);
+    focusHeaderSearchInput();
+  }, [setSearchQuery]);
 
   const onFavClick = () => {
     const next = !favOnly;
@@ -172,7 +169,10 @@ export function Header() {
   };
 
   return (
-    <header className="header" id="header">
+    <header
+      className={`header${resultsOpen ? " header--search-open" : ""}`}
+      id="header"
+    >
       <div className="header-inner">
         <CityLink href="/" className="logo" aria-label="ШАРОДУВЫ">
           {LOGO.map((l) => (
@@ -250,6 +250,21 @@ export function Header() {
                 }
               }}
             />
+            {searchQuery.length > 0 && (
+              <button
+                type="button"
+                className="hs-clear"
+                aria-label="Очистить поиск"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clearSearchQuery();
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
           <button
             className={`icon-btn fav-btn${favOnly ? " active" : ""}`}
@@ -285,6 +300,7 @@ export function Header() {
       <HeaderSearchModal
         query={searchQuery}
         open={resultsOpen}
+        anchorRef={searchRef}
         onClose={() => setResultsOpen(false)}
         onGoToResults={goToSearchResults}
         onSelectProduct={closeSearchUi}
