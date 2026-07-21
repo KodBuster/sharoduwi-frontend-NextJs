@@ -8,10 +8,6 @@ import { CitySwitcher } from "@/components/CitySwitcher";
 import { CityLink } from "@/components/CityLink";
 import { HowToOrderLink } from "@/components/HowToOrderLink";
 import { HeaderSearchModal } from "@/components/HeaderSearchModal";
-import {
-  consumeSearchFocusPending,
-  markSearchFocusPending,
-} from "@/lib/search-storage";
 
 const LOGO = ["Ш", "А", "Р", "О", "Д", "У", "В", "Ы"];
 
@@ -67,21 +63,6 @@ export function Header() {
     }
   }, [searchOpen]);
 
-  useEffect(() => {
-    if (!isSearchPage || !consumeSearchFocusPending()) return;
-
-    setSearchOpen(true);
-    const focus = () => focusHeaderSearchInput();
-    focus();
-    const timer = window.setTimeout(focus, 80);
-    const retry = window.setTimeout(focus, 250);
-
-    return () => {
-      window.clearTimeout(timer);
-      window.clearTimeout(retry);
-    };
-  }, [isSearchPage, pathname]);
-
   const scrollToShop = useCallback(() => {
     document
       .getElementById("shop")
@@ -109,7 +90,6 @@ export function Header() {
       setSearchQuery(trimmed);
       setResultsOpen(false);
       setSearchOpen(false);
-      markSearchFocusPending();
 
       const nextUrl = buildSearchPageUrl(searchPath, trimmed);
       // push надёжнее обновляет useSearchParams при смене только ?q=
