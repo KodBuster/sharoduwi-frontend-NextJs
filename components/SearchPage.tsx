@@ -40,13 +40,11 @@ function SearchContent() {
   const isMobile = useMediaQuery("(max-width: 860px)");
   const searchParams = useSearchParams();
   const q = (searchParams.get("q") ?? "").trim();
-  const { products, catalogLoading, setSearchQuery, searchQuery } = useApp();
+  const { products, catalogLoading, setSearchQuery } = useApp();
 
   useEffect(() => {
-    if (q !== searchQuery) {
-      setSearchQuery(q);
-    }
-  }, [q, searchQuery, setSearchQuery]);
+    setSearchQuery(q);
+  }, [q, setSearchQuery]);
 
   const list = useMemo(() => {
     if (!q) return [];

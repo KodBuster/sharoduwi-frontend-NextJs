@@ -18,6 +18,7 @@ interface HeaderSearchModalProps {
   open: boolean;
   anchorRef: RefObject<HTMLElement | null>;
   onClose: () => void;
+  onGoToResults: (query: string) => void;
   onSelectProduct: () => void;
 }
 
@@ -83,6 +84,7 @@ export function HeaderSearchModal({
   open,
   anchorRef,
   onClose,
+  onGoToResults,
   onSelectProduct,
 }: HeaderSearchModalProps) {
   const trimmed = query.trim();
@@ -95,6 +97,7 @@ export function HeaderSearchModal({
   }, [products, trimmed]);
 
   const preview = matches.slice(0, PREVIEW_LIMIT);
+  const hasMore = matches.length > PREVIEW_LIMIT;
 
   useLayoutEffect(() => {
     if (!open || !trimmed) {
@@ -171,6 +174,17 @@ export function HeaderSearchModal({
             ))
           )}
         </div>
+        {hasMore && (
+          <div className="head-search-modal-foot">
+            <button
+              type="button"
+              className="head-search-modal-all"
+              onClick={() => onGoToResults(trimmed)}
+            >
+              Посмотреть все…
+            </button>
+          </div>
+        )}
       </div>
     </div>,
     document.body

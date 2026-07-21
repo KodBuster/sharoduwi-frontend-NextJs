@@ -250,6 +250,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .head-search-result-meta{font-size:12px;font-weight:600;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .head-search-result-price{font-family:var(--font-unbounded),'Unbounded',sans-serif;font-size:13px;font-weight:800;color:var(--pink);white-space:nowrap}
+.head-search-modal-foot{padding:4px 10px 10px;flex:none;border-top:1px solid var(--line)}
+.head-search-modal-all{width:100%;border:none;background:transparent;padding:10px 8px;cursor:pointer;
+  font:inherit;font-size:14px;font-weight:800;color:var(--pink-deep);text-align:center}
+.head-search-modal-all:hover{color:var(--pink)}
 .fav-btn.active{background:var(--pink);border-color:var(--pink);color:#fff}
 .fav-btn.active:hover{color:#fff;transform:translateY(-3px)}
 /* сердечко «избранное» на карточке товара */
@@ -1163,10 +1167,12 @@ a.col-card{color:inherit}
   body.city-picker-open .header-city{z-index:45}
   .catalog-page-shell .header-inner,
   .cities-page-shell .header-inner,
-  .collection-page-shell .header-inner{grid-template-areas:"logo actions";grid-template-columns:minmax(0,1fr) auto;row-gap:0}
+  .collection-page-shell .header-inner,
+  .header--home .header-inner{grid-template-areas:"logo actions";grid-template-columns:minmax(0,1fr) auto;row-gap:0}
   .catalog-page-shell .header-city,
   .cities-page-shell .header-city,
-  .collection-page-shell .header-city{display:none !important;max-height:0 !important;margin:0;padding:0;overflow:hidden;pointer-events:none;opacity:0 !important}
+  .collection-page-shell .header-city,
+  .header--home .header-city{display:none !important;max-height:0 !important;margin:0;padding:0;overflow:hidden;pointer-events:none;opacity:0 !important}
   .head-actions{grid-area:actions;justify-self:end;align-self:center;gap:2px;flex:0 0 auto;padding-right:0;position:relative;max-width:min(168px,48vw)}
   .icon-btn{width:34px;height:34px;flex-shrink:0;background:#fff;
     box-shadow:0 0 0 1px var(--line),0 4px 12px -6px rgba(40,16,42,.12)}

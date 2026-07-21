@@ -308,6 +308,7 @@ export function Header() {
         open={resultsOpen}
         anchorRef={searchRef}
         onClose={() => setResultsOpen(false)}
+        onGoToResults={goToSearchResults}
         onSelectProduct={closeSearchUi}
       />
     </header>
