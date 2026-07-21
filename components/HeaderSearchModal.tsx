@@ -18,7 +18,6 @@ interface HeaderSearchModalProps {
   open: boolean;
   anchorRef: RefObject<HTMLElement | null>;
   onClose: () => void;
-  onGoToResults: (query: string) => void;
   onSelectProduct: () => void;
 }
 
@@ -84,7 +83,6 @@ export function HeaderSearchModal({
   open,
   anchorRef,
   onClose,
-  onGoToResults,
   onSelectProduct,
 }: HeaderSearchModalProps) {
   const trimmed = query.trim();
@@ -97,7 +95,6 @@ export function HeaderSearchModal({
   }, [products, trimmed]);
 
   const preview = matches.slice(0, PREVIEW_LIMIT);
-  const hasMore = matches.length > PREVIEW_LIMIT;
 
   useLayoutEffect(() => {
     if (!open || !trimmed) {
@@ -112,9 +109,13 @@ export function HeaderSearchModal({
     };
 
     update();
+    const raf = window.requestAnimationFrame(update);
+    const delayed = window.setTimeout(update, 80);
     window.addEventListener("resize", update);
     window.addEventListener("scroll", update, true);
     return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(delayed);
       window.removeEventListener("resize", update);
       window.removeEventListener("scroll", update, true);
     };
@@ -143,8 +144,7 @@ export function HeaderSearchModal({
     >
       <div
         className="head-search-modal"
-        role="dialog"
-        aria-modal="true"
+        role="listbox"
         aria-label="Результаты поиска"
         style={{
           top: panelStyle.top,
@@ -154,27 +154,6 @@ export function HeaderSearchModal({
         }}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="head-search-modal-head">
-          <h2>Результаты поиска</h2>
-          <p>
-            {loading && !matches.length
-              ? "Шары на подлёте..."
-              : matches.length
-                ? `Найдено: ${matches.length}`
-                : "Ничего не нашли"}
-          </p>
-          <button
-            type="button"
-            className="head-search-modal-close"
-            aria-label="Закрыть"
-            onClick={onClose}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
         <div className="head-search-modal-list">
           {loading && !preview.length ? (
             <div className="head-search-modal-empty">Шары на подлёте...</div>
@@ -190,24 +169,6 @@ export function HeaderSearchModal({
                 onSelect={onSelectProduct}
               />
             ))
-          )}
-        </div>
-
-        <div className="head-search-modal-foot">
-          <button
-            type="button"
-            className="btn btn-primary head-search-modal-go"
-            onClick={() => onGoToResults(trimmed)}
-          >
-            Перейти
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </button>
-          {hasMore && (
-            <span className="head-search-modal-more">
-              Ещё {matches.length - PREVIEW_LIMIT} на странице поиска
-            </span>
           )}
         </div>
       </div>

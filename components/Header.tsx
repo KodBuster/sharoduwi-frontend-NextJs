@@ -170,7 +170,13 @@ export function Header() {
 
   return (
     <header
-      className={`header${resultsOpen ? " header--search-open" : ""}`}
+      className={[
+        "header",
+        searchOpen || resultsOpen ? "header--search-open" : "",
+        isHome ? "header--home" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       id="header"
     >
       <div className="header-inner">
@@ -302,7 +308,6 @@ export function Header() {
         open={resultsOpen}
         anchorRef={searchRef}
         onClose={() => setResultsOpen(false)}
-        onGoToResults={goToSearchResults}
         onSelectProduct={closeSearchUi}
       />
     </header>
