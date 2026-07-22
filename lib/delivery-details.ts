@@ -82,7 +82,8 @@ export function getDeliveryDetailsForSettlement(
     highlights: [...DELIVERY_STANDARD_HIGHLIGHTS],
     pricingTitle: `Стоимость доставки в ${titlePlace}`,
     pricingRows: [buildPricingRow(settlementName, tariff.minOrder, tariff.delivery)],
-    pricingOtherNote: `Стоимость доставки по конкретному адресу в населённом пункте «${settlementName}» уточняйте у менеджеров.`,
+    pricingOtherNote:
+      "Стоимость доставки по конкретному адресу уточняйте у менеджеров.",
     nightSurcharge: { ...DELIVERY_STANDARD_EXTRAS.nightSurcharge },
     greetingService: { ...DELIVERY_STANDARD_EXTRAS.greetingService },
     pickupTitle: DELIVERY_STANDARD_EXTRAS.pickupTitle,

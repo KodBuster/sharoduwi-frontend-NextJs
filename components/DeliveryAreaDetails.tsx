@@ -58,9 +58,9 @@ export function DeliveryAreaDetails({ details }: { details: DeliveryAreaDetailsD
                 <tbody>
                   {details.pricingRows.map((row, index) => (
                     <tr key={`${row.location}-${row.condition}-${index}`}>
-                      <td>{row.location}</td>
-                      <td>{row.condition}</td>
-                      <td>
+                      <td data-label="Населённый пункт">{row.location}</td>
+                      <td data-label="Условие заказа">{row.condition}</td>
+                      <td data-label="Доставка">
                         <strong>{row.price}</strong>
                       </td>
                     </tr>

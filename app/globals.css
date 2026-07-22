@@ -515,12 +515,42 @@ a.col-card{color:inherit}
 .delivery-table td strong{font-family:'Unbounded',var(--font-unbounded),sans-serif;font-size:18px;
   font-weight:800;color:var(--pink-deep)}
 @media (max-width:720px){
-  .delivery-table-wrap{overflow-x:hidden}
-  .delivery-table{min-width:0;table-layout:fixed}
-  .delivery-table th,.delivery-table td{padding:14px 10px;overflow-wrap:anywhere;word-break:normal}
-  .delivery-table thead th:nth-child(1),.delivery-table td:nth-child(1){width:34%}
-  .delivery-table thead th:nth-child(2),.delivery-table td:nth-child(2){width:38%}
-  .delivery-table thead th:nth-child(3),.delivery-table td:nth-child(3){width:28%}
+  .delivery-pricing,
+  .delivery-pricing .sec-head,
+  .delivery-note-block,
+  .delivery-extras,
+  .delivery-table-wrap{min-width:0;max-width:100%}
+  .delivery-pricing .sec-head{margin-bottom:22px}
+  .delivery-pricing .sec-head h2{
+    overflow-wrap:anywhere;word-break:break-word;line-height:1.2;font-size:clamp(22px,6.2vw,27px)}
+  .delivery-note,
+  .delivery-pricing-footer,
+  .delivery-extras .info-card,
+  .delivery-extras .info-card h3,
+  .delivery-extras .info-card p{
+    overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}
+  .delivery-extras{grid-template-columns:1fr;gap:12px}
+  .delivery-extras .info-card{padding:18px 16px}
+  .delivery-extras .info-card h3{font-size:18px;line-height:1.25}
+  .delivery-table-wrap{overflow:visible}
+  .delivery-table{min-width:0;width:100%;table-layout:auto}
+  .delivery-table thead{display:none}
+  .delivery-table,.delivery-table tbody,.delivery-table tr,.delivery-table td{display:block;width:100%}
+  .delivery-table tbody tr{padding:14px 16px}
+  .delivery-table tbody tr:not(:last-child){border-bottom:1px solid var(--line)}
+  .delivery-table td{
+    display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:6px 12px;
+    align-items:center;padding:10px 0;border-bottom:1px solid rgba(29,20,38,.08);
+    font-size:15px;text-align:right}
+  .delivery-table td:last-child{border-bottom:none;padding-bottom:0}
+  .delivery-table td:first-child{padding-top:0}
+  .delivery-table td::before{
+    content:attr(data-label);justify-self:start;text-align:left;
+    font-family:var(--font-unbounded),'Unbounded',sans-serif;font-weight:800;font-size:13px;
+    color:var(--pink-deep);line-height:1.2}
+  .delivery-table td[data-label="Населённый пункт"]::before{content:"Населённый\Aпункт";white-space:pre-line}
+  .delivery-table td[data-label="Условие заказа"]::before{content:"Условие\Aзаказа";white-space:pre-line}
+  .delivery-table td strong{font-size:18px}
 }
 .delivery-note{font-size:15px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0;max-width:72ch}
 .delivery-note-block{display:grid;gap:6px;margin:0}
