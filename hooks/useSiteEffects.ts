@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+import { isSiteHomePath } from "@/lib/cities";
+import { useCityOptional } from "@/context/CityContext";
+
 function revealElement(el: Element) {
   el.classList.add("in");
 }
@@ -178,14 +181,17 @@ export function useCatalogHashScroll() {
 /** Прокрутка к якорю после перехода на главную (например /#how) */
 export function useHashScroll() {
   const pathname = usePathname();
+  const city = useCityOptional()?.city;
 
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (!isSiteHomePath(pathname, city?.slug)) return;
 
     const scrollToHash = () => {
       const hash = window.location.hash;
       if (!hash) return;
-      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document
+        .getElementById(hash.slice(1))
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     scrollToHash();
@@ -196,5 +202,5 @@ export function useHashScroll() {
       window.clearTimeout(timer);
       window.clearTimeout(retry);
     };
-  }, [pathname]);
+  }, [pathname, city?.slug]);
 }

@@ -4,13 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
 
-import { scrollToSiteSection } from "@/components/SiteSectionLink";
+import {
+  scrollToSiteSectionAfterMenuClose,
+} from "@/components/SiteSectionLink";
+import { useCity } from "@/context/CityContext";
 
 export const HOW_SECTION_ID = "how";
 export const HOW_SECTION_HREF = "/#how";
 
 export function scrollToHowSection(behavior: ScrollBehavior = "smooth") {
-  scrollToSiteSection(HOW_SECTION_ID, behavior);
+  document.getElementById(HOW_SECTION_ID)?.scrollIntoView({
+    behavior,
+    block: "start",
+  });
 }
 
 interface HowToOrderLinkProps {
@@ -21,13 +27,17 @@ interface HowToOrderLinkProps {
 
 export function HowToOrderLink({ children, className, onNavigate }: HowToOrderLinkProps) {
   const pathname = usePathname();
+  const { href: cityHref, isHome } = useCity();
+  const homeHref = cityHref("/");
 
   const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    onNavigate?.();
-    if (pathname === "/") {
+    if (isHome || pathname === "/" || pathname === homeHref) {
       e.preventDefault();
-      scrollToHowSection();
+      scrollToSiteSectionAfterMenuClose(HOW_SECTION_ID, onNavigate);
+      return;
     }
+
+    onNavigate?.();
   };
 
   return (

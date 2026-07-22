@@ -10,6 +10,22 @@ export function scrollToSiteSection(sectionId: string, behavior: ScrollBehavior 
   document.getElementById(sectionId)?.scrollIntoView({ behavior, block: "start" });
 }
 
+/**
+ * После закрытия бургер-меню body снимается с position:fixed и scroll
+ * возвращается. Прокрутку к якорю нужно делать после этого cleanup.
+ */
+export function scrollToSiteSectionAfterMenuClose(
+  sectionId: string,
+  onNavigate?: () => void
+) {
+  onNavigate?.();
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scrollToSiteSection(sectionId);
+    });
+  });
+}
+
 interface SiteSectionLinkProps {
   sectionId: string;
   href?: string;
@@ -34,18 +50,19 @@ export function SiteSectionLink({
   const target = href ?? (scrollOnAnyPage ? `#${sectionId}` : `${homeHref}#${sectionId}`);
 
   const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    onNavigate?.();
-
     if (scrollOnAnyPage && document.getElementById(sectionId)) {
       e.preventDefault();
-      scrollToSiteSection(sectionId);
+      scrollToSiteSectionAfterMenuClose(sectionId, onNavigate);
       return;
     }
 
-    if (isHome) {
+    if (isHome || pathname === homeHref) {
       e.preventDefault();
-      scrollToSiteSection(sectionId);
+      scrollToSiteSectionAfterMenuClose(sectionId, onNavigate);
+      return;
     }
+
+    onNavigate?.();
   };
 
   return (
