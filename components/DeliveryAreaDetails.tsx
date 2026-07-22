@@ -35,7 +35,7 @@ export function DeliveryAreaDetails({ details }: { details: DeliveryAreaDetailsD
               {details.pricingIntro ? (
                 <p className="delivery-pricing-intro">{details.pricingIntro}</p>
               ) : null}
-              <p>Условия доставки в следующие населённые пункты:</p>
+              <p>Условия доставки:</p>
             </div>
 
             <div className="delivery-table-wrap">

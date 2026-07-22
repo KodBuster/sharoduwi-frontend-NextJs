@@ -41,6 +41,8 @@ export function getDeliveryConfigForCity(city: CityPublic) {
     slug: detailsSlug,
     path: `/${city.slug}/delivery`,
     cityLabel: city.name,
+    pricingSettlementName: city.name,
+    pricingTitlePlace: city.namePrepositional,
     deliveryInLabel: city.delivery.deliveryInLabel,
     title: buildDeliveryPageTitle(city),
     metaDescription: city.seo.homeDescription,

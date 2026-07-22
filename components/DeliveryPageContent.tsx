@@ -3,8 +3,8 @@ import Link from "next/link";
 import { DeliveryAreaDetails } from "@/components/DeliveryAreaDetails";
 import { CityLink } from "@/components/CityLink";
 import { COLLECTIONS } from "@/lib/data";
+import { getDeliveryDetailsForSettlement } from "@/lib/delivery-details";
 import {
-  DELIVERY_DETAILS_BY_SLUG,
   DELIVERY_MANAGER_MAX,
   DELIVERY_MANAGER_PHONE,
   DELIVERY_MANAGER_PHONE_HREF,
@@ -14,7 +14,9 @@ import {
 } from "@/lib/info-pages";
 
 export function DeliveryPageContent({ config }: { config: DeliveryAreaConfig }) {
-  const areaDetails = DELIVERY_DETAILS_BY_SLUG[config.slug];
+  const areaDetails = getDeliveryDetailsForSettlement(config.pricingSettlementName, {
+    titlePlace: config.pricingTitlePlace,
+  });
   const hasDetailedTariffs = Boolean(areaDetails);
   const featuredCollections = FEATURED_COLLECTION_SLUGS.map((slug) =>
     COLLECTIONS.find((c) => c.slug === slug)
