@@ -4,7 +4,8 @@ import { submitAdvantShopOrder } from "@/lib/advantshop/orders";
 import { isAdvantShopConfigured } from "@/lib/advantshop/config";
 import type { CartItem } from "@/lib/cart";
 import {
-  getDeliveryFee,
+  getOrderDeliveryFee,
+  NIGHT_DELIVERY_LABEL,
   validateCheckoutForm,
   type CheckoutFormData,
 } from "@/lib/checkout";
@@ -19,6 +20,7 @@ type CreateOrderRequest = {
   items: CartItem[];
   subtotal?: number;
   citySlug?: string;
+  nightDelivery?: boolean;
 };
 
 export async function POST(request: Request) {
@@ -59,12 +61,22 @@ export async function POST(request: Request) {
     typeof body.subtotal === "number"
       ? body.subtotal
       : body.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = getDeliveryFee(customer.city);
+  const nightDelivery = Boolean(body.nightDelivery);
+  const deliveryFee = getOrderDeliveryFee(customer.city, nightDelivery);
   const total = subtotal + deliveryFee;
+
+  const customerWithNightNote: CheckoutFormData = nightDelivery
+    ? {
+        ...customer,
+        comment: [customer.comment, `${NIGHT_DELIVERY_LABEL} — выбрано клиентом`]
+          .filter(Boolean)
+          .join("\n\n"),
+      }
+    : customer;
 
   try {
     const advantshop = await submitAdvantShopOrder({
-      customer,
+      customer: customerWithNightNote,
       items: body.items,
       deliveryFee,
       citySlug: body.citySlug?.trim() || undefined,
@@ -77,7 +89,7 @@ export async function POST(request: Request) {
       try {
         emailSent = await sendOrderConfirmationEmail({
           orderNumber,
-          customer,
+          customer: customerWithNightNote,
           items: body.items,
           subtotal,
           deliveryFee,

@@ -17,7 +17,11 @@ import type { CatalogSource } from "@/lib/client-catalog-cache";
 import type { CartItem } from "@/lib/cart";
 import { COLORS } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
-import { getDeliveryFee } from "@/lib/delivery-fee";
+import {
+  getOrderDeliveryFee,
+  NIGHT_DELIVERY_LABEL,
+  NIGHT_DELIVERY_SURCHARGE,
+} from "@/lib/delivery-fee";
 import { normalizePhone, validateCheckoutForm } from "@/lib/checkout";
 import { getDefaultCity, getCityBySlug, readStoredCitySlug, type CityPublic } from "@/lib/cities";
 import { PhoneInput } from "@/components/PhoneInput";
@@ -75,6 +79,7 @@ function CheckoutContent() {
   const [city, setCity] = useState(() => resolveCheckoutCityName(ctxCity));
   const [address, setAddress] = useState("");
   const [comment, setComment] = useState("");
+  const [nightDelivery, setNightDelivery] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
@@ -99,7 +104,7 @@ function CheckoutContent() {
     return { total, rows };
   }, [cart, getProduct]);
 
-  const deliveryFee = getDeliveryFee(city);
+  const deliveryFee = getOrderDeliveryFee(city, nightDelivery);
   const grandTotal = total + deliveryFee;
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,6 +153,7 @@ function CheckoutContent() {
           citySlug: ctxCity?.slug ?? linkCitySlug ?? undefined,
           items,
           subtotal: total,
+          nightDelivery,
         }),
       });
 
@@ -411,16 +417,26 @@ function CheckoutContent() {
                   ))}
                 </ul>
                 <div className="checkout-totals">
+                  <label className="checkout-night-delivery">
+                    <input
+                      type="checkbox"
+                      name="nightDelivery"
+                      checked={nightDelivery}
+                      onChange={(e) => setNightDelivery(e.target.checked)}
+                    />
+                    <span>
+                      {NIGHT_DELIVERY_LABEL} — +{fmt(NIGHT_DELIVERY_SURCHARGE)} ₽
+                    </span>
+                  </label>
                   <OrderDeliverySummary
                     subtotal={total}
                     settlementName={city}
+                    nightDelivery={nightDelivery}
                     className="order-delivery-summary--checkout"
                   />
                 </div>
                 <p className="checkout-note">
-                  {deliveryFee > 0
-                    ? "Ночная доставка (00:00–7:00) — +500 ₽. Точный адрес и время согласуем при звонке."
-                    : "Точную стоимость доставки уточним при звонке."}
+                  Точный адрес и время доставки согласуем при звонке.
                 </p>
               </aside>
             </div>

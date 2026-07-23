@@ -4,6 +4,8 @@ import { fmt } from "@/lib/balloons";
 import {
   deliveryToLabel,
   getDeliveryFee,
+  NIGHT_DELIVERY_LABEL,
+  NIGHT_DELIVERY_SURCHARGE,
   withDeliveryToLabel,
 } from "@/lib/delivery-fee";
 
@@ -44,34 +46,49 @@ export function DeliveryPriceMeta({
 type OrderDeliverySummaryProps = {
   subtotal: number;
   settlementName?: string | null;
+  nightDelivery?: boolean;
   className?: string;
 };
 
-/** Итоги заказа: товары / доставка / с доставкой. */
+/** Итоги заказа: товары / доставка / ночная / с доставкой. */
 export function OrderDeliverySummary({
   subtotal,
   settlementName,
+  nightDelivery = false,
   className,
 }: OrderDeliverySummaryProps) {
   const name = settlementName?.trim();
-  const fee = getDeliveryFee(name);
-  const hasDelivery = Boolean(name && fee > 0);
+  const baseFee = getDeliveryFee(name);
+  const nightFee = nightDelivery ? NIGHT_DELIVERY_SURCHARGE : 0;
+  const deliveryTotal = baseFee + nightFee;
+  const hasBaseDelivery = Boolean(name && baseFee > 0);
+  const hasAnyDelivery = deliveryTotal > 0;
 
   return (
     <div className={`order-delivery-summary${className ? ` ${className}` : ""}`}>
-      {hasDelivery ? (
+      {hasAnyDelivery ? (
         <>
           <div className="order-delivery-summary-row">
             <span>Товары</span>
             <b>{fmt(subtotal)} ₽</b>
           </div>
-          <div className="order-delivery-summary-row">
-            <span>{deliveryToLabel(name!)}</span>
-            <b>{fmt(fee)} ₽</b>
-          </div>
+          {hasBaseDelivery ? (
+            <div className="order-delivery-summary-row">
+              <span>{deliveryToLabel(name!)}</span>
+              <b>{fmt(baseFee)} ₽</b>
+            </div>
+          ) : null}
+          {nightFee > 0 ? (
+            <div className="order-delivery-summary-row">
+              <span>{NIGHT_DELIVERY_LABEL}</span>
+              <b>+{fmt(nightFee)} ₽</b>
+            </div>
+          ) : null}
           <div className="order-delivery-summary-row order-delivery-summary-row--total">
-            <span>{withDeliveryToLabel(name!)}</span>
-            <b>{fmt(subtotal + fee)} ₽</b>
+            <span>
+              {hasBaseDelivery && name ? withDeliveryToLabel(name) : "Итого"}
+            </span>
+            <b>{fmt(subtotal + deliveryTotal)} ₽</b>
           </div>
         </>
       ) : (
