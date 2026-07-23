@@ -640,11 +640,39 @@ a.col-card{color:inherit}
 .card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:6px;flex:1}
 .card-cat{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--pink-deep)}
 .card-body h3{font-size:17.5px;font-weight:800;line-height:1.2}
-.card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;min-width:0}
+.card-foot{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:12px;min-width:0}
+.card-price-block{min-width:0;flex:1;display:grid;gap:6px}
 .card-price{font-family:'Unbounded';font-weight:800;font-size:21px;color:var(--pink);white-space:nowrap;line-height:1.1}
 .card-price small{font-family:'Onest';font-size:13px;color:var(--ink-2);font-weight:700;display:inline}
+.delivery-price-meta{display:grid;gap:3px;min-width:0}
+.delivery-price-meta-row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:flex-start;gap:4px 8px;
+  font-size:12px;line-height:1.35;font-weight:700;color:var(--ink-2);min-width:0}
+.delivery-price-meta-label{min-width:0;overflow-wrap:anywhere}
+.delivery-price-meta-value{font-weight:800;color:var(--ink);white-space:nowrap}
+.delivery-price-meta-row--total .delivery-price-meta-label{color:var(--pink-deep)}
+.delivery-price-meta-row--total .delivery-price-meta-value{color:var(--pink-deep);font-family:var(--font-unbounded),'Unbounded',sans-serif;
+  font-size:13px}
+.delivery-price-meta--card .delivery-price-meta-row{font-size:11.5px}
+.delivery-price-meta--card .delivery-price-meta-row--total .delivery-price-meta-value{font-size:12.5px}
+.delivery-price-meta--product{margin-top:10px;gap:6px;max-width:420px}
+.delivery-price-meta--product .delivery-price-meta-row{font-size:14.5px}
+.delivery-price-meta--product .delivery-price-meta-row--total .delivery-price-meta-value{font-size:16px}
+.order-delivery-summary{display:grid;gap:10px;margin-bottom:16px}
+.order-delivery-summary-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;min-width:0}
+.order-delivery-summary-row span{font-weight:700;color:var(--ink-2);min-width:0;overflow-wrap:anywhere;line-height:1.35}
+.order-delivery-summary-row b{font-family:var(--font-unbounded),'Unbounded',sans-serif;font-weight:800;white-space:nowrap;
+  font-size:18px;color:var(--ink)}
+.order-delivery-summary-row--total{padding-top:10px;border-top:1px solid var(--line);margin-top:2px}
+.order-delivery-summary-row--total span{color:var(--pink-deep);font-weight:800}
+.order-delivery-summary-row--total b{font-size:26px;color:var(--ink)}
+.order-delivery-summary--cart .order-delivery-summary-row--total b{font-size:24px}
+.order-delivery-summary--checkout{margin-top:20px;margin-bottom:0}
+.order-delivery-summary--checkout .order-delivery-summary-row--total b{font-size:28px}
+.cart-delivery-note{margin:-6px 0 14px;font-size:13px;line-height:1.4;font-weight:600;color:var(--ink-2)}
+.checkout-totals{margin-top:4px}
 .add-btn{width:46px;height:46px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;
   transition:.25s var(--ease);flex:none;box-shadow:var(--shadow-soft)}
+.card-cart{flex:none;align-self:flex-end}
 .add-btn svg{width:21px;height:21px;transition:transform .25s var(--ease)}
 .add-btn:hover{background:var(--pink-deep);transform:scale(1.1) rotate(90deg)}
 .empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--ink-2);font-weight:700;font-size:18px}
@@ -1254,6 +1282,10 @@ a.col-card{color:inherit}
   .card-foot{gap:6px}
   .card-price{font-size:clamp(14px,3.8vw,17px);letter-spacing:-0.02em}
   .card-price small{font-size:11px;margin-left:4px}
+  .delivery-price-meta--card .delivery-price-meta-row{font-size:10.5px;gap:2px 6px}
+  .delivery-price-meta--card .delivery-price-meta-row--total .delivery-price-meta-value{font-size:11.5px}
+  .order-delivery-summary-row--total b{font-size:clamp(20px,5.5vw,26px)}
+  .order-delivery-summary--checkout .order-delivery-summary-row--total b{font-size:clamp(22px,6vw,28px)}
   .card-cart{flex-shrink:0}
   .reviews{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr;gap:14px}

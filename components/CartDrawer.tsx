@@ -4,14 +4,19 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
+import { useCity } from "@/context/CityContext";
+import { OrderDeliverySummary } from "@/components/DeliveryPriceMeta";
 import { COLORS } from "@/lib/data";
 import type { Product } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
+import { getCityBySlug } from "@/lib/cities";
+import { getDeliveryFee } from "@/lib/delivery-fee";
 import { getProductSlug } from "@/lib/product-slug";
 import { trackCheckoutButtonClick } from "@/lib/metrika/track";
 
 export function CartDrawer() {
   const router = useRouter();
+  const { city, linkCitySlug, href: cityHref } = useCity();
   const {
     cart,
     cartOpen,
@@ -23,23 +28,29 @@ export function CartDrawer() {
     getProduct,
   } = useApp();
 
+  const settlementName =
+    city?.name ?? (linkCitySlug ? getCityBySlug(linkCitySlug)?.name : undefined);
+  const deliveryFee = getDeliveryFee(settlementName);
+
   const { total, rows } = useMemo(() => {
     let total = 0;
-    const rows = Object.keys(cart).map((idStr) => {
-      const id = parseInt(idStr, 10);
-      const p = getProduct(id);
-      if (!p) return null;
-      const qty = cart[id];
-      total += p.price * qty;
-      return { p, qty, id };
-    }).filter(Boolean) as { p: Product; qty: number; id: number }[];
+    const rows = Object.keys(cart)
+      .map((idStr) => {
+        const id = parseInt(idStr, 10);
+        const p = getProduct(id);
+        if (!p) return null;
+        const qty = cart[id];
+        total += p.price * qty;
+        return { p, qty, id };
+      })
+      .filter(Boolean) as { p: Product; qty: number; id: number }[];
     return { total, rows };
   }, [cart, getProduct]);
 
   const onCheckout = () => {
     trackCheckoutButtonClick(total, rows.length);
     closeCart();
-    router.push("/checkout");
+    router.push(cityHref("/checkout"));
   };
 
   return (
@@ -52,7 +63,13 @@ export function CartDrawer() {
       <aside className={`drawer${cartOpen ? " open" : ""}`} id="cartDrawer">
         <div className="drawer-head">
           <h3>Корзина</h3>
-          <button className="close-btn" id="closeCart" aria-label="Закрыть" type="button" onClick={closeCart}>
+          <button
+            className="close-btn"
+            id="closeCart"
+            aria-label="Закрыть"
+            type="button"
+            onClick={closeCart}
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
@@ -69,7 +86,7 @@ export function CartDrawer() {
             rows.map(({ p, qty, id }) => (
               <div className="ci" key={id}>
                 <Link
-                  href={`/products/${getProductSlug(p)}`}
+                  href={cityHref(`/products/${getProductSlug(p)}`)}
                   className="ci-main"
                   onClick={closeCart}
                 >
@@ -77,7 +94,11 @@ export function CartDrawer() {
                     {p.img ? (
                       <img src={p.img} alt={p.name} loading="lazy" decoding="async" />
                     ) : (
-                      <div dangerouslySetInnerHTML={{ __html: balloonSVG(COLORS[p.colors[0]], 40, `cart-${id}`) }} />
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: balloonSVG(COLORS[p.colors[0]], 40, `cart-${id}`),
+                        }}
+                      />
                     )}
                   </div>
                   <div className="ci-info">
@@ -95,7 +116,12 @@ export function CartDrawer() {
                       +
                     </button>
                   </div>
-                  <button className="ci-del" type="button" aria-label="Удалить" onClick={() => removeFromCart(id)}>
+                  <button
+                    className="ci-del"
+                    type="button"
+                    aria-label="Удалить"
+                    onClick={() => removeFromCart(id)}
+                  >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                       <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
                     </svg>
@@ -107,10 +133,14 @@ export function CartDrawer() {
         </div>
         {rows.length > 0 && (
           <div className="drawer-foot" id="cartFoot">
-            <div className="cart-total">
-              <span>Итого:</span>
-              <b id="cartTotal">{fmt(total)} ₽</b>
-            </div>
+            <OrderDeliverySummary
+              subtotal={total}
+              settlementName={settlementName}
+              className="order-delivery-summary--cart"
+            />
+            {deliveryFee <= 0 ? (
+              <p className="cart-delivery-note">Стоимость доставки уточним при оформлении.</p>
+            ) : null}
             <button className="btn btn-primary" id="checkout" type="button" onClick={onCheckout}>
               Оформить заказ
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

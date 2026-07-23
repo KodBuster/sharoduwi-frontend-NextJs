@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     typeof body.subtotal === "number"
       ? body.subtotal
       : body.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = getDeliveryFee();
+  const deliveryFee = getDeliveryFee(customer.city);
   const total = subtotal + deliveryFee;
 
   try {

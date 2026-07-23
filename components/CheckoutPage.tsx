@@ -17,9 +17,11 @@ import type { CatalogSource } from "@/lib/client-catalog-cache";
 import type { CartItem } from "@/lib/cart";
 import { COLORS } from "@/lib/data";
 import { balloonSVG, fmt } from "@/lib/balloons";
+import { getDeliveryFee } from "@/lib/delivery-fee";
 import { normalizePhone, validateCheckoutForm } from "@/lib/checkout";
 import { getDefaultCity, getCityBySlug, readStoredCitySlug, type CityPublic } from "@/lib/cities";
 import { PhoneInput } from "@/components/PhoneInput";
+import { OrderDeliverySummary } from "@/components/DeliveryPriceMeta";
 import { trackOrderSent } from "@/lib/metrika/track";
 import { getProductSlug } from "@/lib/product-slug";
 import { Background } from "@/components/Background";
@@ -97,6 +99,8 @@ function CheckoutContent() {
     return { total, rows };
   }, [cart, getProduct]);
 
+  const deliveryFee = getDeliveryFee(city);
+  const grandTotal = total + deliveryFee;
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!rows.length || submitting) return;
@@ -162,7 +166,7 @@ function CheckoutContent() {
       setConfirmationEmailSent(Boolean(data.emailSent));
       trackOrderSent(
         id,
-        total,
+        grandTotal,
         rows.map(({ p, qty }) => ({
           id: p.id,
           name: p.name,
@@ -406,12 +410,17 @@ function CheckoutContent() {
                     </li>
                   ))}
                 </ul>
-                <div className="checkout-total">
-                  <span>Итого:</span>
-                  <b>{fmt(total)} ₽</b>
+                <div className="checkout-totals">
+                  <OrderDeliverySummary
+                    subtotal={total}
+                    settlementName={city}
+                    className="order-delivery-summary--checkout"
+                  />
                 </div>
                 <p className="checkout-note">
-                  Точную стоимость доставки уточним при звонке.
+                  {deliveryFee > 0
+                    ? "Ночная доставка (00:00–7:00) — +500 ₽. Точный адрес и время согласуем при звонке."
+                    : "Точную стоимость доставки уточним при звонке."}
                 </p>
               </aside>
             </div>

@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useApp } from "@/context/AppContext";
 import { useCity } from "@/context/CityContext";
+import { DeliveryPriceMeta } from "@/components/DeliveryPriceMeta";
 import type { Product } from "@/lib/data";
 import { COLORS } from "@/lib/data";
+import { getCityBySlug } from "@/lib/cities";
 import { getProductSlug } from "@/lib/product-slug";
 import { cluster, fmt, hexa } from "@/lib/balloons";
 
@@ -69,8 +71,10 @@ interface ProductCardProps {
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { isFav, toggleFav } = useApp();
-  const { href: cityHref } = useCity();
+  const { city, linkCitySlug, href: cityHref } = useCity();
   const href = cityHref(`/products/${getProductSlug(product)}`);
+  const settlementName =
+    city?.name ?? (linkCitySlug ? getCityBySlug(linkCitySlug)?.name : undefined);
   const tag =
     product.tag === "hit" ? (
       <span className="tag hit">Хит</span>
@@ -133,16 +137,23 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <h3>{product.name}</h3>
         </Link>
         <div className="card-foot">
-          <div className="card-price">
-            {fmt(product.price)} ₽
-            {product.old && (
-              <>
-                {" "}
-                <small>
-                  <s>{fmt(product.old)}</s>
-                </small>
-              </>
-            )}
+          <div className="card-price-block">
+            <div className="card-price">
+              {fmt(product.price)} ₽
+              {product.old && (
+                <>
+                  {" "}
+                  <small>
+                    <s>{fmt(product.old)}</s>
+                  </small>
+                </>
+              )}
+            </div>
+            <DeliveryPriceMeta
+              productPrice={product.price}
+              settlementName={settlementName}
+              className="delivery-price-meta--card"
+            />
           </div>
           <div className="card-cart">
             <CartControl id={product.id} />

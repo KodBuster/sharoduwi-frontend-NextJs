@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { HowToOrderLink } from "@/components/HowToOrderLink";
 import { CityLink } from "@/components/CityLink";
+import { DeliveryPriceMeta } from "@/components/DeliveryPriceMeta";
+import { useCity } from "@/context/CityContext";
 import type { Product, ProductDetails } from "@/lib/data";
+import { getCityBySlug } from "@/lib/cities";
 import { fmt } from "@/lib/balloons";
 import { ProductActions } from "@/components/product/ProductActions";
 import { ProductCard } from "@/components/product/ProductCard";
@@ -22,6 +25,9 @@ export function ProductPageContent({
   product,
   relatedProducts,
 }: ProductPageContentProps) {
+  const { city, linkCitySlug } = useCity();
+  const settlementName =
+    city?.name ?? (linkCitySlug ? getCityBySlug(linkCitySlug)?.name : undefined);
   const tag =
     product.tag === "hit" ? (
       <span className="tag hit product-badge">Хит</span>
@@ -64,14 +70,21 @@ export function ProductPageContent({
             {tag}
             <div className="product-price-row">
               {Number.isFinite(product.price) && product.price > 0 && (
-                <div className="product-price">
-                  {fmt(product.price)} ₽
-                  {product.old && (
-                    <small>
-                      <s>{fmt(product.old)} ₽</s>
-                    </small>
-                  )}
-                </div>
+                <>
+                  <div className="product-price">
+                    {fmt(product.price)} ₽
+                    {product.old && (
+                      <small>
+                        <s>{fmt(product.old)} ₽</s>
+                      </small>
+                    )}
+                  </div>
+                  <DeliveryPriceMeta
+                    productPrice={product.price}
+                    settlementName={settlementName}
+                    className="delivery-price-meta--product"
+                  />
+                </>
               )}
             </div>
             {leadHtml ? (

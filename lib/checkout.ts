@@ -38,6 +38,4 @@ export function formatAdvantShopPhone(phone: string): string {
   return normalizePhone(phone).replace(/\D/g, "");
 }
 
-export function getDeliveryFee(): number {
-  return 0;
-}
+export { getDeliveryFee } from "@/lib/delivery-fee";
