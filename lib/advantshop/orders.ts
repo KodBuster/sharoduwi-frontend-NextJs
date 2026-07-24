@@ -1,3 +1,5 @@
+import { createHash, randomUUID } from "node:crypto";
+
 import type { CartItem } from "@/lib/cart";
 import type { CheckoutFormData } from "@/lib/checkout";
 import { formatAdvantShopPhone } from "@/lib/checkout";
@@ -15,6 +17,8 @@ type AdvantShopOrderItem = {
 
 type AdvantShopOrderPayload = {
   OrderCustomer: {
+    /** GUID покупателя — внешний код контрагента для обмена с МойСклад */
+    CustomerId: string;
     FirstName: string;
     LastName?: string;
     Phone: string;
@@ -50,6 +54,38 @@ export type SubmitStorefrontOrderResult = {
   advantshopOrderNumber?: string;
 };
 
+const EMPTY_CUSTOMER_GUID = "00000000-0000-0000-0000-000000000000";
+
+/**
+ * Стабильный CustomerId (GUID) для AdvantShop / МойСклад.
+ * Один телефон → один контрагент; без ID AdvantShop шлёт нулевой GUID и все заказы
+ * склеиваются в одну карточку контрагента.
+ */
+export function buildAdvantShopCustomerId(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 10) {
+    return randomUUID();
+  }
+
+  const hash = createHash("sha1")
+    .update("sharoduwi.ru:customer:")
+    .update(digits)
+    .digest();
+
+  const bytes = Buffer.from(hash.subarray(0, 16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x50; // UUID version 5
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // RFC 4122 variant
+
+  const hex = bytes.toString("hex");
+  const guid = `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+
+  if (guid === EMPTY_CUSTOMER_GUID) {
+    return randomUUID();
+  }
+
+  return guid;
+}
+
 function formatAdvantShopErrors(errors: string | string[] | undefined): string {
   if (Array.isArray(errors)) return errors.join(", ");
   return errors ?? "Не удалось создать заказ в AdvantShop";
@@ -70,7 +106,7 @@ async function resolveArtNo(item: CartItem): Promise<string> {
   const product = await findAdvantShopProductById(item.id);
   if (product?.artNo?.trim()) return product.artNo.trim();
 
-  throw new Error(`Не найден артикул AdvantShop для «${item.name}». Обновите корзину.`);
+  throw new Error(`Не найден артикул AdvantShop для товара «${item.name}». Обновите корзину.`);
 }
 
 function buildCustomerComment(input: SubmitStorefrontOrderInput): string | undefined {
@@ -95,9 +131,11 @@ function buildOrderPayload(
   const phone = formatAdvantShopPhone(input.customer.phone);
   const email = input.customer.email?.trim();
   const customerComment = buildCustomerComment(input);
+  const customerId = buildAdvantShopCustomerId(phone);
 
   return {
     OrderCustomer: {
+      CustomerId: customerId,
       FirstName: firstName,
       LastName: lastName,
       Phone: phone,
