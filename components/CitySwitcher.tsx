@@ -19,16 +19,10 @@ import {
 export function CitySwitcher({
   compact = false,
   inHeader = false,
-  inMobMenu = false,
-  onNavigate,
 }: {
   compact?: boolean;
   /** В шапке сайта — компактная кнопка и полноширинная панель на мобильных */
   inHeader?: boolean;
-  /** В бургер-меню — полноширинный выбор без перехода на /cities */
-  inMobMenu?: boolean;
-  /** Вызывается после выбора НП или перехода на /cities */
-  onNavigate?: () => void;
 }) {
   const { city, persistCity } = useCity();
   const pathname = usePathname();
@@ -59,9 +53,8 @@ export function CitySwitcher({
       persistCity(target.slug);
       setOpen(false);
       setQuery("");
-      onNavigate?.();
     },
-    [onNavigate, persistCity]
+    [persistCity]
   );
 
   useEffect(() => {
@@ -79,15 +72,15 @@ export function CitySwitcher({
   }, [open]);
 
   useEffect(() => {
-    if (!inHeader && !inMobMenu) return;
-    const bodyClass = inMobMenu ? "mob-city-picker-open" : "city-picker-open";
+    if (!inHeader) return;
+    const bodyClass = "city-picker-open";
     if (open) document.body.classList.add(bodyClass);
     else document.body.classList.remove(bodyClass);
     return () => document.body.classList.remove(bodyClass);
-  }, [inHeader, inMobMenu, open]);
+  }, [open, inHeader]);
 
   useEffect(() => {
-    if (!open || (!inHeader && !inMobMenu)) return;
+    if (!open || !inHeader) return;
     const vv = window.visualViewport;
     if (!vv) return;
 
@@ -111,13 +104,13 @@ export function CitySwitcher({
       const panel = rootRef.current?.querySelector<HTMLElement>(".city-switcher-panel");
       if (panel) panel.style.maxHeight = "";
     };
-  }, [open, inHeader, inMobMenu]);
+  }, [open, inHeader]);
 
   const label = city?.name ?? "Куда доставить?";
 
   return (
     <div
-      className={`city-switcher${compact ? " city-switcher--compact" : ""}${inHeader ? " city-switcher--header" : ""}${inMobMenu ? " city-switcher--mob-menu" : ""}${open ? " city-switcher--open" : ""}`}
+      className={`city-switcher${compact ? " city-switcher--compact" : ""}${inHeader ? " city-switcher--header" : ""}${open ? " city-switcher--open" : ""}`}
       ref={rootRef}
     >
       <button
@@ -205,7 +198,6 @@ export function CitySwitcher({
               rememberCityPickerReturnPath(pathname);
               setOpen(false);
               setQuery("");
-              onNavigate?.();
             }}
           >
             Все пункты доставки →
