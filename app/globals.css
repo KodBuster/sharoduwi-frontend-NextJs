@@ -1442,7 +1442,15 @@ body.mob-menu-open{overflow:hidden;touch-action:none;overscroll-behavior:none}
 .mob-menu nav a:nth-child(4){color:var(--coral)}
 .mob-menu nav a:nth-child(5){color:var(--lav)}
 .mob-menu nav a:nth-child(6){color:var(--pink)}
-.mob-menu nav a:nth-child(7){color:var(--sky)}
+.mob-menu .mob-menu-city{margin-top:6px;padding:10px 0 0;border-top:1px solid var(--line);flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:10px}
+.mob-menu-city-label{font-family:var(--font-unbounded),'Unbounded',sans-serif;font-size:22px;font-weight:700;color:var(--sky)}
+.mob-menu .city-switcher--mob-menu{width:100%;max-width:none;flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.mob-menu .city-switcher--mob-menu .city-switcher-btn{width:100%;max-width:none;justify-content:flex-start;padding:10px 12px;border-radius:14px;min-height:44px;font-size:14px}
+.mob-menu .city-switcher--mob-menu .city-switcher-btn-text{flex:1 1 auto;text-align:left}
+.mob-menu .city-switcher--mob-menu.city-switcher--open .city-switcher-btn{display:none}
+.mob-menu .city-switcher--mob-menu.city-switcher--open .city-switcher-panel{
+  position:relative;top:0;left:0;right:0;width:100%;max-width:none;margin:0;flex:1 1 auto;min-height:0;
+  max-height:none;box-shadow:0 12px 32px rgba(29,20,38,.14)}
 .mob-menu .btn{margin-top:auto;justify-content:center}
 
 /* Rising letters в заголовке hero (нативно, без GSAP) */
@@ -1512,6 +1520,8 @@ h1,h2,h3,h4,.display,.logo,.sec-tag,.brand-word,.hero-stats .st b,.hero-badge .p
 .city-switcher--header{width:100%;max-width:none}
 .city-switcher--header.city-switcher--compact .city-switcher-btn{max-width:none}
 .city-switcher--header .city-switcher-btn{display:flex;box-sizing:border-box}
+.city-switcher--mob-menu{width:100%;max-width:none}
+.city-switcher--mob-menu .city-switcher-btn{display:flex;box-sizing:border-box;max-width:none}
 .city-switcher-btn svg{width:16px;height:16px;flex-shrink:0}
 .city-switcher-chevron{width:14px!important;opacity:.6;flex-shrink:0;margin-left:auto}
 .city-switcher-panel{position:absolute;top:calc(100% + 8px);right:0;min-width:0;max-width:min(360px,calc(100dvw - 24px));max-height:70vh;overflow:hidden;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 40px rgba(29,20,38,.12);padding:10px;z-index:50}

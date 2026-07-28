@@ -1,18 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { CitySearchField } from "@/components/CitySearchField";
 import {
+  buildCitySwitchHref,
   filterCitiesByQuery,
   getPrimaryCities,
   getSecondaryCities,
+  readCityPickerReturnPath,
   type CityPublic,
 } from "@/lib/cities";
 
 export function CitiesPageContent() {
   const [query, setQuery] = useState("");
+  const [returnPath, setReturnPath] = useState("/");
+
+  useEffect(() => {
+    setReturnPath(readCityPickerReturnPath());
+  }, []);
   const primary = getPrimaryCities();
   const allSecondary = getSecondaryCities();
 
@@ -55,7 +62,7 @@ export function CitiesPageContent() {
               <h2 className="cities-primary-title">Города</h2>
               <div className="cities-cards">
                 {filteredPrimary.map((city) => (
-                  <CityCard key={city.slug} city={city} />
+                  <CityCard key={city.slug} city={city} returnPath={returnPath} />
                 ))}
               </div>
               {isSearching && filteredPrimary.length === 0 && (
@@ -78,7 +85,7 @@ export function CitiesPageContent() {
               <ul className="cities-list">
                 {filteredSecondary.map((city) => (
                   <li key={city.slug}>
-                    <Link href={`/${city.slug}/`}>{city.name}</Link>
+                    <Link href={buildCitySwitchHref(city.slug, returnPath)}>{city.name}</Link>
                   </li>
                 ))}
               </ul>
@@ -114,9 +121,9 @@ export function CitiesPageContent() {
   );
 }
 
-function CityCard({ city }: { city: CityPublic }) {
+function CityCard({ city, returnPath }: { city: CityPublic; returnPath: string }) {
   return (
-    <Link href={`/${city.slug}/`} className="city-card city-card--primary">
+    <Link href={buildCitySwitchHref(city.slug, returnPath)} className="city-card city-card--primary">
       <h3>{city.name}</h3>
       <p>{city.seo.homeDescription.slice(0, 120)}…</p>
       {city.hasStores && <span className="city-card-tag">2 магазина</span>}

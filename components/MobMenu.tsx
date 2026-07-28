@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { CityLink } from "@/components/CityLink";
+import { CitySwitcher } from "@/components/CitySwitcher";
 import { HowToOrderLink } from "@/components/HowToOrderLink";
 import { SiteSectionLink } from "@/components/SiteSectionLink";
 import {
@@ -97,9 +97,10 @@ export function MobMenu() {
         <SiteSectionLink sectionId="contacts" scrollOnAnyPage onNavigate={closeMob}>
           Контакты
         </SiteSectionLink>
-        <Link href="/cities" onClick={closeMob}>
-          Место доставки
-        </Link>
+        <div className="mob-menu-city">
+          <span className="mob-menu-city-label">Место доставки</span>
+          <CitySwitcher inMobMenu onNavigate={closeMob} />
+        </div>
       </nav>
     </div>
   );

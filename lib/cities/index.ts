@@ -50,6 +50,12 @@ export {
 
 export { readStoredCitySlug } from "@/lib/cities/storage";
 
+export {
+  buildCitySwitchHref,
+  readCityPickerReturnPath,
+  rememberCityPickerReturnPath,
+} from "@/lib/cities/city-picker";
+
 export { detectGeoCitySlug, resolveCitySlugFromGeo, getGeoLocationFromRequest } from "@/lib/cities/geoip";
 export type { GeoLocationHint } from "@/lib/cities/geoip";
 
