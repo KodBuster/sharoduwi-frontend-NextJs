@@ -7,6 +7,7 @@ import { CatalogCollectionGrid } from "@/components/CatalogCollectionGrid";
 import { TAGS, getCollectionBySlug } from "@/lib/data";
 import { productMatchesTag, type CollectionSlug, type TagFilter } from "@/lib/products";
 import { ProductCard } from "@/components/product/ProductCard";
+import { TrustYandexBadge } from "@/components/TrustYandexBadge";
 
 interface ShopProps {
   /** Фиксированная коллекция (страница категории) */
@@ -15,9 +16,17 @@ interface ShopProps {
   description?: string;
   /** На главной — показать только N товаров и кнопку «Больше шаров» */
   previewLimit?: number;
+  /** Плашка Яндекс.Рейтинга над чипами и в карточках (страница Каталог) */
+  showTrustBadge?: boolean;
 }
 
-export function Shop({ pageCollection, heading, description, previewLimit }: ShopProps) {
+export function Shop({
+  pageCollection,
+  heading,
+  description,
+  previewLimit,
+  showTrustBadge = false,
+}: ShopProps) {
   const {
     activeTag,
     setActiveTag,
@@ -125,6 +134,11 @@ export function Shop({ pageCollection, heading, description, previewLimit }: Sho
             </CityLink>
           </div>
         )}
+        {showTrustBadge && (
+          <div className="shop-trust reveal">
+            <TrustYandexBadge />
+          </div>
+        )}
         {isFullCatalog && (
         <div className="shop-controls reveal">
           <div className="shop-filters-stack">
@@ -158,7 +172,12 @@ export function Shop({ pageCollection, heading, description, previewLimit }: Sho
             </div>
           ) : (
             visibleList.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
+              <ProductCard
+                key={p.id}
+                product={p}
+                index={i}
+                showTrustBadge={showTrustBadge}
+              />
             ))
           )}
         </div>

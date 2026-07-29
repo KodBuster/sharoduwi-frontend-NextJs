@@ -58,6 +58,7 @@ function CatalogContent() {
       <Shop
         heading="Гелиевые и воздушные шары"
         description="Полный каталог гелиевых и воздушных шаров, композиций и наборов — с фильтрами по типу. Поиск — в шапке."
+        showTrustBadge
       />
       <Footer />
       <CartDrawer />
