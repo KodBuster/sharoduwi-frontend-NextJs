@@ -12,6 +12,7 @@ import { ProductActions } from "@/components/product/ProductActions";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { TrustYandexBadge } from "@/components/TrustYandexBadge";
+import type { YandexTrustBadgeData } from "@/lib/yandex-trust-badge";
 import {
   prepareProductDescription,
   prepareProductLead,
@@ -20,11 +21,13 @@ import {
 interface ProductPageContentProps {
   product: ProductDetails;
   relatedProducts: Product[];
+  trustBadge?: YandexTrustBadgeData;
 }
 
 export function ProductPageContent({
   product,
   relatedProducts,
+  trustBadge,
 }: ProductPageContentProps) {
   const { city, linkCitySlug } = useCity();
   const settlementName =
@@ -68,7 +71,10 @@ export function ProductPageContent({
               {product.collection}
             </CityLink>
             <h1>{product.name}</h1>
-            <TrustYandexBadge className="trust-yandex-badge--product" />
+            <TrustYandexBadge
+              className="trust-yandex-badge--product"
+              initialData={trustBadge}
+            />
             {tag}
             <div className="product-price-row">
               {Number.isFinite(product.price) && product.price > 0 && (

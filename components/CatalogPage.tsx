@@ -12,6 +12,7 @@ import {
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import type { Product } from "@/lib/data";
 import type { CatalogSource } from "@/lib/client-catalog-cache";
+import type { YandexTrustBadgeData } from "@/lib/yandex-trust-badge";
 import { Background } from "@/components/Background";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
@@ -36,7 +37,7 @@ function SiteEffects() {
   return null;
 }
 
-function CatalogContent() {
+function CatalogContent({ trustBadge }: { trustBadge?: YandexTrustBadgeData }) {
   const isMobile = useMediaQuery("(max-width: 860px)");
 
   return (
@@ -59,6 +60,7 @@ function CatalogContent() {
         heading="Гелиевые и воздушные шары"
         description="Полный каталог гелиевых и воздушных шаров, композиций и наборов — с фильтрами по типу. Поиск — в шапке."
         showTrustBadge
+        trustBadge={trustBadge}
       />
       <Footer />
       <CartDrawer />
@@ -72,9 +74,11 @@ function CatalogContent() {
 export function CatalogPage({
   initialProducts = [],
   initialSource = "static",
+  trustBadge,
 }: {
   initialProducts?: Product[];
   initialSource?: CatalogSource;
+  trustBadge?: YandexTrustBadgeData;
 }) {
   const initialCatalog =
     initialProducts.length > 0
@@ -84,7 +88,7 @@ export function CatalogPage({
   return (
     <MaybeCityProvider>
       <AppProvider initialCatalog={initialCatalog}>
-        <CatalogContent />
+        <CatalogContent trustBadge={trustBadge} />
       </AppProvider>
     </MaybeCityProvider>
   );

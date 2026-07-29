@@ -9,6 +9,8 @@ import { productMatchesTag, type CollectionSlug, type TagFilter } from "@/lib/pr
 import { ProductCard } from "@/components/product/ProductCard";
 import { TrustYandexBadge } from "@/components/TrustYandexBadge";
 
+import type { YandexTrustBadgeData } from "@/lib/yandex-trust-badge";
+
 interface ShopProps {
   /** Фиксированная коллекция (страница категории) */
   pageCollection?: CollectionSlug;
@@ -16,8 +18,9 @@ interface ShopProps {
   description?: string;
   /** На главной — показать только N товаров и кнопку «Больше шаров» */
   previewLimit?: number;
-  /** Плашка Яндекс.Рейтинга над чипами и в карточках (страница Каталог) */
+  /** Плашка Яндекс.Рейтинга над чипами (страница Каталог) */
   showTrustBadge?: boolean;
+  trustBadge?: YandexTrustBadgeData;
 }
 
 export function Shop({
@@ -26,6 +29,7 @@ export function Shop({
   description,
   previewLimit,
   showTrustBadge = false,
+  trustBadge,
 }: ShopProps) {
   const {
     activeTag,
@@ -136,7 +140,7 @@ export function Shop({
         )}
         {showTrustBadge && (
           <div className="shop-trust reveal">
-            <TrustYandexBadge />
+            <TrustYandexBadge initialData={trustBadge} />
           </div>
         )}
         {isFullCatalog && (

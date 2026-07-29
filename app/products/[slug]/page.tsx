@@ -17,6 +17,7 @@ import {
   getProductDetails,
   getRelatedProducts,
 } from "@/lib/products-service";
+import { getYandexTrustBadgeData } from "@/lib/yandex-trust-badge";
 
 export const revalidate = 300;
 
@@ -58,9 +59,10 @@ export default async function ProductRoutePage({ params }: ProductRouteProps) {
 
   if (!product) notFound();
 
-  const [relatedProducts, catalogProducts] = await Promise.all([
+  const [relatedProducts, catalogProducts, trustBadge] = await Promise.all([
     getRelatedProducts(product),
     getCatalogProducts(),
+    getYandexTrustBadgeData(),
   ]);
 
   const productSlug = getProductSlug(product);
@@ -82,6 +84,7 @@ export default async function ProductRoutePage({ params }: ProductRouteProps) {
         relatedProducts={relatedProducts}
         initialProducts={catalogProducts}
         initialSource={getCatalogSource()}
+        trustBadge={trustBadge}
       />
     </>
   );

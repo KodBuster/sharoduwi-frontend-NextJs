@@ -641,10 +641,23 @@ a.col-card{color:inherit}
 .card-cat{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--pink-deep)}
 .card-body h3{font-size:17.5px;font-weight:800;line-height:1.2}
 .shop-trust{margin:0 0 14px}
-.trust-yandex-badge{position:relative;display:inline-block;max-width:100%;line-height:0}
-.trust-yandex-badge iframe{width:200px;height:128px;border:1px solid #e6e6e6;border-radius:8px;display:block;max-width:100%;box-sizing:border-box;background:#fff}
-.trust-yandex-badge-link{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.trust-yandex-badge--product{margin:4px 0 10px}
+.trust-yandex-badge{
+  display:inline-flex;flex-direction:column;gap:8px;max-width:100%;min-width:0;
+  padding:12px 14px;border:1px solid #e6e6e6;border-radius:8px;background:#fff;
+  color:inherit;text-decoration:none;box-sizing:border-box;transition:border-color .2s var(--ease),box-shadow .2s var(--ease)
+}
+@media (hover:hover){
+  .trust-yandex-badge:hover{border-color:#d9d9d9;box-shadow:0 4px 14px rgba(29,20,38,.06)}
+}
+.trust-yandex-badge-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-width:0}
+.trust-yandex-badge-name{font-size:15px;font-weight:700;line-height:1.2;color:#1a1a1a;white-space:nowrap}
+.trust-yandex-badge-source{font-size:11px;font-weight:600;line-height:1.2;color:#808080;white-space:nowrap;flex-shrink:0}
+.trust-yandex-badge-body{display:flex;align-items:center;gap:10px;min-width:0}
+.trust-yandex-badge-score{font-size:28px;font-weight:700;line-height:1;color:#1a1a1a;letter-spacing:-.02em;flex:none}
+.trust-yandex-badge-meta{display:flex;flex-direction:column;gap:2px;min-width:0}
+.trust-yandex-badge-stars{font-size:14px;line-height:1;letter-spacing:1px;color:#fc0;white-space:nowrap}
+.trust-yandex-badge-count{font-size:11px;line-height:1.25;color:#808080;white-space:nowrap}
+.trust-yandex-badge--product{margin:4px 0 10px;width:min(100%,280px)}
 .card-foot{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:12px;min-width:0}
 .card-price-block{min-width:0;flex:1;display:grid;gap:6px}
 .card-price{font-family:'Unbounded';font-weight:800;font-size:21px;color:var(--pink);white-space:nowrap;line-height:1.1}

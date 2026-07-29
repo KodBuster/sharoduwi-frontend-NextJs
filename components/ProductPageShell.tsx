@@ -12,6 +12,7 @@ import {
 import { useConfettiCursor } from "@/hooks/useConfettiCursor";
 import type { Product, ProductDetails } from "@/lib/data";
 import type { CatalogSource } from "@/lib/client-catalog-cache";
+import type { YandexTrustBadgeData } from "@/lib/yandex-trust-badge";
 import { Background } from "@/components/Background";
 import { TopBar } from "@/components/TopBar";
 import { Header } from "@/components/Header";
@@ -43,9 +44,11 @@ function SiteEffects() {
 function ProductPageView({
   product,
   relatedProducts,
+  trustBadge,
 }: {
   product: ProductDetails;
   relatedProducts: Product[];
+  trustBadge?: YandexTrustBadgeData;
 }) {
   return (
     <>
@@ -56,7 +59,11 @@ function ProductPageView({
       <TopBar />
       <Header />
       <a id="top" />
-      <ProductPageContent product={product} relatedProducts={relatedProducts} />
+      <ProductPageContent
+        product={product}
+        relatedProducts={relatedProducts}
+        trustBadge={trustBadge}
+      />
       <Footer />
       <CartDrawer />
       <MobMenu />
@@ -71,11 +78,13 @@ export function ProductPageShell({
   relatedProducts,
   initialProducts = [],
   initialSource = "static",
+  trustBadge,
 }: {
   product: ProductDetails;
   relatedProducts: Product[];
   initialProducts?: Product[];
   initialSource?: CatalogSource;
+  trustBadge?: YandexTrustBadgeData;
 }) {
   const initialCatalog =
     initialProducts.length > 0
@@ -85,7 +94,11 @@ export function ProductPageShell({
   return (
     <MaybeCityProvider>
       <AppProvider initialCatalog={initialCatalog}>
-        <ProductPageView product={product} relatedProducts={relatedProducts} />
+        <ProductPageView
+          product={product}
+          relatedProducts={relatedProducts}
+          trustBadge={trustBadge}
+        />
       </AppProvider>
     </MaybeCityProvider>
   );

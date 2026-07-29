@@ -9,6 +9,7 @@ import {
   toJsonLdGraph,
 } from "@/lib/seo/schema";
 import { getCatalogProducts, getCatalogSource } from "@/lib/products-service";
+import { getYandexTrustBadgeData } from "@/lib/yandex-trust-badge";
 
 export const revalidate = 300;
 
@@ -20,7 +21,10 @@ export const metadata: Metadata = buildRootRegionalDuplicateMetadata({
 });
 
 export default async function CatalogRoutePage() {
-  const initialProducts = await getCatalogProducts().catch(() => []);
+  const [initialProducts, trustBadge] = await Promise.all([
+    getCatalogProducts().catch(() => []),
+    getYandexTrustBadgeData(),
+  ]);
 
   const schema = toJsonLdGraph(
     buildBreadcrumbSchema([
@@ -36,6 +40,7 @@ export default async function CatalogRoutePage() {
       <CatalogPage
         initialProducts={initialProducts}
         initialSource={getCatalogSource()}
+        trustBadge={trustBadge}
       />
     </>
   );
