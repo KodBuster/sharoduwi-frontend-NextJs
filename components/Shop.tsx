@@ -172,12 +172,7 @@ export function Shop({
             </div>
           ) : (
             visibleList.map((p, i) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                index={i}
-                showTrustBadge={showTrustBadge}
-              />
+              <ProductCard key={p.id} product={p} index={i} />
             ))
           )}
         </div>

@@ -643,7 +643,7 @@ a.col-card{color:inherit}
 .shop-trust{margin:0 0 14px}
 .trust-yandex-badge{line-height:0}
 .trust-yandex-badge iframe{border:0;display:block;max-width:100%}
-.trust-yandex-badge--card{margin:2px 0 4px}
+.trust-yandex-badge--product{margin:4px 0 8px}
 .card-foot{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:12px;min-width:0}
 .card-price-block{min-width:0;flex:1;display:grid;gap:6px}
 .card-price{font-family:'Unbounded';font-weight:800;font-size:21px;color:var(--pink);white-space:nowrap;line-height:1.1}

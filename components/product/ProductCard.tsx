@@ -9,7 +9,6 @@ import { COLORS } from "@/lib/data";
 import { getCityBySlug } from "@/lib/cities";
 import { getProductSlug } from "@/lib/product-slug";
 import { cluster, fmt, hexa } from "@/lib/balloons";
-import { TrustYandexBadge } from "@/components/TrustYandexBadge";
 
 function CartControl({ id }: { id: number }) {
   const { getCartQty, addToCart, incrementCart, decrementCart } = useApp();
@@ -68,14 +67,9 @@ function CartControl({ id }: { id: number }) {
 interface ProductCardProps {
   product: Product;
   index?: number;
-  showTrustBadge?: boolean;
 }
 
-export function ProductCard({
-  product,
-  index = 0,
-  showTrustBadge = false,
-}: ProductCardProps) {
+export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { isFav, toggleFav } = useApp();
   const { city, linkCitySlug, href: cityHref } = useCity();
   const href = cityHref(`/products/${getProductSlug(product)}`);
@@ -142,9 +136,6 @@ export function ProductCard({
           <span className="card-cat">{product.collection}</span>
           <h3>{product.name}</h3>
         </Link>
-        {showTrustBadge && (
-          <TrustYandexBadge className="trust-yandex-badge--card" />
-        )}
         <div className="card-foot">
           <div className="card-price-block">
             <div className="card-price">

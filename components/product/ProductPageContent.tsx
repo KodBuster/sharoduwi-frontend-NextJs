@@ -11,6 +11,7 @@ import { fmt } from "@/lib/balloons";
 import { ProductActions } from "@/components/product/ProductActions";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductGallery } from "@/components/product/ProductGallery";
+import { TrustYandexBadge } from "@/components/TrustYandexBadge";
 import {
   prepareProductDescription,
   prepareProductLead,
@@ -67,6 +68,7 @@ export function ProductPageContent({
               {product.collection}
             </CityLink>
             <h1>{product.name}</h1>
+            <TrustYandexBadge className="trust-yandex-badge--product" />
             {tag}
             <div className="product-price-row">
               {Number.isFinite(product.price) && product.price > 0 && (
