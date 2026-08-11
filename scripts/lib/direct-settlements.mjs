@@ -1,6 +1,8 @@
 /**
- * Полный перечень населённых пунктов зоны доставки ШАРОДУВЫ.
+ * Данные населённых пунктов для генерации XLSX Директа.
+ * Синхронизировано с lib/cities/settlements-data.ts и settlement-forms.ts
  */
+
 export const SETTLEMENT_NAMES = [
   "Жуковский",
   "Раменское",
@@ -33,7 +35,6 @@ export const SETTLEMENT_NAMES = [
   "Спартак",
   "Шевлягинского завода",
   "Электроизолятор",
-  // Люберецкий городской округ и близлежащие
   "Люберцы",
   "Дзержинский",
   "Жилино-1",
@@ -57,7 +58,6 @@ export const SETTLEMENT_NAMES = [
   "Торбеево",
   "Хлыстово",
   "Часовня",
-  // Расширение зоны: Котельники, Лыткарино, юг Балашихи у Люберец, Москва (ЮВАО/ВАО)
   "Котельники",
   "Лыткарино",
   "Железнодорожный",
@@ -240,9 +240,11 @@ export const SETTLEMENT_NAMES = [
   "Юрасово",
   "Юсупово",
   "Яньшино",
-] as const;
+];
 
-export const SETTLEMENT_SLUG_OVERRIDES: Record<string, string> = {
+export const DEFAULT_SETTLEMENT_DISTRICT = "Раменский городской округ";
+
+export const SETTLEMENT_SLUG_OVERRIDES = {
   Жуковский: "zhukovskiy",
   Раменское: "ramenskoe",
   Быково: "bykovo",
@@ -286,7 +288,6 @@ export const SETTLEMENT_SLUG_OVERRIDES: Record<string, string> = {
   "Балластный Карьер": "ballastnyy-karyer",
   Октябрьский: "oktyabrskiy",
   "пгт Мирный": "pgt-mirnyy",
-  "деревня Пушкино": "pushkino",
   Токарёво: "tokaryovo",
   Чкалово: "chkalovo",
   Котельники: "kotelniki",
@@ -302,193 +303,58 @@ export const SETTLEMENT_SLUG_OVERRIDES: Record<string, string> = {
   Косино: "kosino",
 };
 
-export const SETTLEMENT_FORM_OVERRIDES: Record<
-  string,
-  { namePrepositional: string; nameGenitive: string; nameInstrumental: string }
-> = {
-  Жуковский: {
-    namePrepositional: "Жуковском",
-    nameGenitive: "Жуковского",
-    nameInstrumental: "Жуковскому",
-  },
-  Раменское: {
-    namePrepositional: "Раменском",
-    nameGenitive: "Раменского",
-    nameInstrumental: "Раменскому",
-  },
-  Бронницы: {
-    namePrepositional: "Бронницах",
-    nameGenitive: "Бронниц",
-    nameInstrumental: "Бронницам",
-  },
-  Фрязино: {
-    namePrepositional: "Фрязино",
-    nameGenitive: "Фрязино",
-    nameInstrumental: "Фрязино",
-  },
-  Удельная: {
-    namePrepositional: "Удельной",
-    nameGenitive: "Удельной",
-    nameInstrumental: "Удельной",
-  },
-  Ильинский: {
-    namePrepositional: "Ильинском",
-    nameGenitive: "Ильинского",
-    nameInstrumental: "Ильинскому",
-  },
-  Ильинское: {
-    namePrepositional: "Ильинском",
-    nameGenitive: "Ильинского",
-    nameInstrumental: "Ильинскому",
-  },
-  "Зелёная Слобода": {
-    namePrepositional: "Зелёной Слободе",
-    nameGenitive: "Зелёной Слободы",
-    nameInstrumental: "Зелёной Слободе",
-  },
-  "Опытное Поле": {
-    namePrepositional: "Опытном Поле",
-    nameGenitive: "Опытного Поля",
-    nameInstrumental: "Опытному Полю",
-  },
-  "Дубовая Роща": {
-    namePrepositional: "Дубовой Роще",
-    nameGenitive: "Дубовой Рощи",
-    nameInstrumental: "Дубовой Роще",
-  },
-  "Кочина Гора": {
-    namePrepositional: "Кочиной Горе",
-    nameGenitive: "Кочиной Горы",
-    nameInstrumental: "Кочиной Горе",
-  },
-  "Каменное Тяжино": {
-    namePrepositional: "Каменном Тяжино",
-    nameGenitive: "Каменного Тяжино",
-    nameInstrumental: "Каменному Тяжино",
-  },
-  "Верхнее Мячково": {
-    namePrepositional: "Верхнем Мячково",
-    nameGenitive: "Верхнего Мячкова",
-    nameInstrumental: "Верхнему Мячкову",
-  },
-  "Нижнее Мячково": {
-    namePrepositional: "Нижнем Мячково",
-    nameGenitive: "Нижнего Мячкова",
-    nameInstrumental: "Нижнему Мячкову",
-  },
-  "Верхнее Велино": {
-    namePrepositional: "Верхнем Велино",
-    nameGenitive: "Верхнего Велина",
-    nameInstrumental: "Верхнему Велину",
-  },
-  "Нижнее Велино": {
-    namePrepositional: "Нижнем Велино",
-    nameGenitive: "Нижнего Велина",
-    nameInstrumental: "Нижнему Велину",
-  },
-  "Малое Саврасово": {
-    namePrepositional: "Малом Саврасово",
-    nameGenitive: "Малого Саврасова",
-    nameInstrumental: "Малому Саврасову",
-  },
+export const SETTLEMENT_FORM_OVERRIDES = {
+  Жуковский: { namePrepositional: "Жуковском", nameGenitive: "Жуковского" },
+  Раменское: { namePrepositional: "Раменском", nameGenitive: "Раменского" },
+  Бронницы: { namePrepositional: "Бронницах", nameGenitive: "Бронниц" },
+  Фрязино: { namePrepositional: "Фрязино", nameGenitive: "Фрязино" },
+  Удельная: { namePrepositional: "Удельной", nameGenitive: "Удельной" },
+  Ильинский: { namePrepositional: "Ильинском", nameGenitive: "Ильинского" },
+  Ильинское: { namePrepositional: "Ильинском", nameGenitive: "Ильинского" },
+  "Зелёная Слобода": { namePrepositional: "Зелёной Слободе", nameGenitive: "Зелёной Слободы" },
+  "Опытное Поле": { namePrepositional: "Опытном Поле", nameGenitive: "Опытного Поля" },
+  "Дубовая Роща": { namePrepositional: "Дубовой Роще", nameGenitive: "Дубовой Рощи" },
+  "Кочина Гора": { namePrepositional: "Кочиной Горе", nameGenitive: "Кочиной Горы" },
+  "Каменное Тяжино": { namePrepositional: "Каменном Тяжино", nameGenitive: "Каменного Тяжино" },
+  "Верхнее Мячково": { namePrepositional: "Верхнем Мячково", nameGenitive: "Верхнего Мячкова" },
+  "Нижнее Мячково": { namePrepositional: "Нижнем Мячково", nameGenitive: "Нижнего Мячкова" },
+  "Верхнее Велино": { namePrepositional: "Верхнем Велино", nameGenitive: "Верхнего Велина" },
+  "Нижнее Велино": { namePrepositional: "Нижнем Велино", nameGenitive: "Нижнего Велина" },
+  "Малое Саврасово": { namePrepositional: "Малом Саврасово", nameGenitive: "Малого Саврасова" },
   "Санатория «Раменское»": {
-    namePrepositional: "санатории «Раменское»",
-    nameGenitive: "санатория «Раменское»",
-    nameInstrumental: "санаторию «Раменское»",
+    namePrepositional: "санатории Раменское",
+    nameGenitive: "санатория Раменское",
   },
-  Люберцы: {
-    namePrepositional: "Люберцах",
-    nameGenitive: "Люберец",
-    nameInstrumental: "Люберцам",
+  "Раменской агрохимстанции (РАОС)": {
+    namePrepositional: "Раменской агрохимстанции",
+    nameGenitive: "Раменской агрохимстанции",
   },
-  Дзержинский: {
-    namePrepositional: "Дзержинском",
-    nameGenitive: "Дзержинского",
-    nameInstrumental: "Дзержинскому",
-  },
-  Октябрьский: {
-    namePrepositional: "Октябрьском",
-    nameGenitive: "Октябрьского",
-    nameInstrumental: "Октябрьскому",
-  },
-  Мирный: {
-    namePrepositional: "Мирном",
-    nameGenitive: "Мирного",
-    nameInstrumental: "Мирному",
-  },
-  "пгт Мирный": {
-    namePrepositional: "пгт Мирном",
-    nameGenitive: "пгт Мирного",
-    nameInstrumental: "пгт Мирному",
-  },
-  "деревня Пушкино": {
-    namePrepositional: "деревне Пушкино",
-    nameGenitive: "деревни Пушкино",
-    nameInstrumental: "деревне Пушкино",
-  },
-  Малаховка: {
-    namePrepositional: "Малаховке",
-    nameGenitive: "Малаховки",
-    nameInstrumental: "Малаховке",
-  },
-  Котельники: {
-    namePrepositional: "Котельниках",
-    nameGenitive: "Котельников",
-    nameInstrumental: "Котельникам",
-  },
-  Лыткарино: {
-    namePrepositional: "Лыткарино",
-    nameGenitive: "Лыткарино",
-    nameInstrumental: "Лыткарино",
-  },
-  Железнодорожный: {
-    namePrepositional: "Железнодорожном",
-    nameGenitive: "Железнодорожного",
-    nameInstrumental: "Железнодорожному",
-  },
-  "Новое Павлино": {
-    namePrepositional: "Новом Павлино",
-    nameGenitive: "Нового Павлино",
-    nameInstrumental: "Новому Павлино",
-  },
-  Кучино: {
-    namePrepositional: "Кучино",
-    nameGenitive: "Кучино",
-    nameInstrumental: "Кучино",
-  },
-  Саввино: {
-    namePrepositional: "Саввино",
-    nameGenitive: "Саввино",
-    nameInstrumental: "Саввино",
-  },
+  Люберцы: { namePrepositional: "Люберцах", nameGenitive: "Люберец" },
+  Дзержинский: { namePrepositional: "Дзержинском", nameGenitive: "Дзержинского" },
+  Октябрьский: { namePrepositional: "Октябрьском", nameGenitive: "Октябрьского" },
+  Мирный: { namePrepositional: "Мирном", nameGenitive: "Мирного" },
+  "пгт Мирный": { namePrepositional: "пгт Мирном", nameGenitive: "пгт Мирного" },
+  Малаховка: { namePrepositional: "Малаховке", nameGenitive: "Малаховки" },
+  Котельники: { namePrepositional: "Котельниках", nameGenitive: "Котельников" },
+  Лыткарино: { namePrepositional: "Лыткарино", nameGenitive: "Лыткарино" },
+  Железнодорожный: { namePrepositional: "Железнодорожном", nameGenitive: "Железнодорожного" },
+  "Новое Павлино": { namePrepositional: "Новом Павлино", nameGenitive: "Нового Павлино" },
+  Кучино: { namePrepositional: "Кучино", nameGenitive: "Кучино" },
+  Саввино: { namePrepositional: "Саввино", nameGenitive: "Саввино" },
   "Никольско-Архангельский": {
     namePrepositional: "Никольско-Архангельском",
     nameGenitive: "Никольско-Архангельского",
-    nameInstrumental: "Никольско-Архангельскому",
   },
   "Красная Горка": {
     namePrepositional: "Красной Горке",
     nameGenitive: "Красной Горки",
-    nameInstrumental: "Красной Горке",
   },
-  Жулебино: {
-    namePrepositional: "Жулебино",
-    nameGenitive: "Жулебино",
-    nameInstrumental: "Жулебино",
-  },
-  Некрасовка: {
-    namePrepositional: "Некрасовке",
-    nameGenitive: "Некрасовки",
-    nameInstrumental: "Некрасовке",
-  },
-  Косино: {
-    namePrepositional: "Косино",
-    nameGenitive: "Косино",
-    nameInstrumental: "Косино",
-  },
+  Жулебино: { namePrepositional: "Жулебино", nameGenitive: "Жулебино" },
+  Некрасовка: { namePrepositional: "Некрасовке", nameGenitive: "Некрасовки" },
+  Косино: { namePrepositional: "Косино", nameGenitive: "Косино" },
 };
 
-export const SETTLEMENT_DISTRICT_OVERRIDES: Record<string, string> = {
+export const SETTLEMENT_DISTRICT_OVERRIDES = {
   Жуковский: "г.о. Жуковский",
   Раменское: "г.о. Раменское",
   Бронницы: "г.о. Бронницы",
@@ -532,8 +398,98 @@ export const SETTLEMENT_DISTRICT_OVERRIDES: Record<string, string> = {
   Косино: "Москва, ВАО",
 };
 
-/** Населённый пункт относится к зоне доставки Люберецкого округа */
-export function isLyuberetskyDistrict(district: string): boolean {
+/** Топовые НП из Г4 (Раменский р-н) — не дублировать в Г6 */
+export const G4_TOP_NAMES = [
+  "Быково",
+  "Ильинский",
+  "Кратово",
+  "Родники",
+  "Удельная",
+  "Бронницы",
+  "Гжель",
+  "Михнево",
+];
+
+/** Топовые НП из Г5 (Люберецкий округ) — не дублировать в Г6 */
+export const G5_TOP_NAMES = [
+  "Томилино",
+  "Малаховка",
+  "Красково",
+  "Октябрьский",
+  "Марусино",
+  "Жилино-1",
+  "Жилино-2",
+];
+
+const TRANSLIT = {
+  а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "zh", з: "z", и: "i", й: "y",
+  к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f",
+  х: "kh", ц: "ts", ч: "ch", ш: "sh", щ: "shch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu", я: "ya",
+};
+
+function transliterate(value) {
+  return Array.from(value.normalize("NFC"))
+    .map((char) => {
+      const lower = char.toLowerCase();
+      return TRANSLIT[lower] ?? (/[a-z0-9]/i.test(char) ? char.toLowerCase() : "-");
+    })
+    .join("");
+}
+
+export function slugifySettlement(name) {
+  if (SETTLEMENT_SLUG_OVERRIDES[name]) return SETTLEMENT_SLUG_OVERRIDES[name];
+  return transliterate(
+    name.replace(/[«»"'`]/g, "").replace(/[‑–—]/g, "-").replace(/\s+/g, "-").replace(/[()]/g, "").toLowerCase()
+  )
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+/** Убирает операторы Директа из ключевой фразы: (), «», [], !, |, + */
+export function sanitizeKeywordPhrase(text) {
+  return text
+    .replace(/[«»"'`]/g, "")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[[\]!|+]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+export function buildSettlementForms(name) {
+  const override = SETTLEMENT_FORM_OVERRIDES[name];
+  if (override) return override;
+
+  if (/ский$/i.test(name)) {
+    const stem = name.slice(0, -2);
+    return { namePrepositional: `${stem}ском`, nameGenitive: `${stem}ского` };
+  }
+  if (/ое$/i.test(name)) {
+    const stem = name.slice(0, -2);
+    return { namePrepositional: `${stem}ом`, nameGenitive: `${stem}ого` };
+  }
+  if (/ая$/i.test(name)) {
+    const stem = name.slice(0, -2);
+    return { namePrepositional: `${stem}ой`, nameGenitive: `${stem}ой` };
+  }
+  if (/ий$/i.test(name)) {
+    const stem = name.slice(0, -2);
+    return { namePrepositional: `${stem}ем`, nameGenitive: `${stem}его` };
+  }
+  if (/ы$/i.test(name)) {
+    const stem = name.slice(0, -1);
+    return { namePrepositional: `${stem}ах`, nameGenitive: stem };
+  }
+  return { namePrepositional: name, nameGenitive: name };
+}
+
+export function getSettlementDistrict(name) {
+  return SETTLEMENT_DISTRICT_OVERRIDES[name] ?? DEFAULT_SETTLEMENT_DISTRICT;
+}
+
+export function isLyuberetskyDistrict(name) {
+  const district = getSettlementDistrict(name);
   return (
     district.includes("Люберц") ||
     district.includes("Дзержинск") ||
@@ -541,26 +497,40 @@ export function isLyuberetskyDistrict(district: string): boolean {
     district.includes("Лыткарин") ||
     district.includes("Балаших") ||
     district.includes("ЮВАО") ||
-    district.includes("ВАО")
+    district.includes("Москва")
   );
 }
 
-export const PRIMARY_SETTLEMENT_NAMES = [
-  "Жуковский",
-  "Раменское",
-  "Люберцы",
-  "Дзержинский",
-  "Бронницы",
-  "Котельники",
-  "Лыткарино",
-  "Железнодорожный",
-  "Новое Павлино",
-  "Кучино",
-  "Саввино",
-  "Никольско-Архангельский",
-  "Жулебино",
-  "Некрасовка",
-  "Косино",
-] as const;
+export function isG6Eligible(name) {
+  const district = getSettlementDistrict(name);
+  if (district.includes("Жуковск")) return false;
+  if (district.includes("Бронниц")) return false;
+  if (!isLyuberetskyDistrict(name) && district !== DEFAULT_SETTLEMENT_DISTRICT) return false;
+  if (["Жуковский", "Раменское", "Люберцы", "Дзержинский", "Фрязино"].includes(name)) return false;
+  if (G4_TOP_NAMES.includes(name)) return false;
+  if (G5_TOP_NAMES.includes(name)) return false;
+  return true;
+}
 
-export const DEFAULT_SETTLEMENT_DISTRICT = "Раменский городской округ";
+export function buildUniqueSlugs(names) {
+  const map = new Map();
+  const used = new Set();
+  for (const name of names) {
+    let base = slugifySettlement(name) || "punkt";
+    let slug = base;
+    let index = 2;
+    while (used.has(slug)) {
+      slug = `${base}-${index}`;
+      index += 1;
+    }
+    used.add(slug);
+    map.set(name, slug);
+  }
+  return map;
+}
+
+export const SETTLEMENT_SLUGS = buildUniqueSlugs(SETTLEMENT_NAMES);
+
+export function getG6SettlementNames() {
+  return SETTLEMENT_NAMES.filter(isG6Eligible);
+}

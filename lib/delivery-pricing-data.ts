@@ -184,7 +184,7 @@ export const DELIVERY_PRICING_BY_NAME: Record<string, DeliveryPricingTariff> = {
   "Поповка": { minOrder: 2500, delivery: 600 },
   "Починки": { minOrder: 2500, delivery: 900 },
   "Прудки": { minOrder: 2500, delivery: 800 },
-  "Пушкино": { minOrder: 2500, delivery: 900 },
+  "деревня Пушкино": { minOrder: 2500, delivery: 900 },
   "Раменское": { minOrder: 1500, delivery: 500 },
   "Раменской агрохимстанции (РАОС)": { minOrder: 2500, delivery: 600 },
   "Редькино": { minOrder: 2500, delivery: 800 },
