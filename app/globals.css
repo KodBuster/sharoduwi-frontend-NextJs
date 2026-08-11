@@ -325,7 +325,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .hero-badge--photo{padding:0;background:#fff;border-color:rgba(255,200,225,.95);
   box-shadow:0 28px 70px -28px rgba(255,45,149,.28),0 12px 32px -16px rgba(40,16,42,.12)}
 .hero-badge-photo{position:relative;height:330px;overflow:hidden;background:linear-gradient(165deg,#fff8fc 0%,#fff2f8 55%,#ffe8f4 100%)}
-.hero-badge-photo img{width:100%;height:100%;object-fit:cover;object-position:center center;transform:scale(1.08)}
+.hero-badge-photo img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block}
 .hero-badge-content{position:relative;z-index:2;padding:38px 28px 32px}
 .hero-badge--photo .hero-badge-content{padding:10px 16px 14px;text-align:left}
 .hero-badge-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
