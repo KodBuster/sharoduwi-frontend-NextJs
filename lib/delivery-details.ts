@@ -23,7 +23,7 @@ const DELIVERY_STANDARD_HIGHLIGHTS = [
 const DELIVERY_STANDARD_EXTRAS = {
   nightSurcharge: {
     title: "Ночная доставка",
-    text: "С 00:00 до 7:00 стоимость доставки увеличивается на 500 ₽.",
+    text: "С 00:00 до 7:59 стоимость доставки увеличивается на 500 ₽.",
   },
   greetingService: {
     title: "Поздравление от курьера",

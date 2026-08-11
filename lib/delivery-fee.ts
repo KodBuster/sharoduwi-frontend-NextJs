@@ -1,9 +1,9 @@
 import { DELIVERY_PRICING_BY_NAME, type DeliveryPricingTariff } from "@/lib/delivery-pricing-data";
 
-/** Доплата за доставку с 00:00 до 7:00, ₽. */
+/** Доплата за доставку с 00:00 до 7:59, ₽. */
 export const NIGHT_DELIVERY_SURCHARGE = 500;
 
-export const NIGHT_DELIVERY_LABEL = "Ночная доставка (00:00–7:00)";
+export const NIGHT_DELIVERY_LABEL = "Ночная доставка (00:00–7:59)";
 
 export function getDeliveryTariff(
   settlementName?: string | null
