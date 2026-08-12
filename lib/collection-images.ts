@@ -6,6 +6,7 @@ const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
   "bazovyi-premium": "Базовый Премиум.png",
   "premium-shary": "Премиум шары.png",
   "shary-pod-potolok-1": "Шары под потолок.png",
+  "russkii-stil-1": "Русский стиль.jpg",
   "oblaka-iz-5-sharov-bez-gruzov": "Облака из 5 шаров без грузов.png",
   "fontany-iz-7-sharov": "Фонтаны из 7 шаров.png",
   "fontany-iz-sharov-1": "Фонтаны из шаров.png",

@@ -44,6 +44,7 @@ export type CollectionSlug =
   | "bazovyi-premium"
   | "premium-shary"
   | "shary-pod-potolok-1"
+  | "russkii-stil-1"
   | "oblaka-iz-5-sharov-bez-gruzov"
   | "fontany-iz-7-sharov"
   | "fontany-iz-sharov-1"
@@ -67,6 +68,7 @@ export const COLLECTIONS: Collection[] = [
   { slug: "bazovyi-premium", categoryPath: "bazovyi-premium", href: `${COLLECTIONS_BASE}/bazovyi-premium`, name: "Базовый Премиум", sub: "ярче и богаче", colors: ["pink", "lav", "sky"] },
   { slug: "premium-shary", categoryPath: "premium-shary", href: `${COLLECTIONS_BASE}/premium-shary`, name: "Премиум шары", sub: "вау-эффект", colors: ["sky", "white", "lav"] },
   { slug: "shary-pod-potolok-1", categoryPath: "shary-pod-potolok-1", href: `${COLLECTIONS_BASE}/shary-pod-potolok-1`, name: "Шары под потолок", sub: "облако под потолком", colors: ["pink", "lav", "pink", "sky"] },
+  { slug: "russkii-stil-1", categoryPath: "russkii-stil-1", href: `${COLLECTIONS_BASE}/russkii-stil-1`, name: "Русский стиль", sub: "в народных мотивах", colors: ["red", "sun", "white"] },
   { slug: "oblaka-iz-5-sharov-bez-gruzov", categoryPath: "oblaka-iz-5-sharov-bez-gruzov", href: `${COLLECTIONS_BASE}/oblaka-iz-5-sharov-bez-gruzov`, name: "Облака из 5 шаров без грузов", sub: "лёгкий набор", colors: ["pink", "lav", "sky", "mint"] },
   { slug: "fontany-iz-7-sharov", categoryPath: "fontany-iz-7-sharov", href: `${COLLECTIONS_BASE}/fontany-iz-7-sharov`, name: "Фонтаны из 7 шаров", sub: "пышный фонтан", colors: ["sun", "mint", "lav", "pink"] },
   { slug: "fontany-iz-sharov-1", categoryPath: "fontany-iz-sharov-1", href: `${COLLECTIONS_BASE}/fontany-iz-sharov-1`, name: "Фонтаны из шаров", sub: "классический фонтан", colors: ["lav", "pink", "mint"] },
