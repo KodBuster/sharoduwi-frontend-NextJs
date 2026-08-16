@@ -324,6 +324,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   animation:gentleRock 5.5s ease-in-out infinite;transform-origin:50% -120px;z-index:2}
 .hero-badge--photo{padding:0;background:#fff;border-color:rgba(255,200,225,.95);
   box-shadow:0 28px 70px -28px rgba(255,45,149,.28),0 12px 32px -16px rgba(40,16,42,.12)}
+.hero-badge--banner{display:block;padding:0;color:inherit;text-decoration:none;background:#fff;
+  border-color:rgba(255,200,225,.95);
+  box-shadow:0 28px 70px -28px rgba(255,45,149,.28),0 12px 32px -16px rgba(40,16,42,.12);
+  transition:box-shadow .3s var(--ease),filter .3s var(--ease)}
+.hero-badge--banner:hover{filter:brightness(1.03);box-shadow:0 32px 76px -26px rgba(255,45,149,.36),0 14px 36px -14px rgba(40,16,42,.16)}
+.hero-badge--banner .hero-badge-photo{height:auto;aspect-ratio:3/4;background:#fff8fc}
+.hero-badge--banner .hero-badge-photo img{object-fit:cover}
 .hero-badge-photo{position:relative;height:330px;overflow:hidden;background:linear-gradient(165deg,#fff8fc 0%,#fff2f8 55%,#ffe8f4 100%)}
 .hero-badge-photo img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block}
 .hero-badge-content{position:relative;z-index:2;padding:38px 28px 32px}
@@ -1360,6 +1367,7 @@ a.col-card{color:inherit}
   .hero-badge-content{padding:20px 16px 18px}
   .hero-badge--photo .hero-badge-content{padding:8px 12px 10px}
   .hero-badge-photo{height:237px}
+  .hero-badge--banner .hero-badge-photo{height:auto}
   .hero-badge h3{font-size:14px;margin-bottom:4px;-webkit-line-clamp:2;line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
   .hero-badge p{font-size:12px;margin:2px 0 0}
   .hero-badge .price{font-size:22px}
@@ -1394,6 +1402,7 @@ a.col-card{color:inherit}
   .hero-badge{width:min(100%,228px);border-radius:24px}
   .hero-badge--photo .hero-badge-content{padding:8px 10px 10px}
   .hero-badge-photo{height:222px}
+  .hero-badge--banner .hero-badge-photo{height:auto}
   .hero-badge h3{font-size:13px}
   .hero-badge .price{font-size:20px}
   .hero h1{margin-top:0;font-size:clamp(28px,8vw,40px)}
@@ -1417,6 +1426,7 @@ a.col-card{color:inherit}
   .hero-badge-content{padding:16px 14px 14px}
   .hero-badge--photo .hero-badge-content{padding:8px 10px 10px}
   .hero-badge-photo{height:198px}
+  .hero-badge--banner .hero-badge-photo{height:auto}
   .hero-badge--photo .hero-badge-cart{width:34px;height:34px}
   .sec-head h2,.cta-final h2{font-size:27px}
   .modal{padding:26px 22px}

@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useApp } from "@/context/AppContext";
 import { useCity } from "@/context/CityContext";
+import { CityLink } from "@/components/CityLink";
 import { HERO_MINI } from "@/lib/data";
 import { COLORS } from "@/lib/data";
 import { getCityHeroStats } from "@/lib/cities";
-import { balloonSVG, fmt } from "@/lib/balloons";
-import { findHeroFeaturedProduct, HERO_FEATURED_NAME } from "@/lib/hero-featured";
+import { balloonSVG } from "@/lib/balloons";
+
+const HERO_BANNER_SRC = "/images/1-sentyabrya-hero.png";
+const HERO_BANNER_HREF = "/categories/1-sentyabrya-2";
+const HERO_BANNER_ALT = "Коллекция 1 сентября — шары к школе и линейке";
 
 export function Hero() {
-  const { addToCart, openContact, products } = useApp();
+  const { openContact } = useApp();
   const { city } = useCity();
   const miniRef = useRef<HTMLDivElement>(null);
-  const featured = useMemo(() => findHeroFeaturedProduct(products), [products]);
-  const title = featured?.name ?? HERO_FEATURED_NAME;
-  const price = featured?.price;
-  const oldPrice = featured?.old;
   const heroLead = city?.seo.heroLead ??
     "Гелиевые и воздушные шары: фольгированные цифры, эксклюзивные яркие композиции, любимые герои, необычные формы. Привозим точно ко времени. Фото или видео перед доставкой.";
   const heroStats = getCityHeroStats(city);
@@ -96,51 +96,21 @@ export function Hero() {
           <div className="hero-visual">
             <div className="hero-stage">
               <div className="mini-balloons" id="heroMini" ref={miniRef} />
-              <div className={`hero-badge${featured?.img ? " hero-badge--photo" : ""}`}>
+              <CityLink
+                href={HERO_BANNER_HREF}
+                className="hero-badge hero-badge--banner"
+                aria-label={HERO_BANNER_ALT}
+              >
                 <span className="ribbon-knot" />
-                {featured?.img && (
-                  <div className="hero-badge-photo">
-                    <img
-                      src={featured.img}
-                      alt=""
-                      aria-hidden="true"
-                      loading="eager"
-                      decoding="async"
-                    />
-                  </div>
-                )}
-                <div className="hero-badge-content">
-                  <h3>{title}</h3>
-                  <div className="hero-badge-foot">
-                    <div className="price">
-                      {price != null && price > 0 ? (
-                        <>
-                          {fmt(price)} ₽{" "}
-                          {oldPrice != null && oldPrice > price && <s>{fmt(oldPrice)} ₽</s>}
-                        </>
-                      ) : !featured ? (
-                        "Шары на подлёте!"
-                      ) : (
-                        "уточняйте цену"
-                      )}
-                    </div>
-                    <button
-                      className="add-btn hero-badge-cart"
-                      type="button"
-                      aria-label="В корзину"
-                      disabled={!featured}
-                      onClick={(e) => {
-                        if (!featured) return;
-                        addToCart(featured.id, e.clientX, e.clientY);
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                        <path d="M12 5v14M5 12h14" />
-                      </svg>
-                    </button>
-                  </div>
+                <div className="hero-badge-photo">
+                  <img
+                    src={HERO_BANNER_SRC}
+                    alt={HERO_BANNER_ALT}
+                    loading="eager"
+                    decoding="async"
+                  />
                 </div>
-              </div>
+              </CityLink>
             </div>
           </div>
         </div>
