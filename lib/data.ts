@@ -55,6 +55,7 @@ export type CollectionSlug =
   | "dlya-nego"
   | "bolshie-shary-bubble"
   | "shary-gigant-s-nadpisyami-1"
+  | "shary-s-individualnoi-nadpisiu-1"
   | "shary-na-devichnik"
   | "set-s-tsifroi"
   | "1-godik-1"
@@ -80,6 +81,7 @@ export const COLLECTIONS: Collection[] = [
   { slug: "dlya-nego", categoryPath: "dlya-nego", href: `${COLLECTIONS_BASE}/dlya-nego`, name: "Для него", sub: "стильно", colors: ["sun", "lav", "sky"] },
   { slug: "bolshie-shary-bubble", categoryPath: "bolshie-shary-bubble", href: `${COLLECTIONS_BASE}/bolshie-shary-bubble`, name: "Шары Гигант", sub: "огромные шары", colors: ["pink", "sky"] },
   { slug: "shary-gigant-s-nadpisyami-1", categoryPath: "shary-gigant-s-nadpisyami-1", href: `${COLLECTIONS_BASE}/shary-gigant-s-nadpisyami-1`, name: "Шары Гигант с надписями", sub: "ваш текст на шаре", colors: ["pink", "lav"] },
+  { slug: "shary-s-individualnoi-nadpisiu-1", categoryPath: "shary-s-individualnoi-nadpisiu-1", href: `${COLLECTIONS_BASE}/shary-s-individualnoi-nadpisiu-1`, name: "Шары с индивидуальной надписью", sub: "любой текст на шаре", colors: ["pink", "sky", "sun"] },
   { slug: "shary-na-devichnik", categoryPath: "shary-na-devichnik", href: `${COLLECTIONS_BASE}/shary-na-devichnik`, name: "Шары на девичник", sub: "для подружек", colors: ["pink", "sun", "mint"] },
   { slug: "set-s-tsifroi", categoryPath: "set-s-tsifroi", href: `${COLLECTIONS_BASE}/set-s-tsifroi`, name: "Сет с цифрой", sub: "возраст в шарах", colors: ["mint", "lav", "pink"] },
   { slug: "1-godik-1", categoryPath: "1-godik-1", href: `${COLLECTIONS_BASE}/1-godik-1`, name: "1 годик", sub: "первый праздник", colors: ["sky", "pink", "sun"] },

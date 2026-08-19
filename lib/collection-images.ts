@@ -17,6 +17,7 @@ const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
   "dlya-nego": "Для Него.png",
   "bolshie-shary-bubble": "Шары Гигант.png",
   "shary-gigant-s-nadpisyami-1": "Шары Гигант с надписями.png",
+  "shary-s-individualnoi-nadpisiu-1": "Шары с индивидуальной надписью.png",
   "shary-na-devichnik": "Шары на Девичник.png",
   "set-s-tsifroi": "Сет с цифрой.png",
   "1-godik-1": "1 годик.png",
