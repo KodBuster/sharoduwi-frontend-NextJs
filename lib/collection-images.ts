@@ -28,7 +28,6 @@ const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
 
 const COLLECTION_VIDEO_FILES: Partial<Record<CollectionSlug, string>> = {
   "1-sentyabrya-2": "1 сентября_video.mp4",
-  "nabory-sharov-bazovye": "Наборы шаров базовые_video.mp4",
 };
 
 export function getCollectionImageSrc(slug: CollectionSlug): string {
