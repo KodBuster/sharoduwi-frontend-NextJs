@@ -6,7 +6,6 @@ export const FEATURED_COLLECTION_SLUGS: CollectionSlug[] = [
   "shary-pod-potolok-1",
   "set-s-tsifroi",
   "dlya-novorozhdennykh",
-  "1-godik-1",
   "nabory-sharov-bazovye",
 ];
 

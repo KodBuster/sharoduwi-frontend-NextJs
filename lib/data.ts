@@ -58,7 +58,6 @@ export type CollectionSlug =
   | "shary-s-individualnoi-nadpisiu-1"
   | "shary-na-devichnik"
   | "set-s-tsifroi"
-  | "1-godik-1"
   | "korobki-s-sharami"
   | "dlya-novorozhdennykh"
   | "dlya-vliublennykh"
@@ -84,7 +83,6 @@ export const COLLECTIONS: Collection[] = [
   { slug: "shary-s-individualnoi-nadpisiu-1", categoryPath: "shary-s-individualnoi-nadpisiu-1", href: `${COLLECTIONS_BASE}/shary-s-individualnoi-nadpisiu-1`, name: "Шары с индивидуальной надписью", sub: "любой текст на шаре", colors: ["pink", "sky", "sun"] },
   { slug: "shary-na-devichnik", categoryPath: "shary-na-devichnik", href: `${COLLECTIONS_BASE}/shary-na-devichnik`, name: "Шары на девичник", sub: "для подружек", colors: ["pink", "sun", "mint"] },
   { slug: "set-s-tsifroi", categoryPath: "set-s-tsifroi", href: `${COLLECTIONS_BASE}/set-s-tsifroi`, name: "Сет с цифрой", sub: "возраст в шарах", colors: ["mint", "lav", "pink"] },
-  { slug: "1-godik-1", categoryPath: "1-godik-1", href: `${COLLECTIONS_BASE}/1-godik-1`, name: "1 годик", sub: "первый праздник", colors: ["sky", "pink", "sun"] },
   { slug: "korobki-s-sharami", categoryPath: "korobki-s-sharami", href: `${COLLECTIONS_BASE}/korobki-s-sharami`, name: "Коробки с шарами", sub: "сюрприз в коробке", colors: ["lav", "pink", "sun"] },
   { slug: "dlya-novorozhdennykh", categoryPath: "dlya-novorozhdennykh", href: `${COLLECTIONS_BASE}/dlya-novorozhdennykh`, name: "Для новорождённых", sub: "с появлением малыша", colors: ["sky", "white", "mint"] },
   { slug: "dlya-vliublennykh", categoryPath: "dlya-vliublennykh", href: `${COLLECTIONS_BASE}/dlya-vliublennykh`, name: "Для влюблённых", sub: "сердца", colors: ["red", "pink"] },
