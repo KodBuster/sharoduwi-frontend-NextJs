@@ -324,6 +324,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   animation:gentleRock 5.5s ease-in-out infinite;transform-origin:50% -120px;z-index:2}
 .hero-badge--photo{padding:0;background:#fff;border-color:rgba(255,200,225,.95);
   box-shadow:0 28px 70px -28px rgba(255,45,149,.28),0 12px 32px -16px rgba(40,16,42,.12)}
+.hero-badge--link{display:block;color:inherit;text-decoration:none;cursor:pointer;
+  transition:box-shadow .3s var(--ease),filter .3s var(--ease)}
+.hero-badge--link:hover{filter:brightness(1.03);box-shadow:0 32px 76px -26px rgba(255,45,149,.36),0 14px 36px -14px rgba(40,16,42,.16)}
 .hero-badge--banner{display:block;padding:0;color:inherit;text-decoration:none;background:#fff;
   border-color:rgba(255,200,225,.95);
   box-shadow:0 28px 70px -28px rgba(255,45,149,.28),0 12px 32px -16px rgba(40,16,42,.12);
