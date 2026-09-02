@@ -2,7 +2,6 @@ import type { CollectionSlug } from "@/lib/data";
 
 /** Имена файлов в /public/images (исходники — папка images/ в корне проекта) */
 const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
-  "1-sentyabrya-2": "1 сентября.png",
   "nabory-sharov-bazovye": "Наборы шаров базовые.png",
   "bazovyi-premium": "Базовый Премиум.png",
   "premium-shary": "Премиум шары.png",
@@ -26,9 +25,7 @@ const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
   pirotekhnika: "Пиротехника.png",
 };
 
-const COLLECTION_VIDEO_FILES: Partial<Record<CollectionSlug, string>> = {
-  "1-sentyabrya-2": "1 сентября_video.mp4",
-};
+const COLLECTION_VIDEO_FILES: Partial<Record<CollectionSlug, string>> = {};
 
 export function getCollectionImageSrc(slug: CollectionSlug): string {
   const file = COLLECTION_IMAGE_FILES[slug];
