@@ -40,7 +40,6 @@ export interface Collection {
 export const COLLECTIONS_BASE = "https://sharoduwi.ru/categories";
 
 export type CollectionSlug =
-  | "gender-pati-1"
   | "nabory-sharov-bazovye"
   | "bazovyi-premium"
   | "premium-shary"
@@ -59,13 +58,13 @@ export type CollectionSlug =
   | "shary-na-devichnik"
   | "set-s-tsifroi"
   | "korobki-s-sharami"
+  | "gender-pati-1"
   | "dlya-novorozhdennykh"
   | "dlya-vliublennykh"
   | "pirotekhnika";
 
 /** Коллекции = категории каталога (AdvantShop) */
 export const COLLECTIONS: Collection[] = [
-  { slug: "gender-pati-1", categoryPath: "gender-pati-1", href: `${COLLECTIONS_BASE}/gender-pati-1`, name: "Гендер Пати", sub: "узнай кто будет", colors: ["pink", "sky", "white"] },
   { slug: "nabory-sharov-bazovye", categoryPath: "nabory-sharov-bazovye", href: `${COLLECTIONS_BASE}/nabory-sharov-bazovye`, name: "Наборы шаров базовые", sub: "на каждый праздник", colors: ["pink", "sun", "sky"] },
   { slug: "bazovyi-premium", categoryPath: "bazovyi-premium", href: `${COLLECTIONS_BASE}/bazovyi-premium`, name: "Базовый Премиум", sub: "ярче и богаче", colors: ["pink", "lav", "sky"] },
   { slug: "premium-shary", categoryPath: "premium-shary", href: `${COLLECTIONS_BASE}/premium-shary`, name: "Премиум шары", sub: "вау-эффект", colors: ["sky", "white", "lav"] },
@@ -84,6 +83,7 @@ export const COLLECTIONS: Collection[] = [
   { slug: "shary-na-devichnik", categoryPath: "shary-na-devichnik", href: `${COLLECTIONS_BASE}/shary-na-devichnik`, name: "Шары на девичник", sub: "для подружек", colors: ["pink", "sun", "mint"] },
   { slug: "set-s-tsifroi", categoryPath: "set-s-tsifroi", href: `${COLLECTIONS_BASE}/set-s-tsifroi`, name: "Сет с цифрой", sub: "возраст в шарах", colors: ["mint", "lav", "pink"] },
   { slug: "korobki-s-sharami", categoryPath: "korobki-s-sharami", href: `${COLLECTIONS_BASE}/korobki-s-sharami`, name: "Коробки с шарами", sub: "сюрприз в коробке", colors: ["lav", "pink", "sun"] },
+  { slug: "gender-pati-1", categoryPath: "gender-pati-1", href: `${COLLECTIONS_BASE}/gender-pati-1`, name: "Гендер Пати", sub: "узнай кто будет", colors: ["pink", "sky", "white"] },
   { slug: "dlya-novorozhdennykh", categoryPath: "dlya-novorozhdennykh", href: `${COLLECTIONS_BASE}/dlya-novorozhdennykh`, name: "Для новорождённых", sub: "с появлением малыша", colors: ["sky", "white", "mint"] },
   { slug: "dlya-vliublennykh", categoryPath: "dlya-vliublennykh", href: `${COLLECTIONS_BASE}/dlya-vliublennykh`, name: "Для влюблённых", sub: "сердца", colors: ["red", "pink"] },
   { slug: "pirotekhnika", categoryPath: "pirotekhnika", href: `${COLLECTIONS_BASE}/pirotekhnika`, name: "Пиротехника", sub: "финальный залп", colors: ["coral", "sun", "red"] },
