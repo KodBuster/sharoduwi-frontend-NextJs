@@ -2,6 +2,7 @@ import type { CollectionSlug } from "@/lib/data";
 
 /** Имена файлов в /public/images (исходники — папка images/ в корне проекта) */
 const COLLECTION_IMAGE_FILES: Record<CollectionSlug, string> = {
+  "gender-pati-1": "Гендер Пати.jpg",
   "nabory-sharov-bazovye": "Наборы шаров базовые.png",
   "bazovyi-premium": "Базовый Премиум.png",
   "premium-shary": "Премиум шары.png",

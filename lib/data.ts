@@ -40,6 +40,7 @@ export interface Collection {
 export const COLLECTIONS_BASE = "https://sharoduwi.ru/categories";
 
 export type CollectionSlug =
+  | "gender-pati-1"
   | "nabory-sharov-bazovye"
   | "bazovyi-premium"
   | "premium-shary"
@@ -64,6 +65,7 @@ export type CollectionSlug =
 
 /** Коллекции = категории каталога (AdvantShop) */
 export const COLLECTIONS: Collection[] = [
+  { slug: "gender-pati-1", categoryPath: "gender-pati-1", href: `${COLLECTIONS_BASE}/gender-pati-1`, name: "Гендер Пати", sub: "узнай кто будет", colors: ["pink", "sky", "white"] },
   { slug: "nabory-sharov-bazovye", categoryPath: "nabory-sharov-bazovye", href: `${COLLECTIONS_BASE}/nabory-sharov-bazovye`, name: "Наборы шаров базовые", sub: "на каждый праздник", colors: ["pink", "sun", "sky"] },
   { slug: "bazovyi-premium", categoryPath: "bazovyi-premium", href: `${COLLECTIONS_BASE}/bazovyi-premium`, name: "Базовый Премиум", sub: "ярче и богаче", colors: ["pink", "lav", "sky"] },
   { slug: "premium-shary", categoryPath: "premium-shary", href: `${COLLECTIONS_BASE}/premium-shary`, name: "Премиум шары", sub: "вау-эффект", colors: ["sky", "white", "lav"] },
