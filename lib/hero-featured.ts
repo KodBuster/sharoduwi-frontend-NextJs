@@ -19,11 +19,16 @@ function artMatchKeys(value: string): string[] {
   return [...keys];
 }
 
-function matchesFeaturedArt(candidate: string, targetKeys: string[]): boolean {
-  const candidateKeys = artMatchKeys(candidate);
-  return targetKeys.some((key) =>
-    candidateKeys.some((c) => c === key || c.includes(key) || key.includes(c))
-  );
+/** Только точное совпадение артикула (иначе а97 ловится внутри а797). */
+function matchesArtNo(artNo: string, targetKeys: string[]): boolean {
+  const candidateKeys = artMatchKeys(artNo);
+  return targetKeys.some((key) => candidateKeys.includes(key));
+}
+
+/** Артикул в названии как отдельный токен: «№797а», «а797». */
+function matchesName(name: string, targetKeys: string[]): boolean {
+  const tokens = ` ${normalize(name).replace(/[^a-z0-9]+/g, " ")} `;
+  return targetKeys.some((key) => tokens.includes(` ${key} `));
 }
 
 export function findHeroFeaturedProduct(products: Product[]): Product | undefined {
@@ -32,12 +37,9 @@ export function findHeroFeaturedProduct(products: Product[]): Product | undefine
   const targetKeys = artMatchKeys(HERO_FEATURED_ART_NO);
 
   const byArtNo = products.find(
-    (product) => product.artNo && matchesFeaturedArt(product.artNo, targetKeys)
+    (product) => product.artNo && matchesArtNo(product.artNo, targetKeys)
   );
   if (byArtNo) return byArtNo;
 
-  return products.find((product) => {
-    if (matchesFeaturedArt(product.name, targetKeys)) return true;
-    return product.artNo ? matchesFeaturedArt(product.artNo, targetKeys) : false;
-  });
+  return products.find((product) => matchesName(product.name, targetKeys));
 }
