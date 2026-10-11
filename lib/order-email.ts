@@ -65,6 +65,38 @@ function orderEmailLogoAttachment():
   };
 }
 
+function getNotifyEmails(): string[] {
+  return (process.env.ORDER_NOTIFY_EMAIL || "")
+    .split(/[,;]/)
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
+async function sendMailMessage(options: {
+  to: string | string[];
+  subject: string;
+  html: string;
+  text: string;
+  replyTo?: string;
+}): Promise<void> {
+  const from =
+    process.env.ORDER_EMAIL_FROM?.trim() || process.env.SMTP_USER!.trim();
+  const replyTo = options.replyTo || process.env.ORDER_EMAIL_REPLY_TO?.trim() || from;
+  const logo = orderEmailLogoAttachment();
+  const transport = createTransport();
+
+  await transport.sendMail({
+    from: `"${SITE_NAME}" <${from}>`,
+    to: options.to,
+    replyTo,
+    subject: options.subject,
+    text: options.text,
+    html: options.html,
+    attachments: logo ? [logo] : undefined,
+  });
+}
+
+/** Письмо покупателю (если указан email). */
 export async function sendOrderConfirmationEmail(input: {
   orderNumber: string;
   customer: CheckoutFormData;
@@ -84,24 +116,47 @@ export async function sendOrderConfirmationEmail(input: {
     return false;
   }
 
-  const from =
-    process.env.ORDER_EMAIL_FROM?.trim() || process.env.SMTP_USER!.trim();
-  const replyTo = process.env.ORDER_EMAIL_REPLY_TO?.trim() || from;
   const orderNumber = input.orderNumber.trim();
   const subject = `Заказ ${orderNumber} принят — ${SITE_NAME}`;
   const { html, text } = buildOrderConfirmationEmail(input);
-  const logo = orderEmailLogoAttachment();
 
-  const transport = createTransport();
-  await transport.sendMail({
-    from: `"${SITE_NAME}" <${from}>`,
-    to,
-    replyTo,
-    bcc: process.env.ORDER_NOTIFY_EMAIL?.trim() || undefined,
-    subject,
-    text,
-    html,
-    attachments: logo ? [logo] : undefined,
-  });
+  await sendMailMessage({ to, subject, html, text });
+  return true;
+}
+
+/**
+ * Уведомление менеджерам/админам (ORDER_NOTIFY_EMAIL).
+ * Уходит всегда при заказе, даже если клиент не указал email.
+ */
+export async function sendOrderManagerNotifyEmail(input: {
+  orderNumber: string;
+  customer: CheckoutFormData;
+  items: CartItem[];
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  citySlug?: string;
+}): Promise<boolean> {
+  const notifyTo = getNotifyEmails();
+  if (!notifyTo.length) {
+    console.warn(
+      "Manager order notify skipped: set ORDER_NOTIFY_EMAIL in server environment"
+    );
+    return false;
+  }
+
+  if (!isOrderEmailConfigured()) {
+    console.warn(
+      "Manager order notify skipped: set SMTP_HOST, SMTP_USER and SMTP_PASS"
+    );
+    return false;
+  }
+
+  const orderNumber = input.orderNumber.trim();
+  const subject = `Новый заказ ${orderNumber} — ${SITE_NAME}`;
+  const { html, text } = buildOrderConfirmationEmail(input);
+  const replyTo = input.customer.email?.trim() || undefined;
+
+  await sendMailMessage({ to: notifyTo, subject, html, text, replyTo });
   return true;
 }

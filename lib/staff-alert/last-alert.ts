@@ -1,6 +1,8 @@
 import { promises as fs } from "fs";
 import path from "path";
 
+import { getStaffAlertDataDir } from "@/lib/staff-alert/data-dir";
+
 export type LastStaffAlert = {
   orderId: string;
   title: string;
@@ -8,8 +10,9 @@ export type LastStaffAlert = {
   at: string;
 };
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const FILE = path.join(DATA_DIR, "last-staff-alert.json");
+function lastAlertFile(): string {
+  return path.join(getStaffAlertDataDir(), "last-staff-alert.json");
+}
 
 export async function recordLastStaffAlert(
   alert: Omit<LastStaffAlert, "at"> & { at?: string }
@@ -21,14 +24,15 @@ export async function recordLastStaffAlert(
     at: alert.at || new Date().toISOString(),
   };
 
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(FILE, JSON.stringify(payload, null, 2), "utf-8");
+  const dir = getStaffAlertDataDir();
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(lastAlertFile(), JSON.stringify(payload, null, 2), "utf-8");
   return payload;
 }
 
 export async function getLastStaffAlert(): Promise<LastStaffAlert | null> {
   try {
-    const raw = await fs.readFile(FILE, "utf-8");
+    const raw = await fs.readFile(lastAlertFile(), "utf-8");
     const parsed = JSON.parse(raw) as LastStaffAlert;
     if (!parsed?.orderId || !parsed?.at) return null;
     return parsed;

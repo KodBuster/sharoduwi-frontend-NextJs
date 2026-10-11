@@ -2,7 +2,7 @@
 # В UI Amvera: Конфигурация → команда запуска должна быть пустой или из этого файла.
 # Переменные окружения — в панели (см. .env.example)
 #
-# Обязательно для писем покупателю после заказа:
+# Обязательно для писем после заказа:
 #   SMTP_HOST=smtp.yandex.ru
 #   SMTP_PORT=465          (не 25 — на Amvera он обычно заблокирован)
 #   SMTP_SECURE=true
@@ -10,12 +10,14 @@
 #   SMTP_PASS=<пароль приложения Яндекс ID>
 #   ORDER_EMAIL_FROM=sharoduwi@yandex.ru
 #   ORDER_EMAIL_REPLY_TO=sharoduwi@yandex.ru
+#   ORDER_NOTIFY_EMAIL=sharoduwi@yandex.ru   (менеджеры/админы; можно несколько через запятую)
 #
 # Staff Alert (/staff-alert):
 #   STAFF_ALERT_PASSWORD=<пароль>
 #   VAPID_PUBLIC_KEY=<из npm run vapid>
 #   VAPID_PRIVATE_KEY=<из npm run vapid>
 #   VAPID_SUBJECT=mailto:admin@sharoduwi.ru
+# Подписки и last-alert пишутся в /data/staff-alert (persistenceMount ниже).
 
 meta:
   environment: docker
@@ -27,3 +29,4 @@ build:
 
 run:
   containerPort: 80
+  persistenceMount: /data

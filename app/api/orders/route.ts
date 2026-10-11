@@ -9,7 +9,10 @@ import {
   validateCheckoutForm,
   type CheckoutFormData,
 } from "@/lib/checkout";
-import { sendOrderConfirmationEmail } from "@/lib/order-email";
+import {
+  sendOrderConfirmationEmail,
+  sendOrderManagerNotifyEmail,
+} from "@/lib/order-email";
 import { sendStaffAlert } from "@/lib/staff-alert/send";
 
 export const dynamic = "force-dynamic";
@@ -84,18 +87,20 @@ export async function POST(request: Request) {
 
     const orderNumber = advantshop.advantshopOrderNumber!;
 
+    const emailPayload = {
+      orderNumber,
+      customer: customerWithNightNote,
+      items: body.items,
+      subtotal,
+      deliveryFee,
+      total,
+      citySlug: body.citySlug?.trim() || undefined,
+    };
+
     let emailSent = false;
     if (customer.email) {
       try {
-        emailSent = await sendOrderConfirmationEmail({
-          orderNumber,
-          customer: customerWithNightNote,
-          items: body.items,
-          subtotal,
-          deliveryFee,
-          total,
-          citySlug: body.citySlug?.trim() || undefined,
-        });
+        emailSent = await sendOrderConfirmationEmail(emailPayload);
         if (!emailSent) {
           console.warn(
             `Order ${orderNumber}: confirmation email not sent (SMTP not configured on server)`
@@ -106,13 +111,32 @@ export async function POST(request: Request) {
       }
     }
 
-    void sendStaffAlert({
+    let managersNotified = false;
+    try {
+      managersNotified = await sendOrderManagerNotifyEmail(emailPayload);
+      if (!managersNotified) {
+        console.warn(
+          `Order ${orderNumber}: manager notify not sent (ORDER_NOTIFY_EMAIL / SMTP)`
+        );
+      }
+    } catch (notifyError) {
+      console.error("Order manager notify email error:", notifyError);
+    }
+
+    const alertResult = await sendStaffAlert({
       title: "🚨 Новый заказ в ШАРОДУВЫ!",
       body: `Заказ №${orderNumber} на сумму ${total} ₽`,
       orderId: String(orderNumber),
     }).catch((alertError) => {
       console.error("Staff alert error:", alertError);
+      return null;
     });
+
+    if (alertResult && !alertResult.ok) {
+      console.warn(`Order ${orderNumber}: staff alert failed`, alertResult);
+    } else if (alertResult?.errors?.length) {
+      console.warn(`Order ${orderNumber}: staff alert notes`, alertResult.errors);
+    }
 
     return NextResponse.json({
       id: orderNumber,
@@ -120,6 +144,8 @@ export async function POST(request: Request) {
       deliveryFee,
       total,
       emailSent,
+      managersNotified,
+      staffAlertSent: Boolean(alertResult?.ok && (alertResult.sent > 0 || alertResult.total === 0)),
     });
   } catch (error) {
     console.error("Order error:", error);

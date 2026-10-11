@@ -2,6 +2,8 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { PushSubscription } from "web-push";
 
+import { getStaffAlertDataDir } from "@/lib/staff-alert/data-dir";
+
 export type AlarmSoundId = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export type StoredPushSubscription = PushSubscription & {
@@ -12,12 +14,13 @@ function isAlarmSoundId(value: number): value is AlarmSoundId {
   return Number.isInteger(value) && value >= 0 && value <= 9;
 }
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const FILE = path.join(DATA_DIR, "subscriptions.json");
+function subscriptionsFile(): string {
+  return path.join(getStaffAlertDataDir(), "subscriptions.json");
+}
 
 async function readAll(): Promise<StoredPushSubscription[]> {
   try {
-    const raw = await fs.readFile(FILE, "utf-8");
+    const raw = await fs.readFile(subscriptionsFile(), "utf-8");
     return JSON.parse(raw) as StoredPushSubscription[];
   } catch {
     return [];
@@ -25,8 +28,9 @@ async function readAll(): Promise<StoredPushSubscription[]> {
 }
 
 async function writeAll(subs: StoredPushSubscription[]): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(FILE, JSON.stringify(subs, null, 2), "utf-8");
+  const dir = getStaffAlertDataDir();
+  await fs.mkdir(dir, { recursive: true });
+  await fs.writeFile(subscriptionsFile(), JSON.stringify(subs, null, 2), "utf-8");
 }
 
 function normalizeSoundId(value: unknown): AlarmSoundId | undefined {
