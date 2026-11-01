@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 
 import {
   DEFAULT_CITY_SLUG,
@@ -14,6 +14,10 @@ export type GeoLocationHint = {
   region?: string | null;
   country?: string | null;
 };
+
+/** Кеш кода страны в cookie — чтобы не дергать ip-api на каждый запрос. */
+export const GEO_COUNTRY_COOKIE = "sharoduwi-geo-cc";
+export const GEO_COUNTRY_COOKIE_MAX_AGE = 60 * 60 * 24;
 
 const MOSCOW_OBLAST_REGIONS = new Set(
   [
@@ -189,6 +193,9 @@ function getClientIp(request: NextRequest): string | null {
 
 const GEOIP_FETCH_TIMEOUT_MS = 1500;
 
+/** Страны, с которых middleware отдаёт 403. Неизвестная страна — пускаем. */
+const BLOCKED_COUNTRY_CODES = new Set(["cn"]);
+
 /** ip-api.com — fallback, если платформа не отдаёт geo-заголовки */
 async function fetchGeoFromIpApi(ip: string): Promise<GeoLocationHint | null> {
   const controller = new AbortController();
@@ -224,25 +231,62 @@ async function fetchGeoFromIpApi(ip: string): Promise<GeoLocationHint | null> {
   }
 }
 
-/**
- * Определяет slug для cookie при первом визите (нет URL-города и нет cookie).
- * URL → GeoIP → Default не применяется здесь — только GeoIP; default в resolveCitySlugFromGeo.
- */
-export async function detectGeoCitySlug(request: NextRequest): Promise<CitySlug | null> {
+/** Заголовки платформы, иначе fallback на ip-api. */
+export async function resolveGeoLocation(
+  request: NextRequest
+): Promise<GeoLocationHint | null> {
   const fromHeaders = getGeoLocationFromRequest(request);
-  if (fromHeaders) {
-    const slug = resolveCitySlugFromGeo(fromHeaders);
-    if (slug) return getCityBySlug(slug)?.slug ?? null;
-  }
+  if (fromHeaders) return fromHeaders;
 
   if (process.env.GEOIP_IP_API === "false") return null;
 
   const ip = getClientIp(request);
   if (!ip) return null;
 
-  const fromApi = await fetchGeoFromIpApi(ip);
-  if (!fromApi) return null;
+  return fetchGeoFromIpApi(ip);
+}
 
-  const slug = resolveCitySlugFromGeo(fromApi);
+export function isBlockedGeoCountry(country: string | null | undefined): boolean {
+  const normalized = normalizeGeoToken(country);
+  if (!normalized) return false;
+  if (BLOCKED_COUNTRY_CODES.has(normalized)) return true;
+  return (
+    normalized === "chn" ||
+    normalized === "china" ||
+    normalized === "китай" ||
+    normalized === "prc"
+  );
+}
+
+export function readCachedGeoCountry(request: NextRequest): string | null {
+  const value = request.cookies.get(GEO_COUNTRY_COOKIE)?.value?.trim();
+  return value || null;
+}
+
+export function setGeoCountryCookie(response: NextResponse, country: string) {
+  const code = country.trim().toUpperCase().slice(0, 3);
+  if (!code) return;
+  response.cookies.set(GEO_COUNTRY_COOKIE, code, {
+    path: "/",
+    maxAge: GEO_COUNTRY_COOKIE_MAX_AGE,
+    sameSite: "lax",
+    httpOnly: true,
+  });
+}
+
+/**
+ * Определяет slug для cookie при первом визите (нет URL-города и нет cookie).
+ * URL → GeoIP → Default не применяется здесь — только GeoIP; default в resolveCitySlugFromGeo.
+ * `prefetched` — уже полученный hint (чтобы не дергать GeoIP дважды в middleware).
+ */
+export async function detectGeoCitySlug(
+  request: NextRequest,
+  prefetched?: GeoLocationHint | null
+): Promise<CitySlug | null> {
+  const geo =
+    prefetched !== undefined ? prefetched : await resolveGeoLocation(request);
+  if (!geo) return null;
+
+  const slug = resolveCitySlugFromGeo(geo);
   return slug ? getCityBySlug(slug)?.slug ?? null : null;
 }

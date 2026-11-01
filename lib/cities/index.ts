@@ -56,7 +56,17 @@ export {
   rememberCityPickerReturnPath,
 } from "@/lib/cities/city-picker";
 
-export { detectGeoCitySlug, resolveCitySlugFromGeo, getGeoLocationFromRequest } from "@/lib/cities/geoip";
+export {
+  detectGeoCitySlug,
+  resolveCitySlugFromGeo,
+  getGeoLocationFromRequest,
+  resolveGeoLocation,
+  isBlockedGeoCountry,
+  readCachedGeoCountry,
+  setGeoCountryCookie,
+  GEO_COUNTRY_COOKIE,
+  GEO_COUNTRY_COOKIE_MAX_AGE,
+} from "@/lib/cities/geoip";
 export type { GeoLocationHint } from "@/lib/cities/geoip";
 
 export {

@@ -7,9 +7,14 @@ import {
   detectGeoCitySlug,
   DEFAULT_CITY_SLUG,
   getCityBySlug,
+  isBlockedGeoCountry,
   isCitySlug,
   LEGACY_CITY_SLUGS,
+  readCachedGeoCountry,
+  resolveGeoLocation,
+  setGeoCountryCookie,
 } from "@/lib/cities";
+import type { GeoLocationHint } from "@/lib/cities";
 import {
   CITY_COOKIE_MAX_AGE,
   getLegacyPathRedirect,
@@ -56,20 +61,52 @@ function getStaffAlertAuthRedirect(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Статика без GeoIP — чтобы не дергать ip-api на каждый ассет.
+  if (pathname.startsWith("/_next") || STATIC_FILE.test(pathname)) {
+    return NextResponse.next();
+  }
+
+  const cachedCountry = readCachedGeoCountry(request);
+  let geo: GeoLocationHint | null = null;
+  let country = cachedCountry;
+
+  if (!country) {
+    geo = await resolveGeoLocation(request);
+    country = geo?.country?.trim() || null;
+  }
+
+  const finish = (response: NextResponse) => {
+    if (country && !cachedCountry) {
+      setGeoCountryCookie(response, country);
+    }
+    return response;
+  };
+
+  if (
+    process.env.GEOIP_BLOCK_CN !== "false" &&
+    isBlockedGeoCountry(country)
+  ) {
+    return finish(
+      new NextResponse("Forbidden", {
+        status: 403,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "no-store",
+        },
+      })
+    );
+  }
+
   if (
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
     pathname.startsWith("/sitemap/")
   ) {
-    return NextResponse.next();
+    return finish(NextResponse.next());
   }
 
-  if (
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    STATIC_FILE.test(pathname)
-  ) {
-    return NextResponse.next();
+  if (pathname.startsWith("/api")) {
+    return finish(NextResponse.next());
   }
 
   if (getStaffAlertAuthRedirect(request) === "check") {
@@ -77,7 +114,7 @@ export async function middleware(request: NextRequest) {
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = "/staff-alert/login";
       loginUrl.search = "";
-      return NextResponse.redirect(loginUrl);
+      return finish(NextResponse.redirect(loginUrl));
     }
 
     const token = request.cookies.get(STAFF_ALERT_COOKIE)?.value;
@@ -90,14 +127,14 @@ export async function middleware(request: NextRequest) {
         "redirect",
         `${pathname}${request.nextUrl.search}`
       );
-      return NextResponse.redirect(loginUrl);
+      return finish(NextResponse.redirect(loginUrl));
     }
-    return NextResponse.next();
+    return finish(NextResponse.next());
   }
 
   const legacyTarget = getLegacyPathRedirect(pathname);
   if (legacyTarget) {
-    return redirectTo(request, legacyTarget, 301);
+    return finish(redirectTo(request, legacyTarget, 301));
   }
 
   const segments = pathname.split("/").filter(Boolean);
@@ -107,7 +144,7 @@ export async function middleware(request: NextRequest) {
     const canonical = LEGACY_CITY_SLUGS[firstSegment];
     const rest = segments.slice(1);
     const newPath = cityPath(canonical, rest.length ? `/${rest.join("/")}` : "/");
-    return redirectTo(request, newPath, 301);
+    return finish(redirectTo(request, newPath, 301));
   }
 
   if (
@@ -115,7 +152,7 @@ export async function middleware(request: NextRequest) {
     !isCitySlug(firstSegment) &&
     !isAppRootSegment(firstSegment)
   ) {
-    return redirectTo(request, "/", 307);
+    return finish(redirectTo(request, "/", 307));
   }
 
   const cookieCity = request.cookies.get(CITY_COOKIE)?.value;
@@ -125,7 +162,13 @@ export async function middleware(request: NextRequest) {
   let geoSlug: string | null = null;
   if (!firstSegment || !isCitySlug(firstSegment)) {
     if (!cookieSlug) {
-      geoSlug = await detectGeoCitySlug(request);
+      if (!geo) {
+        geo = await resolveGeoLocation(request);
+        if (!country && geo?.country) {
+          country = geo.country.trim();
+        }
+      }
+      geoSlug = await detectGeoCitySlug(request, geo);
     }
   }
 
@@ -138,28 +181,28 @@ export async function middleware(request: NextRequest) {
     if (!cookieSlug) {
       setCityCookie(response, slugToPersist);
     }
-    return response;
+    return finish(response);
   }
 
   if (firstSegment && isCitySlug(firstSegment)) {
     const response = NextResponse.next();
     setCityCookie(response, getCityBySlug(firstSegment)!.slug);
-    return response;
+    return finish(response);
   }
 
   if (cookieSlug) {
     const response = NextResponse.next();
     response.headers.set("x-city-slug", cookieSlug);
-    return response;
+    return finish(response);
   }
 
   if (geoSlug) {
     const response = NextResponse.next();
     setCityCookie(response, geoSlug);
-    return response;
+    return finish(response);
   }
 
-  return NextResponse.next();
+  return finish(NextResponse.next());
 }
 
 export const config = {
